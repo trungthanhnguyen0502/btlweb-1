@@ -12,10 +12,15 @@ class TicketApiController extends Controller
     {
         if ($request->session()->has('login_key')) {
 
+            if (empty($request->input('subject'))) {
+                return 0;
+            }
+
+
             $ticket = new Ticket();
             $ticket->created_by = session('employee_id');
             $ticket->subject = $request->input('subject');
-            $ticket->status = $request->input('status');
+            $ticket->status = 1;
             $ticket->priority = $request->input('priority');
 //            $ticket->assigned_to = $request->input('assigned_to');
             $ticket->deadline = strtotime($request->input('deadline'));
@@ -34,9 +39,9 @@ class TicketApiController extends Controller
         }
     }
 
-    public function get_ticket(Request $request) {
+    public function get_tickets(Request $request) {
         if ($request->session()->has('login_key')) {
-            $result = Ticket::all();
+            $result = Ticket::where('assigned_to', $request->session()->get('employee_id'));
             if ($request->input('id')) {
                 $result->where('id', $request->input('id'));
             }
@@ -78,7 +83,7 @@ class TicketApiController extends Controller
 
             return $tickets;
         } else {
-            return 0;
+            return [];
         }
     }
 }

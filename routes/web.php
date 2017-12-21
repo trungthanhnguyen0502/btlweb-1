@@ -36,9 +36,9 @@ Route::prefix('auth')->group(function () {
 
 Route::prefix('api')->group(function () {
 
-    Route::any('createRequest', 'APIs\\TicketApiController@create_ticket');
+    Route::any('create-ticket', 'APIs\\TicketApiController@create_ticket');
 
-    Route::any('getTicket', 'APIs\\TicketApiController@get_ticket');
+    Route::any('get-tickets', 'APIs\\TicketApiController@get_tickets');
 });
 
 /**
