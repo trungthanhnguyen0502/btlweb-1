@@ -13,7 +13,7 @@ class TicketApiController extends Controller
         if ($request->session()->has('login_key')) {
 
             $ticket = new Ticket();
-            $ticket->create_by = session('employee_id');
+            $ticket->created_by = session('employee_id');
             $ticket->subject = $request->input('subject');
             $ticket->status = $request->input('status');
             $ticket->priority = $request->input('priority');

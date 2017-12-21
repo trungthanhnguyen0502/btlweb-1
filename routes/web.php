@@ -23,9 +23,9 @@ Route::prefix('auth')->group(function () {
 
     Route::get('captcha', 'Auth\\CaptchaController@index')->name('captcha');
 
-    Route::get('login', 'Auth\\LoginController@index')->name('login');
+    Route::get('login', 'Auth\\LoginController@index')->name('login')->middleware('guest');
 
-    Route::post('login/attempt', 'Auth\\LoginController@attempt')->name('login.attempt');
+    Route::post('login/attempt', 'Auth\\LoginController@attempt')->name('login.attempt')->middleware('guest');
 
     Route::get('logout', 'Auth\\LoginController@logout')->name('logout');
 });
