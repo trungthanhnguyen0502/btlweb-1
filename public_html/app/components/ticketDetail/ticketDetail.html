@@ -1,57 +1,175 @@
-<div class="container panel panel-default">
-    <div id='edit_option'>
-        
+<div class="main-content">
+    <div class="header-content">
+        <div class="row action-content">
+            <div class="col-md-4">
+                <div class="title-header-content">
+                    <i class="fa fa-globe" aria-hidden="true"></i> Test
+                </div>
+            </div>
+            <div class="col-md-8 group-action-content group-action-request-content">
+                
+                <span  class="dropdown" >
+                     <button class="btn dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users" aria-hidden="true" ></i> Thay đổi bộ phận  IT
+                     </button>
 
-    </div>
-    
-    <div id = 'infomation'>
-        <div>
-            <span class="form-group col-md-3">
-                <label>Ngày tạo:</label>
-                <span> {{ticket.created_at | date: "dd-MM-yyyy"}}</span>
-            </span>
+                        <ul class="dropdown-menu">
+                            <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 0">  <a>{{0 | toTeam}}</a> </li>
+                            <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 1">  <a>{{1 | toTeam}}</a> </li>
+                        </ul>
+                </span> 
 
-            <span class="form-group">
-                <label>Ngày hết hạn: </label>
-                <span>   {{ticket.deadline | date: "dd-MM-yyyy"}}</span>    
-            </span>
+                <span class="deadline">
+                    <button class="btn btn-sm" data-toggle="modal" data-target="#myModal3"><i class="fa fa-calendar" aria-hidden="true"  style="color: #38d1c9"></i> Thay đổi deadline 
+                    </button>
+                    <div id="myModal3" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title"> Enter comment </h4>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <label> select new deadline :  </label>
+                                        <br>
+                                        <input type="datetime-local" ng-model="newInfo.deadline" >
+                                        <br>
+                                        <label> Note :  </label>
+                                        <textarea type="text" ng-model="commentContent" class="form-control"></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="saveChange()"> Save </button>
+                                    </div>
+                                </div>    
+                            </div>
+                    </div>
+                </span>
+
+                <span  class="dropdown" >
+                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-edit" aria-hidden="true"  style="color: #e28624"></i> Thay đổi độ ưu tiên
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="priority in getPriority()"  data-toggle="modal" data-target="#myModal2" ng-click="changeNewPriority(priority)">  <a>{{priority | toPriority}}</a> </li>
+                        </ul>
+                </span> 
+
+                <span class="dropdown set-up-status">
+                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-exchange" aria-hidden="true" style="color: #813384"></i> Thay đổi trạng thái
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="status in getStatus()" data-toggle="modal" data-target="#myModal2" ng-click="changeNewStatus(status)">  <a>{{status | toTicketStatus}}</a> </li>
+                        </ul>
+                </span>
+
+                <button class="btn btn-sm "><i class="fa fa-user" aria-hidden="true"  style="color: #70ffa6"></i> Thay đổi người
+                    liên quan
+                </button>
+
+                <button class="btn btn-sm "><i class="fa fa-hand-o-right" aria-hidden="true"  style="color: #0ea432"></i> Assign
+                </button>
+               
+
+                <div id="myModal2" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title"> Enter comment </h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <input type="text" ng-model="commentContent" class="form-control">
+                                </div>
+                                <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="saveChange()"> Save </button>
+                                </div>
+                            </div>    
+                        </div>
+                </div>
+            </div>
         </div>
-        <class="form-group col-md-3" >
-            <label>Người yêu cầu: </label>
-            <span>  {{ticket.created_by}}     </span>    
-        </span>
-
-        <span class="form-group">
-            <label>Người thực hiện: </label>
-            <span> ..... </span>    
-        </span>
-        <span class="form-group">
-                <label>Bộ phận IT: </label>
-                <span> .....  </span>    
-        </span>
-
-        <br>
-        <span class="form-group">
-                <label>Mức độ ưu tiên: </label>
-                <span > {{ticket.priority | toPriority}}  </span>    
-        </span>
-        <span class="form-group">
-                <label>Trạng thái: </label>
-                <span>  {{ticket.status | toTicketStatus}}  </span>    
-        </span>
-
     </div>
+    <div class="body-content">
+        <div class="row request-info">
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-6 request-label">Ngày tạo:</div>
+                    <div class="col-md-6"> {{ ticket.created_at  | date: "dd-MM-yyyy"}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 request-label">Người yêu cầu:</div>
+                    <div class="col-md-6"> {{ ticket.create_by }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 request-label">Mức độ ưu tiên:</div>
+                    <div class="col-md-6"> {{ ticket.priority | toPriority}}</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-6 request-label">Ngày hết hạn:</div>
+                    <div class="col-md-6"> {{ ticket.deadline  | date: "dd-MM-yyyy"}} </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 request-label">Người thực hiện:</div>
+                    <div class="col-md-6"> {{ ticket.assigned_to}} </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 request-label">Trạng thái:</div>
+                    <div class="col-md-6"> {{ ticket.status | toTicketStatus}} </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    &nbsp;
+                </div>
+                <div class="row">
+                    <div class="col-md-6 request-label">Bộ phận IT:</div>
+                    <div class="col-md-6"> {{ ticket.team_id | toTeam }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 request-label">Người liên quan:</div>
+                    <div class="col-md-6"> {{ ticket.relatedUser}}</div>
+                </div>
+            </div>
+        </div>
 
-    <div id= 'content'></div>
-
-
-
-
-
-
-
-
-
-
-
+        <div>
+            <div class="w3-container">
+                <div>    
+                    <span> <img  class="img-circle" style="height:50px;width:50px;border: 1px solid #ddd;padding: 5px;"src="assets/img/23561516_1535193256550200_8580982912237504053_n (1).jpg"></span>
+                    <span><h5 class="w3-opacity"><b> {{user.userName}}</b></h5></span>
+                </div>
+                <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>Jan 2015 - <span class="w3-tag w3-teal w3-round">Current</span></h6>
+                <p> {{ ticket.content}}</p>
+                <hr>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div id="comment-content">
+    <div ng-repeat="comment in comments">
+            <li class="nav-divider"></li>
+            <div >
+                <img  class="img-circle" style="height:50px;width:50px;border: 1px solid #ddd;padding: 5px;" src="./assets/img/16002876_634984026687055_1284276430572346746_n.jpg"> </img>
+                <span class="user-comment">  {{ comment.user_name}}</span>
+                <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i> {{ comment.created_at  | date: "dd-MM-yyyy"}} </h6>
+                <div ng-bind-html="comment.content"></div>
+            </div>
+    </div>
+</div>
+
+
+<div class="input-discussion" style="border-top: solid 1px #e9ebee;">    
+    <textarea tyle="text" class="form-control" rows="10" style="height:80px"ng-model="commentInput"></textarea>
+    <button class="btn btn-sm btn-info form-control" ng-click="createComment()">
+        <i class="fa fa-comments-o" aria-hidden="true"></i>
+        Gửi bình luận
+    </button>
+</div>
+
