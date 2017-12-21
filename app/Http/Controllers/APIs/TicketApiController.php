@@ -41,16 +41,14 @@ class TicketApiController extends Controller
 
     public function get_tickets(Request $request) {
         if ($request->session()->has('login_key')) {
-            $result = Ticket::where('assigned_to', $request->session()->get('employee_id'));
+            $result = Ticket::where('created_by', $request->session()->get('employee_id'));
             if ($request->input('id')) {
                 $result->where('id', $request->input('id'));
             }
             if ($request->input('subject')) {
                 $result->where('subject', 'LIKE', $request->input('subject') . '%');
             }
-            if ($request->input('created_by')) {
-                $result->where('created_by', $request->input('created_by'));
-            }
+
             if ($request->input('status')) {
                 $result->where('status', $request->input('status'));
             }
