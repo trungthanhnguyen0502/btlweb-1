@@ -1,17 +1,31 @@
-<div class="container">
-    <h4> {{$ctrl.name | toNomal}}</h4>
+<!-- <div class="container" style="margin-top:10px">
+    <button class="btn btn-default btn-xs" ng-click="changeShow()"><h5> {{$ctrl.name | VietNamTrans}}  </h5> </button>
     <div class="row">
         <div class="col-sm-2">
             <nav class="nav-sidebar">
-                <ul class="nav">
+                <ul class="nav" ng-show="show">
                     <li class="nav-divider"></li>
-                    <li><a ui-sref="dashBoard({name:$ctrl.name})"> All </a></li>
-                    <li><a>Improcess</a></li>
-                    <li><a>Resolved</a></li>      
-                    <li><a> <i class="glyphicon glyphicon-off"></i> OutOfDate</a></li>
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'all'})"> All </a></li>
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'improcess'})"> Improcess </a></li>
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'resolved'})"> Resolved </a></li>   
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'out_of_date'})"> OutOfDate </a></li>   
                 </ul>
             </nav>
         </div>
     </div>
 </div>
-
+ -->
+<div class="container" style="margin-top:10px">
+    <a class="btn btn-default btn-xs" data-toggle="collapse" href="#options-menu{{$ctrl.name}}"><h5> {{$ctrl.name | VietNamTrans}}  </h5> </a>
+    <div class="row collapse" id="options-menu{{$ctrl.name}}">
+            <nav class="nav-sidebar">
+                <ul class="nav">
+                    <li class="nav-divider"></li>
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'all'})"    > All </a></li>
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'inprogress'})"> inprogress </a></li>
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'resolved'})"> Resolved </a></li>   
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'out_of_date'})"> OutOfDate </a></li>   
+                </ul>
+            </nav>
+    </div>
+</div>
