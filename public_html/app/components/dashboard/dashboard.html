@@ -24,7 +24,7 @@
               <div class="dropdown">
                 <input placeholder="Tìm kiếm ..." ng-model="condition.subject"  data-toggle="dropdown" ng-keyup="searchSubject(condition.subject)">
                 <ul class="dropdown-menu">
-                    <li ng-repeat="subject in search_data.subject" ng-click="condition.subject = subject"><a> subject </a></li>
+                    <li ng-repeat="subject in search_data.subject" ng-click="condition.subject = subject"><a> {{subject}} </a></li>
                 </ul>
               </div>
             </td>            
