@@ -12,10 +12,15 @@ class TicketApiController extends Controller
     {
         if ($request->session()->has('login_key')) {
 
+            if (empty($request->input('subject'))) {
+                return 0;
+            }
+
+
             $ticket = new Ticket();
             $ticket->created_by = session('employee_id');
             $ticket->subject = $request->input('subject');
-            $ticket->status = $request->input('status');
+            $ticket->status = 1;
             $ticket->priority = $request->input('priority');
 //            $ticket->assigned_to = $request->input('assigned_to');
             $ticket->deadline = strtotime($request->input('deadline'));
