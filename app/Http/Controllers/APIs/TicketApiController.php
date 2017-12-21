@@ -5,6 +5,7 @@ namespace App\Http\Controllers\APIs;
 use App\Http\Controllers\Controller;
 use App\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TicketApiController extends Controller
 {
@@ -34,56 +35,98 @@ class TicketApiController extends Controller
 //                $attachment = $request->input('attachment');
 //
 //            }
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
-    public function get_tickets(Request $request) {
+    public function get_tickets(Request $request)
+    {
         if ($request->session()->has('login_key')) {
-            $result = Ticket::where('assigned_to', $request->session()->get('employee_id'));
+
+            $table = DB::table('tickets')->join('ticket_relaters', 'tickets.id', '=', 'ticket_relaters.ticket_id');
+
+            $result = $table->select('tickets.*', 'ticket_relaters.employee_id');
+            $employee_id = $request->session()->get('employee_id');
+
+            $result->where('created_by', $employee_id)
+                ->orWhere('assigned_to', $employee_id)
+                ->orWhere('ticket_relaters.employee_id', $employee_id);
+
             if ($request->input('id')) {
                 $result->where('id', $request->input('id'));
             }
+
             if ($request->input('subject')) {
                 $result->where('subject', 'LIKE', $request->input('subject') . '%');
             }
-            if ($request->input('created_by')) {
-                $result->where('created_by', $request->input('created_by'));
-            }
+
             if ($request->input('status')) {
                 $result->where('status', $request->input('status'));
             }
+
             if ($request->input('priority')) {
                 $result->where('priority', $request->input('prioriy'));
             }
-            if ($request->input('assigned_to')) {
-                $result->where('assigned_to', $request->input('assigned_to'));
-            }
+
             if ($request->input('deadline')) {
                 $deadline = strtotime($request->input('deadline'));
                 $result->where('deadline', $deadline);
             }
-//            if ($request->input('related_user_id')) {
-//                $relaters = $request->user
-//            }
+
             if ($request->input('team_id')) {
                 $result->where('team_id', $request->input('team_id'));
             }
+
             if ($request->input('content')) {
                 $result->where('content', 'LIKE', $request->input('content'));
             }
+
+            if ($request->input('created_by')) {
+                $result->where('created_by', $request->input('created_by'));
+            }
+
+            if ($request->input('assigned_to')) {
+                $result->where('assigned_to', $request->input('assigned_to'));
+            }
+
+            if ($request->input('related_employee_id')) {
+                $result->where('ticket_relaters.employee_id', $request->input('related_employee_id'));
+            }
+
+            if ($request->input('count')) {
+                return $result->count();
+            }
+
             $tickets = $result->get();
+            $num_of_tickets = $tickets->count();
+
             if ($request->input('per_page')) {
-                $per_page = $request->input('per_page');
-                $page = intval($request->input('page'));
+                $per_page = intval($request->input($per_page));
+                if ($per_page < 0) {
+                    return $tickets;
+                }
+
+                $page = inval($request->input('page'));
+
+                if ($page < 0) {
+                    $page = 0;
+                }
+
+                $pages = $num_of_tickets / $per_page;
+
+                if ($num_of_tickets % $per_page != 0) {
+                    $pages++;
+                }
+
+                $page %= $pages;
 
                 return array_slice($tickets, $page * $per_page, $per_page);
             }
 
             return $tickets;
-        } else {
-            return [];
         }
+
+        return [];
     }
 }

@@ -39,6 +39,9 @@ Route::prefix('api')->group(function () {
     Route::any('create-ticket', 'APIs\\TicketApiController@create_ticket');
 
     Route::any('get-tickets', 'APIs\\TicketApiController@get_tickets');
+    Route::any('count-tickets', 'APIs\\TicketApiController@count_tickets');
+
+    Route::get('employee-info', 'APIs\\EmployeeApiController@get_employee_info');
 });
 
 /**
