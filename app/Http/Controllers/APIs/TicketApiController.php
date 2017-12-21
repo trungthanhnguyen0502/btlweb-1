@@ -34,9 +34,9 @@ class TicketApiController extends Controller
 //                $attachment = $request->input('attachment');
 //
 //            }
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
     public function get_tickets(Request $request) {
@@ -73,17 +73,40 @@ class TicketApiController extends Controller
             if ($request->input('content')) {
                 $result->where('content', 'LIKE', $request->input('content'));
             }
+
+            if ($request->input('count')) {
+                return $result->count();
+            }
+
             $tickets = $result->get();
+            $num_of_tickets = $tickets->count();
+
             if ($request->input('per_page')) {
-                $per_page = $request->input('per_page');
-                $page = intval($request->input('page'));
+                $per_page = intval($request->input($per_page));
+                if ($per_page < 0) {
+                    return $tickets;
+                }
+
+                $page = inval($request->input('page'));
+
+                if ($page < 0) {
+                    $page = 0;
+                }
+
+                $pages = $num_of_tickets / $per_page;
+
+                if ($num_of_tickets % $per_page != 0) {
+                    $pages++;
+                }
+
+                $page %= $pages;
 
                 return array_slice($tickets, $page * $per_page, $per_page);
             }
 
             return $tickets;
-        } else {
-            return [];
         }
+
+        return [];
     }
 }
