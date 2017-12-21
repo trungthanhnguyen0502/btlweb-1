@@ -207,15 +207,16 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
         condition.status = parseInt(condition.status)
         condition.priority = parseInt(condition.priority)
         condition = conditionFilterService.filterCondition(condition)
-        url = ""
+        url = "/api/get-tickets"
         data = condition
+        console.log(data)
         
         $http.get(url , {params: data}).success( function(response){
-            ticket = response.data.ticket
+            ticket = response
+            console.log(ticket)
             return ticket
         }).error( function(){
-            alert("fake data")
-            return fakeDataList()
+            alert("tìm kiếm thất bại")
         })  
     }
 
@@ -242,15 +243,17 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
 
     this.saveTicket = function(ticket){
         data = {}
-        for (var pro in ticket)
+        for (var pro in ticket){
             if( ticket[pro])
                 data[pro] = ticket[pro]
-        $http.post(  url,data).
+        }
+        console.log(data)
+        $http.post("/api/create-ticket" ,data).
             success(function (response) {
                 alert("success!");
             }).
             error(function (response) {
-              alert("failed!");
+                console.log(response)
             });
     }
     this.countTicket = function(condition){
@@ -408,6 +411,8 @@ myApp.controller('sideBarController',['$scope', function($scope){
     $scope.changeShow = function(){
         $scope.show = ! $scope.show
     }
+
+    
 }])
 
 myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketService' , '$rootScope', 'maps', 'fakeDataService', function($scope,$stateParams, ticketService , $rootScope,maps, fakeDataService){
@@ -436,7 +441,7 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
     }
 
     $scope.getTickets = function( condition = $scope.condition){
-        if( $scope.status != 'all' && maps.ticket_status[condition.status] != $scope.status )
+        if( $scope.status != 'all' && maps.ticket_status[condition.status] !=  $scope.status  )
             alert("không thể tìm kiếm trạng thái khác")
         else    
             $scope.tickets = ticketService.getTickets( condition)
@@ -455,10 +460,10 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
 
     $scope.initCondition = function(){
         if( $scope.name == "my_request"){
-            $scope.condition.user_id = $rootScope.user.id
+            $scope.condition.create_by = $rootScope.user.id
         }
         if( $scope.name == "related_request"){
-            $scope.condition.related_user_id = $rootScope.user.id
+            $scope.condition.related_employee_id = $rootScope.user.id
         }
         if( $scope.name == "mission"){
             $scope.condition.employee_id = $rootScope.user.id
@@ -627,12 +632,11 @@ myApp.controller('newRequestController' , ['$scope' , 'ticketService','$rootScop
     $scope.ticket.deadline = new Date()
 
     $scope.save = function(){
-        if (ticketService.checkTicket( $scope.ticket )){
-            ticketService.saveTicket( $scope.ticket)
-        }
-        else{
-            alert('fail to create new ticket')
-        }
+        if( !$scope.ticket.priority || !$scope.ticket.content)
+                console.log("dữ liệu bị thiếu")
+            else {
+                ticketService.saveTicket( $scope.ticket)
+            }
     }
 
     $scope.loadComment = function(){
