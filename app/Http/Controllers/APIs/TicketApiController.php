@@ -4,11 +4,18 @@ namespace App\Http\Controllers\APIs;
 
 use App\Http\Controllers\Controller;
 use App\Ticket;
+use App\TicketThread;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TicketApiController extends Controller
 {
+
+    /**
+     * @param Request $request
+     * @return int
+     */
+
     public function create_ticket(Request $request)
     {
         if ($request->session()->has('login_key')) {
@@ -39,6 +46,11 @@ class TicketApiController extends Controller
 
         return 0;
     }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
 
     public function get_tickets(Request $request)
     {
@@ -128,5 +140,43 @@ class TicketApiController extends Controller
         }
 
         return [];
+    }
+
+    /**
+     * @param Request $request
+     */
+
+    public function comment(Request $request) {
+        if ($request->session()->has('login_key')) {
+
+            $ticket_id = $request->input('ticket_id');
+            $content = $request->input('content');
+
+            if (empty($content)) {
+                return 0;
+            }
+
+            // If ticket does not exist
+            $ticket = Ticket::find($ticket_id);
+            if ($ticket->count() == 0) {
+                return 0;
+            }
+
+            $ticket = $ticket->get();
+
+            // If ticket has been closed before
+            if ($ticket->closed_at > 0) {
+                return 0;
+            }
+
+            $comment = new TicketThread();
+
+            $comment->content = $content;
+            $comment->ticket_id = $ticket_id;
+
+
+        } else {
+            return 0;
+        }
     }
 }
