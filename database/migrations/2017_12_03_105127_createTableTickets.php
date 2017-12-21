@@ -21,7 +21,7 @@ class CreateTableTickets extends Migration
             $table->tinyInteger('status');
             $table->tinyInteger('priority');
             $table->integer('deadline');
-            $table->integer('assigned_to');
+            $table->integer('assigned_to')->default(0);
             $table->integer('rating')->nullable();
             $table->integer('team_id');
             $table->integer('resolved_at')->default(0);
