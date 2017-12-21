@@ -1,0 +1,17 @@
+<div class="container">
+    <h4> {{$ctrl.name | toNomal}}</h4>
+    <div class="row">
+        <div class="col-sm-2">
+            <nav class="nav-sidebar">
+                <ul class="nav">
+                    <li class="nav-divider"></li>
+                    <li><a ui-sref="dashBoard({name:$ctrl.name})"> All </a></li>
+                    <li><a>Improcess</a></li>
+                    <li><a>Resolved</a></li>      
+                    <li><a> <i class="glyphicon glyphicon-off"></i> OutOfDate</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+

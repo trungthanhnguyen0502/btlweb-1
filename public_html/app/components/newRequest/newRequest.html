@@ -1,0 +1,74 @@
+<div class="container">
+    <h2> Request IT</h2>
+    <button type="button" class="btn btn-info btn-md"  data-toggle="modal" data-target="#myModal"> Creat new request</button>
+    
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">      
+        <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- <button type="button" class="close" data-dismiss="modal"> Time</button> -->
+                    <h4 class="modal-title">Add New Request</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label> Tên công việc:</label>
+                            <input type="email" class="form-control" ng-model="ticket.name">
+                        </div>
+                        <div class="form-group">
+                            <label> Mức độ ưu tiên</label>
+                            <select ng-model="ticket.priority">
+                                  <option value= 1 > {{ 1 | toPriority}}</option>
+                                  <option value= 2 > {{ 2 | toPriority}}</option>
+                                  <option value= 3 > {{ 3 | toPriority}}</option>
+                                  <option value= 4 > {{ 4 | toPriority}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label> Ngày hết hạn </label>
+                            <input type="datetime-local" ng-model="ticket.deadline" placeholder="yyyy-MM-ddTHH:mm:ss" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label> Bộ phận IT </label>
+                            <select>
+                                <option value= 1 > HaNoi-IT</option>
+                                <option value= 2 > DaNang-IT</option>
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Người liên quan</label>
+                            <input type="text" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nội dung</label>
+                            <textarea type="text" class="form-control" ng-model="ticket.content"></textarea>
+                        </div>
+
+                        <input type='file'>
+
+
+
+                        
+
+
+
+                        <!-- <div class="form-group">
+                            <label for="pwd"> Attach Image </label>
+                            <input type="file" class="form-control">
+                        </div> -->
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="save()"> Save </button>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+</div>

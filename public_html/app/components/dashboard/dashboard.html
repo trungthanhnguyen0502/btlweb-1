@@ -1,0 +1,48 @@
+<h2> {{name | toNomal }}</h2>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Tên công việc</th>
+        <th>Mức độ ưu tiên</th>
+        <th>Người yêu cầu</th>
+        <th>Người thực hiện</th>
+        <th>Ngày hết hạn</th>
+        <th> Trạng thái</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+            <td> </td>
+            <td> <input placeholder="Tìm kiếm ..."></td>
+            <td><select >
+                  <option value= 1 > {{ 1 | toPriority}}</option>
+                  <option value= 2 > {{ 2 | toPriority}}</option>
+                  <option value= 3 > {{ 3 | toPriority}}</option>
+                  <option value= 4 > {{ 4 | toPriority}}</option>
+                   </select>
+            </td>
+            <td><input placeholder="Tìm kiếm ..."></td>
+            <td><input placeholder="Tìm kiếm ..."></td>
+            <td> <select >
+              <option value= 1 > new       </option>
+              <option value= 2 > inprogress</option>
+              <option value= 3 > resolved  </option>
+              <option value= 4 > feedback  </option>
+              <option value= 5 > closed  </option>
+              <option value= 6 > cancelled  </option>
+               </select>
+            </td>
+          </tr>
+      <tr ng-repeat="ticket in tickets">
+        <td ui-sref="ticketDetail({id:ticket.id})"> {{ticket.subject}}</td>
+        <td> {{ticket.priority | toPriority}}</td>
+        <td> {{ticket.creat_by}}</td>
+        <td> {{ticket.assigned_to}}</td>
+        <td> <div>{{ ticket.deadline | date: "dd-MM-yyyy"}} </div></td>
+        <td> {{ticket.status | toTicketStatus }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

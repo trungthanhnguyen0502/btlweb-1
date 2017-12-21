@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>  Phần mềm quản lí công việc </title>
+
+  <script src="https://code.jquery.com/jquery-2.1.3.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-route.js"></script>
+  <script src="app/app.module.js"></script>
+  <script src="app/app.entities.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="http://getbootstrap.com/2.3.2/assets/css/bootstrap-responsive.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/myStyle.css">
+</head>
+<body ng-app="myApp">
+  <div id="source">
+    <div id="header">
+      <div ng-include="'app/common/loginHeader.html'"></div>
+    </div>
+      <div id="body">
+        <div id="menu-bar" class="col-md-3 col-lg-2 col-xs-3 col-sm-3 panel panel-default" style="float:left">
+          <new-request></new-request>
+          <side-bar name="'my_request'"></side-bar>
+          <side-bar name="'related_request'"></side-bar>
+          <side-bar name="'team_request'"></side-bar>
+        </div>
+        <div id="content" class="col-md-9 col-lg-10 panel panel-default" style="float:left">
+            <div>
+              <div ui-view></div>
+            </div>
+        </div>
+      </div>
+        <footer></footer>
+    </div>
+   
+</body>
+</html>
+
+
+

@@ -1,0 +1,57 @@
+<div class="container panel panel-default">
+    <div id='edit_option'>
+        
+
+    </div>
+    
+    <div id = 'infomation'>
+        <div>
+            <span class="form-group col-md-3">
+                <label>Ngày tạo:</label>
+                <span> {{ticket.created_at | date: "dd-MM-yyyy"}}</span>
+            </span>
+
+            <span class="form-group">
+                <label>Ngày hết hạn: </label>
+                <span>   {{ticket.deadline | date: "dd-MM-yyyy"}}</span>    
+            </span>
+        </div>
+        <class="form-group col-md-3" >
+            <label>Người yêu cầu: </label>
+            <span>  {{ticket.created_by}}     </span>    
+        </span>
+
+        <span class="form-group">
+            <label>Người thực hiện: </label>
+            <span> ..... </span>    
+        </span>
+        <span class="form-group">
+                <label>Bộ phận IT: </label>
+                <span> .....  </span>    
+        </span>
+
+        <br>
+        <span class="form-group">
+                <label>Mức độ ưu tiên: </label>
+                <span > {{ticket.priority | toPriority}}  </span>    
+        </span>
+        <span class="form-group">
+                <label>Trạng thái: </label>
+                <span>  {{ticket.status | toTicketStatus}}  </span>    
+        </span>
+
+    </div>
+
+    <div id= 'content'></div>
+
+
+
+
+
+
+
+
+
+
+
+</div>
