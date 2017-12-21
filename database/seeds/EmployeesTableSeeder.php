@@ -13,7 +13,7 @@ class EmployeesTableSeeder extends Seeder
     {
         DB::table('employees')->insert([
             'id' => 1,
-            'email' => 't3t@gmail.com',
+            'email' => 'thanhtung.uet@gmail.com',
             'password' => md5('12345678'),
             'gender' => 0,
             'birthday' => strtotime('Nov 1, 1997'),

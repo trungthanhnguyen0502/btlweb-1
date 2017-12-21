@@ -39,9 +39,9 @@ class TicketApiController extends Controller
         }
     }
 
-    public function get_ticket(Request $request) {
+    public function get_tickets(Request $request) {
         if ($request->session()->has('login_key')) {
-            $result = Ticket::all();
+            $result = Ticket::where('assigned_to', $request->session()->get('employee_id'));
             if ($request->input('id')) {
                 $result->where('id', $request->input('id'));
             }
@@ -83,7 +83,7 @@ class TicketApiController extends Controller
 
             return $tickets;
         } else {
-            return 0;
+            return [];
         }
     }
 }
