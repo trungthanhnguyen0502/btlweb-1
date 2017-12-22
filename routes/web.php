@@ -28,6 +28,10 @@ Route::prefix('auth')->group(function () {
     Route::post('login/attempt', 'Auth\\LoginController@attempt')->name('login.attempt')->middleware('guest');
 
     Route::get('logout', 'Auth\\LoginController@logout')->name('logout');
+
+    Route::any('request-password', 'Auth\\ForgotPasswordController@request_password')->name('password.request');
+
+    Route::any('reset-password', 'Auth\\ForgotPasswordController@reset_password')->name('password.reset');
 });
 
 /**
@@ -36,12 +40,14 @@ Route::prefix('auth')->group(function () {
 
 Route::prefix('api')->group(function () {
 
-    Route::any('create-ticket', 'APIs\\TicketApiController@create_ticket');
+    Route::post('create-ticket', 'APIs\\TicketApiController@create_ticket');
 
-    Route::any('get-tickets', 'APIs\\TicketApiController@get_tickets');
-    Route::any('count-tickets', 'APIs\\TicketApiController@count_tickets');
+    Route::get('get-tickets', 'APIs\\TicketApiController@get_tickets');
+    Route::get('count-tickets', 'APIs\\TicketApiController@count_tickets');
 
     Route::get('employee-info', 'APIs\\EmployeeApiController@get_employee_info');
+
+    Route::post('comment', 'APIs\\TicketApiController@comment');
 });
 
 /**

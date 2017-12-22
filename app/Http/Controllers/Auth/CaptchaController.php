@@ -85,9 +85,7 @@ class CaptchaController extends Controller
     }
 
     /**
-     * Generates keystring and image
      *
-     * @return  resource
      */
 
     public function create_captcha()

@@ -17,7 +17,7 @@ class LoginController extends Controller
 
     public function index()
     {
-        return response(view('auth.login'));
+        return response(view('auth.login')->with('title', 'Đăng nhập'));
     }
 
     /**
@@ -28,13 +28,18 @@ class LoginController extends Controller
     public function attempt(Request $request)
     {
         $email = $request->input('email');
+
+        if ($email == '') {
+            return redirect(route('login'));
+        }
+
         $employee = Employee::where('email', $email)->get();
 
         if ($employee->count() == 0) {
             // If employee with this email does not exist
-            return redirect()->to(route('login'))
-                ->withInput($request->input())
-                ->withErrors(['email', 'Employee does not exist']);
+            return redirect(route('login'))
+                ->withInput()
+                ->withErrors(['email' => 'Tài khoản không tồn tại.']);
         } else {
 
             $password = $request->input('password');
@@ -43,9 +48,9 @@ class LoginController extends Controller
             $employee = $employee[0];
             if ($employee->password != $password) {
                 // If the input password does not match
-                return redirect()->to(route('login'))
-                    ->withInput($request->input())
-                    ->withErrors(['password', 'Password does not match']);
+                return redirect(route('login'))
+                    ->withInput()
+                    ->withErrors(['password' => 'Sai mật khẩu.']);
             } else {
 
                 // Parse client's information
@@ -112,6 +117,9 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        $login_key = $request->session()->get('login_key');
+        // Delete session from database
+        Session::where('login_key', $login_key)->delete();
         // Flush session data
         $request->session()->flush();
         // Delete cookie data and redirect

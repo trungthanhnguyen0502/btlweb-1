@@ -8,6 +8,11 @@ use App\Http\Controllers\Controller;
 
 class EmployeeApiController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+
     public function get_employee_info(Request $request) {
         if ($request->session()->has('login_key')) {
 
