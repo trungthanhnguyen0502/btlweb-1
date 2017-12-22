@@ -58,6 +58,10 @@ Route::get('/', 'AppController@redirect')
     ->middleware('auth')
     ->name('home_redirecting');
 
+Route::get('/mail', function () {
+   \Illuminate\Support\Facades\Mail::to('15021716@coltech.vnu.vn')->send(new \App\Mail\PasswordReset());
+});
+
 Route::get('{path}', 'AppController@index')
     ->middleware('auth')
     ->name('app');

@@ -16,7 +16,7 @@
 
                                 <div class="col-md-6">
                                     <input id="email" type="text" class="form-control" name="security_key"
-                                           value="{{ $security_key }}" required autofocus>
+                                           value="{{ $security_key or '' }}" required autofocus>
 
                                     <span class="help-block">
                                             <strong>{{ $errors->first('security_key') }}</strong>

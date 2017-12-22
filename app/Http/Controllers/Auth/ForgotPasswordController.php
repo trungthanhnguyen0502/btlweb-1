@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Employee;
 use App\Http\Controllers\Controller;
+use App\Mail\PasswordReset;
 use App\PasswordResetKey;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Jenssegers\Agent\Agent;
 
 class ForgotPasswordController extends Controller
@@ -61,6 +63,14 @@ class ForgotPasswordController extends Controller
             $reset_key->platform = $agent->platform();
 
             $reset_key->save();
+
+            // Send mail
+
+            $mail = new PasswordReset();
+            $mail->code = $security_key;
+            $mail->reset_link = url(route('password.reset'));
+
+            Mail::to($employee->email)->send($mail);
 
             return view('auth.passwords.request')
                 ->with('success', true)
