@@ -20,7 +20,7 @@ class CreateTableTickets extends Migration
             $table->integer('created_by')->foreign('id')->reference('id')->on('users');
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('priority');
-            $table->integer('deadline');
+            $table->dateTime('deadline');
             $table->integer('assigned_to')->default(0);
             $table->integer('rating')->nullable();
             $table->integer('attachment')->default(0);

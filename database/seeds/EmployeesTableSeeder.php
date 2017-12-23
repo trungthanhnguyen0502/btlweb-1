@@ -22,6 +22,7 @@ class EmployeesTableSeeder extends Seeder
             'display_name' => 'Phạm Thanh Tùng',
             'title' => 'Developer',
             'team_id' => 1,
+            'is_leader' => 1,
             'role' => 5,
             'role_title' => 'Department Manager'
         ]);

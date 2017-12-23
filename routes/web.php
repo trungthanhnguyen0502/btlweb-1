@@ -38,33 +38,50 @@ Route::prefix('auth')->group(function () {
  * APIs Routes
  */
 
-Route::prefix('api')->group(function () {
 
-    Route::post('create-ticket', 'APIs\\TicketApiController@create_ticket');
+Route::group(
+    ['prefix' => 'api', 'middleware' => 'auth'],
 
-    Route::get('get-tickets', 'APIs\\TicketApiController@get_tickets');
-    Route::get('count-tickets', 'APIs\\TicketApiController@count_tickets');
+    function () {
 
-    Route::get('employee-info', 'APIs\\EmployeeApiController@get_employee_info');
+        Route::post('create-ticket', 'APIs\\TicketController@create_ticket');
+        Route::get('get-tickets', 'APIs\\TicketController@get_tickets');
+        Route::get('count-tickets', 'APIs\\TicketController@count_tickets');
 
-    Route::post('comment', 'APIs\\TicketApiController@comment');
-});
+        // Post comment to ticket thread
+        Route::post('comment', 'APIs\\TicketController@comment');
+        // Attachment URL
+        Route::get('attachment/{id}/{filename}', 'APIs\\TicketAttachmentController@get_attachment');
 
+        // Employee APIs
+
+        // Get current logged-in employee
+        Route::get('employee-info', 'APIs\\EmployeeController@get_employee_info');
+        // Search Employee
+        Route::post('search-employee', 'APIs\\EmployeeController@search_employee');
+    }
+);
 
 /**
  * Test Routes
  */
 
-Route::get('create-request', 'TicketApiController@create_ticket');
+Route::get('create-request', 'TicketController@create_ticket');
 
 
 /**
- * Other Routes
+ * Home Route
+ *
+ * Redirecting to app
  */
 
 Route::get('/', 'AppController@redirect')
     ->middleware('auth')
-    ->name('home_redirecting');
+    ->name('home');
+
+/**
+ * All other routes point to app
+ */
 
 Route::get('{path}', 'AppController@index')
     ->middleware('auth')
