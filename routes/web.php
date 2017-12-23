@@ -44,17 +44,20 @@ Route::group(
 
     function () {
 
+    // Ticket APIs
+        // Create ticket
         Route::post('create-ticket', 'APIs\\TicketController@create_ticket');
+        // Get ticket by param options
         Route::get('get-tickets', 'APIs\\TicketController@get_tickets');
-        Route::get('count-tickets', 'APIs\\TicketController@count_tickets');
+        // Search tickets by subject
+        Route::post('search-ticket', 'APIs\\TicketController@search_ticket');
 
         // Post comment to ticket thread
         Route::post('comment', 'APIs\\TicketController@comment');
         // Attachment URL
         Route::get('attachment/{id}/{filename}', 'APIs\\TicketAttachmentController@get_attachment');
 
-        // Employee APIs
-
+    // Employee APIs
         // Get current logged-in employee
         Route::get('employee-info', 'APIs\\EmployeeController@get_employee_info');
         // Search Employee

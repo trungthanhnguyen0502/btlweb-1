@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Ticket;
 use App\TicketAttachment;
 use App\TicketThread;
-use function GuzzleHttp\Psr7\str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -106,7 +105,7 @@ class TicketController extends Controller
 
                     $tickets = $tickets->where('team_id', $team_id);
                 }
-            break;
+                break;
 
             default:
                 $tickets = Ticket::where('created_by', $employee_id);
@@ -193,5 +192,19 @@ class TicketController extends Controller
 
         $comment->save();
         return 1;
+    }
+
+    public function search_ticket(Request $request)
+    {
+        if ($request->has('subject')) {
+
+            $subject = $request->input('subject');
+
+            $tickets = Ticket::where('subject', 'LIKE', "%{$subject}%")->get();
+
+            return $tickets;
+        }
+
+        return [];
     }
 }

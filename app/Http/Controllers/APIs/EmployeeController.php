@@ -34,10 +34,10 @@ class EmployeeController extends Controller
 
             $employees = DB::table('employees')
                 ->select('id', 'email', 'first_name', 'last_name', 'display_name')
-                ->where('email', 'LIKE', "{$name}%")
-                ->orWhere('first_name', 'LIKE', "%{$name}%")
-                ->orWhere('last_name', 'LIKE', "%{$name}%")
-                ->orWhere('display_name', 'LIKE', "%{$name}%")
+//                ->where('email', 'LIKE', "{$name}%")
+//                ->orWhere('first_name', 'LIKE', "%{$name}%")
+//                ->orWhere('last_name', 'LIKE', "%{$name}%")
+                ->where('display_name', 'LIKE', "%{$name}%")
                 ->get();
 
             return $employees;
