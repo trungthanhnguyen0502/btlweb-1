@@ -25,6 +25,8 @@
                     <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'inprogress'})"> inprogress </a></li>
                     <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'resolved'})"> Resolved </a></li>   
                     <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'out_of_date'})"> OutOfDate </a></li>   
+                    <li ng-if="$ctrl.name=='mission' || $ctrl.name=='team_request'"><a ui-sref="dashBoard({name:$ctrl.name, condition:'feedback'})"> Feedback </a></li>   
+                    <li ng-if="$ctrl.name== 'team_request'"><a ui-sref="dashBoard({name:$ctrl.name, condition:'closed'})"> Closed </a></li>   
                 </ul>
             </nav>
     </div>

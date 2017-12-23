@@ -41,7 +41,7 @@ function Condition(obj){
     this.status         = null
     this.priority       = null
     this.employee_id    = null
-    this.deadline       = Date.UTC()
+    this.deadline       = new Date()
     this.mainCondition  = null
     this.related_user_id = null
     this.id_user_team = null
@@ -101,10 +101,22 @@ function PaginatePrams(){
 
 function User(obj){
     this.id         = null
-    this.username   = null
+    this.user_name   = null
     this.email      = null
-    this.birthday   = null
+    this.birthday   = new Date(0,0,0,0,0,0)
     this.gender     = null
-    for (var pro in obj) 
+    this.team_id    = null
+    this.role_title = null
+    this.last_name  = null
+    this.first_name = null
+    this.avartar     = null
+    for (var pro in obj)
         this[pro] = obj[pro]
+    if( obj && obj['display_name']){
+        this.user_name = obj['display_name']
+    }
+    if( obj && obj['picture']){
+        this.avartar = obj['picture']
+    }
+
 }

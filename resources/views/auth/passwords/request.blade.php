@@ -30,7 +30,7 @@
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="security_key"
                                                value="" required>
-                                </span>
+                                        </span>
                                     </div>
                                 </div>
 
@@ -71,11 +71,38 @@
 
                                     <div class="col-md-6">
                                         <input id="email" type="email" class="form-control" name="email"
-                                               value="{{ old('email') }}" required>
+                                               value="{{ $email or '' }}" required>
 
                                         @if ($errors->has('email'))
                                             <span class="help-block">
                                     <strong>{{ $errors->first('email') }}</strong>
+                                </span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+
+                                    <div class="col-md-6 col-md-offset-4">
+                                        <img src="/auth/captcha" alt="captcha" id="captcha-img" name="captcha-img"
+                                            onclick="rand_captcha()">
+                                    </div>
+                                    <div class="col-md-6 col-md-offset-4">
+                                        <span class="form-text">
+                                            Bấm vào hình ảnh để tải lại ảnh mới.
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group{{ $errors->has('captcha') ? ' has-error' : '' }}">
+                                    <label for="captcha" class="col-md-4 control-label">Captcha:</label>
+
+                                    <div class="col-md-6">
+                                        <input id="captcha" type="text" class="form-control" name="captcha" required>
+
+                                        @if ($errors->has('captcha'))
+                                            <span class="help-block">
+                                    <strong>{{ $errors->first('captcha') }}</strong>
                                 </span>
                                         @endif
                                     </div>
@@ -95,4 +122,15 @@
             </div>
         </div>
     </div>
+    <script>
+
+        function rand_captcha() {
+            let url = "{{ url('/auth/captcha?key=')  }}" + Math.random();
+            document.getElementById("captcha-img").src = url;
+        }
+
+        window.onload = function () {
+            rand_captcha();
+        }
+    </script>
 @endsection

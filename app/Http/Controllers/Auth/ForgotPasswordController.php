@@ -32,6 +32,16 @@ class ForgotPasswordController extends Controller
             return view('auth.passwords.request');
         } else {
 
+            $captcha = $request->input("captcha");
+            $captcha = md5($captcha);
+
+            if ($captcha != $request->session()->get('captcha')) {
+
+                return view('auth.passwords.request')
+                    ->with('email', $email)
+                    ->withErrors(['captcha' => 'Lỗi captcha.']);
+            }
+
             $request->validate([
                 'email' => 'email'
             ]);
