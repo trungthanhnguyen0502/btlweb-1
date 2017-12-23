@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AutoUpdater;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -21,6 +22,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrustProxies::class,
 
         \App\Http\Middleware\AutoCleaner::class,
+        \App\Http\Middleware\AutoUpdater::class,
     ];
 
     /**

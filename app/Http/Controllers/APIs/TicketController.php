@@ -4,11 +4,14 @@ namespace App\Http\Controllers\APIs;
 
 use App\Employee;
 use App\Http\Controllers\Controller;
+use App\Mail\NewTicket;
+use App\Team;
 use App\Ticket;
 use App\TicketAttachment;
 use App\TicketRead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class TicketController extends Controller
 {
@@ -37,8 +40,10 @@ class TicketController extends Controller
             return 0;
         }
 
+        $employee_id = $request->session()->get('employee_id');
+
         $ticket = new Ticket();
-        $ticket->created_by = session('employee_id');
+        $ticket->created_by = $employee_id;
         $ticket->subject = $subject;
         $ticket->status = 1;
         $ticket->priority = $priority;
@@ -59,11 +64,53 @@ class TicketController extends Controller
             $ticket_attachment->save();
             $ticket->attachment = $ticket_attachment->id;
         }
-
         $ticket->save();
+
+        $who_created = Employee::where('id', $employee_id)->get()[0];
+        $team = Team::where('id', $who_created->team_id)->get()[0];
+        $leaders = Employee::where('team_id', $who_created->team_id)->whereIn('role', [2, 3])->get();
+
+        $notification = new NewTicket();
+        $notification->who_created = $who_created->display_name;
+        $notification->team_name = $team->title;
+        $notification->subject = $subject;
+        $notification->deadline = $ticket->deadline;
+
+        $num_of_leaders = $leaders->count();
+        for ($i = 0; $i < $num_of_leaders; $i++) {
+            Mail::to($leaders[$i]->email)->send($notification);
+        }
+
         return 1;
     }
 
+    public function get_ticket($ticket_id = 0)
+    {
+        if ($ticket_id != 0) {
+
+            $ticket = Ticket::where('id', $ticket_id)->get();
+
+            if ($ticket->count() == 0) {
+                return response('{}')->header('Content-Type', 'application/json');
+            }
+
+            $ticket = $ticket[0];
+            if ($ticket->attachment) {
+                $ticket_attachment = TicketAttachment::where('id', $ticket->attachment)->get()[0];
+
+                $ticket_attachment->url = url('/api/attachment/');
+                $ticket_attachment->url .= "/{$ticket->attachment}/{$ticket_attachment->file_name}";
+
+                $ticket->attachment_type = $ticket_attachment->mime_type;
+                $ticket->attachment_name = $ticket_attachment->file_name;
+                $ticket->attachment_url = $ticket_attachment->url;
+            }
+
+            return $ticket;
+        }
+
+        return response('{}')->header('Content-Type', 'application/json');
+    }
 
     /**
      * Get ticket by selector and optional params
@@ -137,6 +184,16 @@ class TicketController extends Controller
             $tickets = $tickets->where('subject', 'LIKE', "%{$subject}%");
         }
 
+        if ($request->has('status')) {
+            $status = $request->input('status');
+
+            if ($status == '7') {
+                $tickets = $tickets->where('out_of_date', 1);
+            } else {
+                $tickets = $tickets->where('status', $status);
+            }
+        }
+
         if ($request->has('priority')) {
             $priority = $request->input('priority');
             $tickets = $tickets->where('priority', $priority);
@@ -147,7 +204,8 @@ class TicketController extends Controller
             $deadline = date('Y-m-d', strtotime($deadline));
             $first_second = "{$deadline} 00:00:00";
             $last_second = "{$deadline} 23:59:59";
-            $tickets = $tickets->whereBetween('deadline', [$first_second, $last_second]);
+            $tickets = $tickets->where('deadline', '>=', $first_second)
+                ->where('deadline', '<=', $last_second);
         }
 
         if ($request->has('content')) {
@@ -246,22 +304,17 @@ class TicketController extends Controller
     public function add_relaters(Request $request)
     {
         if ($request->has('ticket_id') && $request->has('relaters')) {
-
             $ticket_id = $request->input('ticket_id');
             $ticket = Ticket::where('id', $ticket_id)->get();
-
             if ($ticket->count() == 0) {
                 return 0;
             }
             $ticket = $ticket[0];
             $employee_id = $request->session()->get('employee_id');
-
             if ($ticket->created_by != $employee_id && $ticket->assigned_to != $employee_id) {
                 return 0;
             }
-
             $relaters = \GuzzleHttp\json_decode($request->input('relaters'));
-
             $records = [];
             foreach ($relaters as $key => $value) {
                 $records[$key] = [
@@ -269,9 +322,7 @@ class TicketController extends Controller
                     'employee_id' => $value,
                 ];
             }
-
             DB::table('ticket_relaters')->insert($records);
-
             return 1;
         }
 
