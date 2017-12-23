@@ -22,6 +22,11 @@ class CreateTableTicketAttachments extends Migration
             $table->integer('uploaded_at');
             $table->timestamps();
         });
+
+        $table_name = DB::getTablePrefix();
+        $table_name .= 'ticket_attachments';
+
+        DB::statement("ALTER TABLE `{$table_name}` MODIFY `data` LONGBLOB;");
     }
 
     /**

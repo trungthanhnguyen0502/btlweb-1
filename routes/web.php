@@ -50,6 +50,14 @@ Route::prefix('api')->group(function () {
     Route::post('comment', 'APIs\\TicketApiController@comment');
 });
 
+
+/**
+ * Test Routes
+ */
+
+Route::get('create-request', 'TicketApiController@create_ticket');
+
+
 /**
  * Other Routes
  */
@@ -57,10 +65,6 @@ Route::prefix('api')->group(function () {
 Route::get('/', 'AppController@redirect')
     ->middleware('auth')
     ->name('home_redirecting');
-
-Route::get('/mail', function () {
-   \Illuminate\Support\Facades\Mail::to('15021716@coltech.vnu.vn')->send(new \App\Mail\PasswordReset());
-});
 
 Route::get('{path}', 'AppController@index')
     ->middleware('auth')

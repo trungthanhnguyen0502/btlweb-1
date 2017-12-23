@@ -58,7 +58,7 @@ class ForgotPasswordController extends Controller
 
             $request_time = $request->server('REQUEST_TIME');
             $ip_address = $request->server('REMOTE_ADDR');
-            $security_key = $this->create_security_key($employee->id, $request_time, $ip_address);
+            $security_key = $this->create_security_key($employee->id);
 
             $reset_key = new PasswordResetKey();
             $reset_key->employee_id = $employee->id;
@@ -88,14 +88,11 @@ class ForgotPasswordController extends Controller
         }
     }
 
-    protected function create_security_key($email, $request_time, $ip_address)
+    protected function create_security_key($employee_id)
     {
-        $rand_key = mt_rand(1000, 9999);
-        $email = md5($email);
-        $request_time = md5($request_time);
-        $ip_address = md5($ip_address);
-
-        return "{$rand_key}{$email}{$request_time}{$ip_address}";
+        $rand_key = mt_rand(100000, 999999);
+        $rand_key = "{$employee_id}-{$rand_key}";
+        return $rand_key;
     }
 
     public function reset_password(Request $request)

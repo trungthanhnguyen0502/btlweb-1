@@ -23,6 +23,7 @@ class CreateTableTickets extends Migration
             $table->integer('deadline');
             $table->integer('assigned_to')->default(0);
             $table->integer('rating')->nullable();
+            $table->integer('attachment')->default(0);
             $table->integer('team_id');
             $table->integer('resolved_at')->default(0);
             $table->integer('closed_at')->default(0);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\APIs;
 
 use App\Http\Controllers\Controller;
 use App\Ticket;
+use App\TicketAttachment;
 use App\TicketThread;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -43,13 +44,22 @@ class TicketApiController extends Controller
             $ticket->team_id = $request->input('team_id');
             $ticket->content = $request->input('content');
 
+            if ($request->input('image')) {
+                $image = (object)$request->input('image');
+                $ticket_attachment = new TicketAttachment();
+                $ticket_attachment->employee_id = $request->session()->get('employee_id');
+                $ticket_attachment->mime_type = $image->filetype;
+                $ticket_attachment->file_name = $image->filename;
+
+                $ticket_attachment->data = base64_decode($image->base64);
+
+                $ticket_attachment->uploaded_at = $request->server('REQUEST_TIME');
+                $ticket_attachment->save();
+                $ticket->attachment = $ticket_attachment->id;
+            }
+
             $ticket->save();
             return 1;
-
-//            if ($request->input('attachment')) {
-//                $attachment = $request->input('attachment');
-//
-//            }
         }
 
         return 0;
@@ -159,7 +169,8 @@ class TicketApiController extends Controller
      * @return int
      */
 
-    public function comment(Request $request) {
+    public function comment(Request $request)
+    {
         if ($request->session()->has('login_key')) {
 
             $ticket_id = $request->input('ticket_id');
