@@ -11,6 +11,8 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 /**
  * Auth Routes
  */
@@ -35,7 +37,7 @@ Route::prefix('auth')->group(function () {
 });
 
 /**
- * APIs Routes
+ * APIs
  */
 
 
@@ -44,7 +46,7 @@ Route::group(
 
     function () {
 
-    // Ticket APIs
+        // Ticket APIs
         // Create ticket
         Route::post('create-ticket', 'APIs\\TicketController@create_ticket');
         // Get ticket by param options
@@ -57,7 +59,7 @@ Route::group(
         // Attachment URL
         Route::get('attachment/{id}/{filename}', 'APIs\\TicketAttachmentController@get_attachment');
 
-    // Employee APIs
+        // Employee APIs
         // Get current logged-in employee
         Route::get('employee-info', 'APIs\\EmployeeController@get_employee_info');
         // Search Employee
@@ -66,14 +68,7 @@ Route::group(
 );
 
 /**
- * Test Routes
- */
-
-Route::get('create-request', 'TicketController@create_ticket');
-
-
-/**
- * Home Route
+ * Home Redirecting
  *
  * Redirecting to app
  */
