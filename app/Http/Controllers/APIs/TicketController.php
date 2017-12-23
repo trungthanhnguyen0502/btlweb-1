@@ -261,11 +261,23 @@ class TicketController extends Controller
 
                 DB::table('ticket_reads')->insert([
                     'ticket_id' => $ticket_id,
-                    'employee_id' => $employee_id
+                    'employee_id' => $employee_id,
+                    'read' => 1
+                ]);
+
+            } else {
+                $status = 0;
+
+                if ($request->has('read')) {
+                    $status = intval($request->input('read')) % 2;
+                }
+
+                $read->update([
+                    'read' => $status
                 ]);
             }
 
-            return 0;
+            return 1;
         }
 
         return 0;
