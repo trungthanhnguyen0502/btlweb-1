@@ -18,13 +18,13 @@ class RolesTableSeeder extends Seeder
         ]);
         DB::table('roles')->insert([
             'id' => 2,
-            'title' => 'Team Sub-Lead',
-            'description' => 'An employee who leads an IT teams'
+            'title' => 'Team Sub-Leader',
+            'description' => 'An employee who leads an IT team'
         ]);
         DB::table('roles')->insert([
             'id' => 3,
             'title' => 'Team Leader',
-            'description' => 'An employee who manages IT departments',
+            'description' => 'An employee who manages IT depart',
         ]);
 
     }

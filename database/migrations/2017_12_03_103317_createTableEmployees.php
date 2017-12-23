@@ -25,6 +25,7 @@ class CreateTableEmployees extends Migration
             $table->string('display_name');
             $table->string('title');
             $table->integer('team_id');
+            $table->tinyInteger('is_leader')->default(0);
             $table->tinyInteger('role');
             $table->string('role_title');
             $table->timestamps();

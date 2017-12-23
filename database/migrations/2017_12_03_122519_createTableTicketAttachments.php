@@ -19,9 +19,15 @@ class CreateTableTicketAttachments extends Migration
             $table->string('mime_type')->default('application/octet-stream');
             $table->string('file_name');
             $table->binary('data');
+            $table->integer('size');
             $table->integer('uploaded_at');
             $table->timestamps();
         });
+
+        $table_name = DB::getTablePrefix();
+        $table_name .= 'ticket_attachments';
+
+        DB::statement("ALTER TABLE `{$table_name}` MODIFY `data` LONGBLOB;");
     }
 
     /**

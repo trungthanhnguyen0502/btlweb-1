@@ -11,6 +11,8 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 /**
  * Auth Routes
  */
@@ -29,38 +31,59 @@ Route::prefix('auth')->group(function () {
 
     Route::get('logout', 'Auth\\LoginController@logout')->name('logout');
 
-    Route::any('request-password', 'Auth\\ForgotPasswordController@request_password')->name('password.request');
+    Route::get('request-password', 'Auth\\ForgotPasswordController@request_password')->name('password.request');
 
     Route::any('reset-password', 'Auth\\ForgotPasswordController@reset_password')->name('password.reset');
 });
 
 /**
- * APIs Routes
+ * APIs
  */
 
-Route::prefix('api')->group(function () {
 
-    Route::post('create-ticket', 'APIs\\TicketApiController@create_ticket');
+Route::group(
+    ['prefix' => 'api', 'middleware' => 'auth'],
 
-    Route::get('get-tickets', 'APIs\\TicketApiController@get_tickets');
-    Route::get('count-tickets', 'APIs\\TicketApiController@count_tickets');
+    function () {
 
-    Route::get('employee-info', 'APIs\\EmployeeApiController@get_employee_info');
+        // Ticket APIs
+        // Create ticket
+        Route::post('create-ticket', 'APIs\\TicketController@create_ticket');
+        // Get ticket by param options
+        Route::get('get-tickets', 'APIs\\TicketController@get_tickets');
+        // Search tickets by subject
+        Route::post('search-ticket', 'APIs\\TicketController@search_ticket');
+        // Change read status for a ticket
+        Route::post('read-ticket', 'APIs\TicketController@read');
+        Route::post('unread-ticket', 'APIs\\TicketController@unread');
+        // Add relaters
+        Route::post('add-relaters', 'APIs\\TicketController@add_relaters');
 
-    Route::post('comment', 'APIs\\TicketApiController@comment');
-});
+        // Post comment to ticket thread
+        Route::post('comment', 'APIs\\TicketThreadController@post_comment');
+        // Attachment URL
+        Route::get('attachment/{id}/{filename}', 'APIs\\TicketAttachmentController@get_attachment');
+
+        // Employee APIs
+        // Get current logged-in employee
+        Route::get('employee-info', 'APIs\\EmployeeController@get_employee_info');
+        // Search Employee
+        Route::post('search-employee', 'APIs\\EmployeeController@search_employee');
+    }
+);
 
 /**
- * Other Routes
+ * Home Redirecting
+ * Redirecting to app
  */
 
 Route::get('/', 'AppController@redirect')
     ->middleware('auth')
-    ->name('home_redirecting');
+    ->name('home');
 
-Route::get('/mail', function () {
-   \Illuminate\Support\Facades\Mail::to('15021716@coltech.vnu.vn')->send(new \App\Mail\PasswordReset());
-});
+/**
+ * All other routes point to app main page
+ */
 
 Route::get('{path}', 'AppController@index')
     ->middleware('auth')
