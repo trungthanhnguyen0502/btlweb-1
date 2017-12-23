@@ -16,6 +16,7 @@ class CreateTableTicketReads extends Migration
         Schema::create('ticket_reads', function (Blueprint $table) {
             $table->integer('ticket_id');
             $table->integer('employee_id');
+            $table->tinyInteger('read')->default(0);
             $table->primary(['ticket_id', 'employee_id']);
             $table->timestamps();
         });

@@ -201,7 +201,6 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
         condition.priority = parseInt(condition.priority)
         condition = conditionFilterService.filterCondition(condition)
         url = "/api/get-tickets"
-        console.log(condition)
 
         $http.get(url , {params: condition}).then( function(response){
             console.log(response)
@@ -240,12 +239,11 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
             if( ticket[pro])
                 data[pro] = ticket[pro]
         }
-
         $http.post("/api/create-ticket" ,data).
-            success(function (response) {
+            then(function (response) {
                 alert("success!");
             }).
-            error(function (response) {
+            catch(function (response) {
                 console.log(response.message)
             });
     }
@@ -445,6 +443,7 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
     }
    
     $scope.getTickets = function( condition = $scope.condition){
+        console.log( condition)
         if( $scope.status != 'all' && maps.ticket_status[condition.status] !=  $scope.status  )
             alert("không thể tìm kiếm trạng thái khác")
         else    
@@ -506,6 +505,7 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
 
 
     $scope.searchName = function( name ){
+     
         if( typeof( name ) =='string' && name.length > 0 && name.length % 2 == 0){
             $scope.search_data.user_recommend.length = 0
             userService.searchName(name, $scope.search_data.user_recommend)
@@ -650,7 +650,6 @@ myApp.controller('newRequestController' , ['$scope' , 'ticketService','$rootScop
     $scope.ticket.deadline = new Date()
 
     $scope.save = function(){
-        console.log($scope.ticket.deadline)
         if( !$scope.ticket.priority || !$scope.ticket.content || !$scope.ticket.team_id )
             alert("dữ liệu bị thiếu")
         else {
