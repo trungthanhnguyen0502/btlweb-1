@@ -19,6 +19,7 @@ class CreateTableTickets extends Migration
             $table->mediumText('content');
             $table->integer('created_by')->foreign('id')->reference('id')->on('users');
             $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('out_of_date')->default(0);
             $table->tinyInteger('priority');
             $table->dateTime('deadline');
             $table->integer('assigned_to')->default(0);

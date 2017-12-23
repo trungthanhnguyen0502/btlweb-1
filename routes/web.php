@@ -25,15 +25,22 @@ Route::prefix('auth')->group(function () {
 
     Route::get('captcha', 'Auth\\CaptchaController@index')->name('captcha');
 
-    Route::get('login', 'Auth\\LoginController@index')->name('login')->middleware('guest');
+    Route::get('login', 'Auth\\LoginController@index')
+        ->name('login')
+        ->middleware('guest');
 
-    Route::post('login/attempt', 'Auth\\LoginController@attempt')->name('login.attempt')->middleware('guest');
+    Route::post('login/attempt', 'Auth\\LoginController@attempt')
+        ->name('login.attempt')
+        ->middleware('guest');
 
-    Route::get('logout', 'Auth\\LoginController@logout')->name('logout');
+    Route::get('logout', 'Auth\\LoginController@logout')
+        ->name('logout');
 
-    Route::get('request-password', 'Auth\\ForgotPasswordController@request_password')->name('password.request');
+    Route::get('request-password', 'Auth\\ForgotPasswordController@request_password')
+        ->name('password.request');
 
-    Route::any('reset-password', 'Auth\\ForgotPasswordController@reset_password')->name('password.reset');
+    Route::any('reset-password', 'Auth\\ForgotPasswordController@reset_password')
+        ->name('password.reset');
 });
 
 /**
@@ -47,28 +54,50 @@ Route::group(
     function () {
 
         // Ticket APIs
-        // Create ticket
-        Route::post('create-ticket', 'APIs\\TicketController@create_ticket');
-        // Get ticket by param options
-        Route::get('get-tickets', 'APIs\\TicketController@get_tickets');
-        // Search tickets by subject
-        Route::post('search-ticket', 'APIs\\TicketController@search_ticket');
-        // Change read status for a ticket
-        Route::post('read-ticket', 'APIs\TicketController@read');
-        Route::post('unread-ticket', 'APIs\\TicketController@unread');
-        // Add relaters
-        Route::post('add-relaters', 'APIs\\TicketController@add_relaters');
 
-        // Post comment to ticket thread
-        Route::post('comment', 'APIs\\TicketThreadController@post_comment');
+            // Create ticket
+        Route::post('create-ticket', 'APIs\\TicketController@create_ticket')
+            ->name('ticket.create');
+
+            // Get ticket by id
+        Route::get('get-ticket/{ticket_id}', 'APIs\\TicketController@get_ticket')
+            ->where(['ticket_id' => '[0-9]*'])
+            ->name('ticket.get');
+
+            // Get ticket by param options
+        Route::get('get-tickets', 'APIs\\TicketController@get_tickets')
+            ->name('ticket.query');
+
+            // Search tickets by subject
+        Route::post('search-ticket', 'APIs\\TicketController@search_ticket')
+            ->name('ticket.search');
+
+            // Change read status for a ticket
+        Route::post('read-ticket', 'APIs\TicketController@read')
+            ->name('ticket.read');
+        Route::post('unread-ticket', 'APIs\\TicketController@unread')
+            ->name('ticket.unread');
+
+            // Add relaters
+        Route::post('add-relaters', 'APIs\\TicketController@add_relaters')
+            ->name('ticket.add_relaters');
+
+            // Post comment to ticket thread
+        Route::post('comment', 'APIs\\TicketThreadController@post_comment')
+            ->name('ticket.post_comment');
         // Attachment URL
-        Route::get('attachment/{id}/{filename}', 'APIs\\TicketAttachmentController@get_attachment');
+        Route::get('attachment/{id}/{filename}', 'APIs\\TicketAttachmentController@get_attachment')
+            ->name('ticket.attachment');
 
         // Employee APIs
-        // Get current logged-in employee
-        Route::get('employee-info', 'APIs\\EmployeeController@get_employee_info');
-        // Search Employee
-        Route::post('search-employee', 'APIs\\EmployeeController@search_employee');
+
+            // Get current logged-in employee
+        Route::get('employee-info', 'APIs\\EmployeeController@get_employee_info')
+            ->name('employee.info');
+
+            // Search Employee
+        Route::post('search-employee', 'APIs\\EmployeeController@search_employee')
+            ->name('employee.search');
     }
 );
 
