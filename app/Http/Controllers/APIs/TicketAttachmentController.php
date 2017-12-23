@@ -9,34 +9,36 @@ use Illuminate\Http\Request;
 class TicketAttachmentController extends Controller
 {
     /**
+     * Output attachment as file
+     *
      * @param Request $request
      * @param $id string
      *
      * @return $this|string
      */
 
-    public function get_attachment(Request $request, $id, $filename = "")
+    public function get_attachment($id, $filename = '')
     {
         if ($id > 0) {
             $attachment = TicketAttachment::where('id', $id)->get();
 
             if ($attachment->count() == 0) {
-                return '';
+                return null;
             }
 
             $attachment = $attachment[0];
 
             if ($filename == '') {
-                $filename = $attachment->file_name;
+                return redirect($attachment->file_name);
             }
 
             return response($attachment->data)
                 ->header('Content-Type', $attachment->mime_type)
                 ->header('Content-Length', $attachment->size)
                 ->header('Content-Disposition', "inline; filename={$filename}");
-        } else {
-            return '';
         }
 
+        return null;
     }
+
 }

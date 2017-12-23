@@ -6,7 +6,7 @@ use App\Employee;
 use App\Http\Controllers\Controller;
 use App\Ticket;
 use App\TicketAttachment;
-use App\TicketThread;
+use App\TicketRead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +14,8 @@ class TicketController extends Controller
 {
 
     /**
+     * Create ticket by current employee
+     *
      * @param Request $request
      * @return int
      */
@@ -64,6 +66,8 @@ class TicketController extends Controller
 
 
     /**
+     * Get ticket by selector and optional params
+     *
      * @param Request $request
      * @return array
      */
@@ -151,8 +155,6 @@ class TicketController extends Controller
             $tickets = $tickets->where('content', 'LIKE', "{$content}%");
         }
 
-//        $tickets = $tickets->get();
-
         if ($request->has('count')) {
             return $tickets->count();
         } else {
@@ -161,39 +163,11 @@ class TicketController extends Controller
     }
 
     /**
+     * Search ticket by subject
+     *
      * @param Request $request
-     * @return int
+     * @return array
      */
-
-    public function comment(Request $request)
-    {
-        $ticket_id = $request->input('ticket_id');
-        $content = $request->input('content');
-        if (empty($content)) {
-            return 0;
-        }
-        // If ticket does not exist
-        $ticket = Ticket::find($ticket_id);
-        if ($ticket->count() == 0) {
-            return 0;
-        }
-        $ticket = $ticket->get();
-
-        // If ticket has been closed before
-        if ($ticket->closed_at > 0) {
-            return 0;
-        }
-
-        $comment = new TicketThread();
-        $comment->content = $content;
-        $comment->ticket_id = $ticket_id;
-        $comment->employee_id = $request->input('employee_id');
-        $comment->type = 0;
-        $comment->note = '';
-
-        $comment->save();
-        return 1;
-    }
 
     public function search_ticket(Request $request)
     {
@@ -207,5 +181,100 @@ class TicketController extends Controller
         }
 
         return [];
+    }
+
+    /**
+     * Mark a ticket as read
+     *
+     * @param Request $request
+     * @return int
+     */
+
+    public function read(Request $request)
+    {
+        if ($request->has('ticket_id')) {
+
+            $ticket_id = $request->input('ticket_id');
+            $employee_id = $request->session()->get('employee_id');
+
+            $read = TicketRead::where('ticket_id', $ticket_id)->where('employee_id', $employee_id)->count();
+
+            if ($read == 0) {
+
+                DB::table('ticket_reads')->insert([
+                    'ticket_id' => $ticket_id,
+                    'employee_id' => $employee_id
+                ]);
+            }
+
+            return 0;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Unread a ticket
+     *
+     * @param Request $request
+     * @return int
+     */
+
+    public function unread(Request $request)
+    {
+        if ($request->has('ticket_id')) {
+            $ticket_id = $request->input('ticket_id');
+            $employee_id = $request->session()->get('employee_id');
+
+            TicketRead::where('ticket_id', $ticket_id)
+                ->where('employee_id', $employee_id)
+                ->delete();
+
+            return 1;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Add relaters to ticket
+     *
+     * @param Request $request
+     * @return int
+     */
+
+    public function add_relaters(Request $request)
+    {
+        if ($request->has('ticket_id') && $request->has('relaters')) {
+
+            $ticket_id = $request->input('ticket_id');
+            $ticket = Ticket::where('id', $ticket_id)->get();
+
+            if ($ticket->count() == 0) {
+                return 0;
+            }
+            $ticket = $ticket[0];
+            $employee_id = $request->session()->get('employee_id');
+
+            if ($ticket->created_by != $employee_id && $ticket->assigned_to != $employee_id) {
+                return 0;
+            }
+
+            $relaters = \GuzzleHttp\json_decode($request->input('relaters'));
+
+            $records = [];
+            foreach ($relaters as $key => $value) {
+                $records[$key] = [
+                    'ticket_id' => $ticket_id,
+                    'employee_id' => $value,
+                ];
+            }
+
+            DB::table('ticket_relaters')->insert($records);
+
+            return 1;
+        }
+
+        return 0;
     }
 }

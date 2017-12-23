@@ -14,11 +14,12 @@ class CreateTableTicketRelaters extends Migration
     public function up()
     {
         Schema::create('ticket_relaters', function (Blueprint $table) {
-            $table->increments('id');
             $table->integer('ticket_id');
             $table->integer('employee_id');
             $table->tinyInteger('notification')->default(1);
             $table->timestamps();
+
+            $table->primary(['ticket_id', 'employee_id']);
         });
     }
 

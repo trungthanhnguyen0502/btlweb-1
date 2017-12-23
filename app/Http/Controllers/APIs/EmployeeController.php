@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 class EmployeeController extends Controller
 {
     /**
+     * Get current employee info
+     *
      * @param Request $request
      * @return mixed
      */
@@ -27,16 +29,19 @@ class EmployeeController extends Controller
         return response('{}')->header('Content-Type', 'application/json');
     }
 
+    /**
+     * Search employee by name
+     *
+     * @param Request $request
+     * @return array
+     */
+
     public function search_employee(Request $request)
     {
         if ($request->has('name')) {
             $name = $request->input('name');
-
             $employees = DB::table('employees')
                 ->select('id', 'email', 'first_name', 'last_name', 'display_name')
-//                ->where('email', 'LIKE', "{$name}%")
-//                ->orWhere('first_name', 'LIKE', "%{$name}%")
-//                ->orWhere('last_name', 'LIKE', "%{$name}%")
                 ->where('display_name', 'LIKE', "%{$name}%")
                 ->get();
 
@@ -47,3 +52,4 @@ class EmployeeController extends Controller
     }
 
 }
+

@@ -85,7 +85,7 @@ class CaptchaController extends Controller
     }
 
     /**
-     *
+     * Create captcha image
      */
 
     public function create_captcha()

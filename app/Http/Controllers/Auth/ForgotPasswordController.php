@@ -95,6 +95,11 @@ class ForgotPasswordController extends Controller
         return $rand_key;
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     */
+
     public function reset_password(Request $request)
     {
         $security_key = $request->input('security_key');
