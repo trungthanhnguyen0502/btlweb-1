@@ -41,7 +41,7 @@ function Condition(obj){
     this.status         = null
     this.priority       = null
     this.employee_id    = null
-    this.deadline       = new Date()
+    this.deadline       = new Date(0,0,0)
     this.mainCondition  = null
     this.related_user_id = null
     this.id_user_team = null

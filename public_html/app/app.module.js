@@ -167,11 +167,16 @@ myApp.service('mapService' , [ 'maps' , function(maps){
 
 myApp.service('conditionFilterService', function(){
     this.filterCondition = function( condition){
+        if( condition.deadline && condition.deadline.getFullYear() == 1899 )
+            condition.deadline = null
         result = {}
+        
         for (var pro in condition){
-            if (condition[pro] )
-                 result[pro] = condition[pro]
+            if( condition[pro])
+                result[pro] = condition[pro]
         }
+    
+        
         return result
     }
 })
@@ -192,21 +197,16 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
         // })
     }
     this.getTickets = function( condition , tickets){
-
-
         condition.status = parseInt(condition.status)
         condition.priority = parseInt(condition.priority)
         condition = conditionFilterService.filterCondition(condition)
-        
         url = "/api/get-tickets"
-        data = condition
-        
-        
-        $http.get(url , {params: data}).then( function(response){
+        console.log(condition)
+
+        $http.get(url , {params: condition}).then( function(response){
             console.log(response)
-            tickets = []
-            for( t in response.data){
-                tickets.push( new Ticket(t))
+            for( index in response.data){
+                tickets.push( new Ticket( response.data[index]))
             }
         } ,  function(){
             alert("tìm kiếm thất bại")
@@ -307,29 +307,27 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
 }])
 
 myApp.service('userService' ,['$http', 'fakeDataService' , function( $http , fakeDataService){
-
-    this.getInfo = function( user ){
+    this.getInfo = function( user){
         $http.get('/api/employee-info').then( function(response){
             user = new User(response.data)
         } , function(){
             alert("thông tin đăng nhập không đúng")
         })  
     }
+    this.searchName = function( input , output){
+        $http.post('/api/search-employee' ,{name:input}).then( function(response){
+            console.log( response.data)
+            for( index in response.data){
+                user = {}
+                user.id = response.data[index].id
+                user.user_name = response.data[index].display_name
+                output.push(user)
+            }
 
-    this.searchName = function( name){
-        result = []
-        fakeUser = fakeDataService.fakeUser()
-        for( var u in fakeUser){
-            result.push( { name:u.user_name, id:u.id})
-        }
-        return result
-
-        // url 
-        // $http.get( url )
-        
+        } , function(){
+            alert("thông tin không chính xác")
+        })  
     }
-
-
 }])
 
 
@@ -432,7 +430,7 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
     
     $scope.search_data  = {
         subject: null,
-        user_recommend: null
+        user_recommend: []
     }          
 
 
@@ -447,11 +445,14 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
     }
    
     $scope.getTickets = function( condition = $scope.condition){
-        console.log(condition)
         if( $scope.status != 'all' && maps.ticket_status[condition.status] !=  $scope.status  )
             alert("không thể tìm kiếm trạng thái khác")
         else    
-            $scope.tickets = ticketService.getTickets( condition)
+        {
+            $scope.tickets.length = 0
+            ticketService.getTickets(condition, $scope.tickets)
+          
+        }
     }
 
     $scope.changeRead = function( ticket){
@@ -506,7 +507,8 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
 
     $scope.searchName = function( name ){
         if( typeof( name ) =='string' && name.length > 0 && name.length % 2 == 0){
-            $scope.search_data.user_recommend = userService.searchName(name)
+            $scope.search_data.user_recommend.length = 0
+            userService.searchName(name, $scope.search_data.user_recommend)
         }
         
     }
