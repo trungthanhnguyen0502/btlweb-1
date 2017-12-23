@@ -107,8 +107,9 @@ class TicketController extends Controller
                 }
                 break;
 
+            case 'assigned_to':
             default:
-                $tickets = Ticket::where('created_by', $employee_id);
+                $tickets = $tickets->where('assigned_to', $employee_id);
                 break;
         }
 
