@@ -201,7 +201,7 @@ class EditTicketController extends Controller
             if ($ticket->status != 1 && $ticket->status != 2 && $ticket->status != 4) {
                 return [
                     'status' => 0,
-                    'phrase' => 'THao tác với ticket này không thực hiện được.'
+                    'phrase' => 'Thao tác với ticket này không thực hiện được.'
                 ];
             }
 
@@ -209,7 +209,7 @@ class EditTicketController extends Controller
 
             if ($team_id == $ticket->team_id) {
                 return [
-                    'status' => 0,
+                    'status' => 1,
                     'phrase' => 'Không thể di chuyển về team hiện tại.'
                 ];
             }
