@@ -83,6 +83,7 @@ Route::group(
             // Post comment to ticket thread
         Route::post('comment', 'APIs\\TicketThreadController@post_comment')
             ->name('ticket.post_comment');
+        Route::get('get-comments/{ticket_id}', 'APIs\\TicketThreadController@get_comments');
         // Attachment URL
         Route::get('attachment/{id}/{filename}', 'APIs\\TicketAttachmentController@get_attachment')
             ->name('ticket.attachment');

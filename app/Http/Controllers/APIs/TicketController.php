@@ -113,6 +113,7 @@ class TicketController extends Controller
 
             $ticket->created_by_employee;
             $ticket->assigned_to_employee;
+
             unset($ticket->created_by_employee->password);
             unset($ticket->assigned_to_employee->password);
 
