@@ -114,6 +114,8 @@ Route::group(
                 Route::put('priority', 'APIs\\EditTicketController@change_priority');
 
                 Route::put('team', 'APIs\\EditTicketController@change_team');
+
+                Route::put('assigned_to', 'APIs\\EditTicketController@assigned_to');
             }
         );
     }
