@@ -174,7 +174,6 @@ class TicketController extends Controller
                 $tickets = $tickets->where('created_by', $employee_id);
                 break;
             case 'related_to':
-
                 $employee = Employee::find($employee_id);
                 $employee->tickets;
                 $tickets = $employee->tickets;
@@ -254,18 +253,18 @@ class TicketController extends Controller
             return $tickets->count();
         }
 
-        if ($request->has('per_page') && $request->has('page')) {
-            $per_page = intval($request->input('per_page'));
-            $page = intval($request->input('page'));
-            $tickets = $tickets->forPage($page, $per_page);
-        }
-
         for ($i = $tickets->count() - 1; $i >= 0; $i--) {
             $tickets[$i]->created_by_employee();
             $tickets[$i]->assigned_to_employee();
 
             unset($tickets[$i]->created_by_employee->password);
             unset($tickets[$i]->assigned_to_employee->password);
+        }
+
+        if ($request->has('per_page') && $request->has('page')) {
+            $per_page = intval($request->input('per_page'));
+            $page = intval($request->input('page'));
+            $tickets = $tickets->forPage($page, $per_page);
         }
 
         return $tickets;

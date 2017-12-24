@@ -14,13 +14,13 @@ class TeamsTableSeeder extends Seeder
         DB::table('teams')->insert([
             'id' => 1,
             'title' => 'Hà Nội',
-            'description' => 'Hà Nội IT Team'
+            'description' => 'Hà Nội IT'
         ]);
 
         DB::table('teams')->insert([
             'id' => 2,
             'title' => 'Đà Nẵng',
-            'description' => 'Đà Nẵng IT Team'
+            'description' => 'Đà Nẵng IT'
         ]);
     }
 }
