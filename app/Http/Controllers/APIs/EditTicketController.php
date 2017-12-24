@@ -65,6 +65,8 @@ class EditTicketController extends Controller
                 ];
             }
 
+            $note = $request->input('note');
+
             // Create comment in thread
             $comment = new TicketThread();
             $comment->ticket_id = $ticket_id;
