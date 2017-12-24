@@ -5,3 +5,7 @@
 #menu-bar {
     border-right: 0px;
 }
+
+.ng-isolate-scope {
+    display: block;
+}
