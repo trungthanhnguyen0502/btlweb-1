@@ -70,10 +70,6 @@ myApp.directive('uploadFiles', function () {
 
 
 
-
-
-
-
 myApp.component('sideBar',{
     templateUrl: './app/components/SideBar/sideBar.html',
     controller: 'sideBarController',
@@ -260,6 +256,8 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
 myApp.service('userService' ,['$http', 'fakeDataService' , function( $http , fakeDataService){
     
     this.searchName = function( input , output){
+        output.length = 0
+
         $http.post('/api/search-employee' ,{name:input}).then( function(response){
             console.log( response.data)
             for( index in response.data){
@@ -569,14 +567,12 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
 }])
     
 
-
-myApp.controller('newRequestController' , ['$scope' , 'ticketService','$rootScope' , 'commentService',function($scope , ticketService , $rootScope, commentService){
+myApp.controller('newRequestController' , ['$scope' , 'ticketService','$rootScope' , 'commentService', 'userService',function($scope , ticketService , $rootScope, commentService, userService){
     $scope.user = $rootScope.user
     $scope.ticket = new Ticket()
     $scope.ticket.related_user = []
     $scope.ticket.deadline = new Date()
-
-
+    $scope.user_recommend  = []
 
     $scope.save = function(){
         if( !$scope.ticket.priority || !$scope.ticket.content || !$scope.ticket.team_id )
@@ -588,6 +584,13 @@ myApp.controller('newRequestController' , ['$scope' , 'ticketService','$rootScop
 
     $scope.loadComment = function(){
     }
+
+    $scope.searchName = function( name ){
+        if( typeof( name ) =='string' && name.length > 0 && name.length % 2 == 0){
+            userService.searchName(name, $scope.user_recommend)
+        }    
+    }
+
 
 
 }])
