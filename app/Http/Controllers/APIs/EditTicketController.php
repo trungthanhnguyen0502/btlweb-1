@@ -371,64 +371,151 @@ class EditTicketController extends Controller
         ];
     }
 
-//    public function change_status(Request $request) {
-//
-//        if ($request->has('ticket_id') && $request->has('status') && $request->has('note')) {
-//            $status = $request->input('status');
-//            $ticket_id = $request->input('ticket_id');
-//
-//            if ($ticket_id <= 0) {
-//                return 0;
-//            }
-//
-//            $ticket = Ticket::where('id', $ticket_id);
-//
-//            if ($ticket->count() == 0) {
-//                return 0;
-//            }
-//
-//            $ticket = $ticket->get()->first();
-//
-//            if ($ticket->status == 5 || $ticket->status == 6) {
-//                return 0;
-//            }
-//
-//            if ($ticket->status == $status) {
-//                return 0;
-//            }
-//
-//            $employee_id = $request->input('employee_id');
-//            $employee = Employee::where('id', $employee_id)->get()->first();
-//
-//            if ($ticket->created_by == $employee_id || $employee->role == 3) {
-//
-//                if ($status == 6) {
-//                    $this->update_status($ticket_id, $status);
-//                    return 1;
-//                }
-//
-//                if ($status == 5) {
-//                    if ($ticket->status == 3 || $ticket->status == 4) {
-//                        $this->update_status($ticket_id, $status);
-//                        return 1;
-//                    } else {
-//                        return 0;
-//                    }
-//                }
-//
-//            }
-//
-//
-//
-//        }
-//    }
-//
-//    protected function update_status($ticket_id, $status) {
-//        return DB::table('tickets')->where('id', $ticket_id)->update(['status' => $status]);
-//    }
-//
-//    protected function has_permission($employee, $ticket, $old_status, $new_status) {
-//        if ($)
-//    }
+    public function change_status(Request $request)
+    {
 
+        if ($request->has('ticket_id') && $request->has('status')) {
+            $status = $request->input('status');
+            $ticket_id = $request->input('ticket_id');
+
+            if ($ticket_id <= 0) {
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không tìm thấy ticket.'
+                ];
+            }
+
+            $ticket = Ticket::where('id', $ticket_id);
+
+            if ($ticket->count() == 0) {
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không tìm thấy ticket.'
+                ];
+            }
+
+            $ticket = $ticket->get()->first();
+
+            if ($ticket->status == 5 || $ticket->status == 6) {
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không được thay đổi trạng thái của ticket này.'
+                ];
+            }
+
+            if ($ticket->status == $status) {
+                return [
+                    'status' => 0,
+                    'phrase' => 'Trạng thái không thay đổi.'
+                ];
+            }
+
+            $employee_id = $request->session()->get('employee_id');
+            $employee = Employee::where('id', $employee_id)->get()->first();
+
+            $available = [
+                // Who created ticket
+                [
+
+                    [6],
+                    [6],
+                    [4, 5, 6],
+                    [5, 6]
+                ],
+                // Who is assigned
+                [
+                    [2],
+                    [3],
+                    [],
+                    [2]
+                ],
+                // Who is team leader
+                [
+                    [2],
+                    [3],
+                    [4],
+                    [2]
+                ],
+                // Who is company leader
+                [
+                    [2, 6],
+                    [3, 6],
+                    [4, 5, 6],
+                    [2, 5, 6]
+                ]
+            ];
+
+            $available_status = [];
+
+            $old_status = $ticket->status - 1;
+            
+            if (self::is_created_by($ticket, $employee)) {
+                $available_status = array_merge($available_status, $available[0][$old_status]);
+            }
+            
+            if (self::is_assigned_to($ticket, $employee)) {
+                $available_status = array_merge($available_status, $available[1][$old_status]);
+            }
+            
+            if (self::is_team_leader($ticket, $employee)) {
+                $available_status = array_merge($available_status, $available[2][$old_status]);
+            }
+            
+            if (self::is_company_leader($employee)) {
+                $available_status = array_merge($available_status, $available[3][$old_status]);
+            }
+
+            $available_status = array_unique($available_status);
+
+            if (in_array($status, $available_status)) {
+                $ticket->status = $status;
+                $ticket->save();
+
+                return [
+                    'status' => 1,
+                ];
+            }
+
+            return [
+                'status' => 0,
+                'phrase' => 'Thay đổi trạng thái không hợp lệ.'
+            ];
+        }
+
+        return [
+            'status' => 0,
+            'phrase' => 'Thao tác không hợp lệ.'
+        ];
+    }
+
+
+    protected function update_status($ticket_id, $status)
+    {
+        return DB::table('tickets')->where('id', $ticket_id)->update(['status' => $status]);
+    }
+
+    protected function is_created_by($ticket, $employee)
+    {
+        return ($ticket->created_by == $employee->id);
+    }
+
+    protected function is_assigned_to($ticket, $employee)
+    {
+        return ($ticket->assigned_to == $employee->id);
+    }
+
+    protected function is_team_leader($ticket, $employee)
+    {
+        return ($ticket->team_id == $employee->team_id && $employee->role == 2);
+    }
+
+    protected function is_company_leader($employee)
+    {
+        return ($employee->role == 3);
+    }
+
+    protected function is_available($old_status, $new_status, $available)
+    {
+        return in_array($new_status, $available[$old_status]);
+    }
 }
