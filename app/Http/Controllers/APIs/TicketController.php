@@ -9,6 +9,7 @@ use App\Team;
 use App\Ticket;
 use App\TicketAttachment;
 use App\TicketRead;
+use App\TicketRelater;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -173,17 +174,10 @@ class TicketController extends Controller
                 $tickets = $tickets->where('created_by', $employee_id);
                 break;
             case 'related_to':
-                $query = DB::table('tickets')
-                    ->join('ticket_relaters', 'tickets.id', '=', 'ticket_relaters.ticket_id')
-                    ->select('tickets.*')
-                    ->where('ticket_relaters.employee_id', $employee_id);
 
-                if ($request->has('subject')) {
-                    $subject = $request->input('subject');
-                    $tickets = $query->where('subject', 'like', "%{$subject}%")->get();
-                } else {
-                    $tickets = $query->get();
-                }
+                $employee = Employee::find($employee_id);
+                $employee->tickets;
+                $tickets = $employee->tickets;
                 break;
 
             case 'team_id':
@@ -266,11 +260,12 @@ class TicketController extends Controller
             $tickets = $tickets->forPage($page, $per_page);
         }
 
-        foreach ($tickets as $ticket) {
-            $ticket->created_by_employee;
-            $ticket->assigned_to_employee;
-            unset($ticket->created_by_employee->password);
-            unset($ticket->assigned_to_employee->password);
+        for ($i = $tickets->count() - 1; $i >= 0; $i--) {
+            $tickets[$i]->created_by_employee();
+            $tickets[$i]->assigned_to_employee();
+
+            unset($tickets[$i]->created_by_employee->password);
+            unset($tickets[$i]->assigned_to_employee->password);
         }
 
         return $tickets;
@@ -404,7 +399,7 @@ class TicketController extends Controller
             // Add new relaters
             $relaters = \GuzzleHttp\json_decode($request->input('relaters'));
             $records = [];
-                // Create records
+            // Create records
             foreach ($relaters as $key => $value) {
                 $records[$key] = [
                     'ticket_id' => $ticket_id,
@@ -435,7 +430,8 @@ class TicketController extends Controller
      * @return array
      */
 
-    public function close(Request $request, $ticket_id) {
+    public function close(Request $request, $ticket_id)
+    {
 
         if ($ticket_id <= 0) {
             return [
@@ -488,7 +484,8 @@ class TicketController extends Controller
      * @return array
      */
 
-    public function cancel(Request $request, $ticket_id) {
+    public function cancel(Request $request, $ticket_id)
+    {
 
         if ($ticket_id <= 0) {
             return [
