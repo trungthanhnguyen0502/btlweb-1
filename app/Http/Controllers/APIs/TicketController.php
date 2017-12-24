@@ -9,6 +9,7 @@ use App\Team;
 use App\Ticket;
 use App\TicketAttachment;
 use App\TicketRead;
+use App\TicketRelater;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -173,17 +174,7 @@ class TicketController extends Controller
                 $tickets = $tickets->where('created_by', $employee_id);
                 break;
             case 'related_to':
-                $query = DB::table('tickets')
-                    ->join('ticket_relaters', 'tickets.id', '=', 'ticket_relaters.ticket_id')
-                    ->select('tickets.*')
-                    ->where('ticket_relaters.employee_id', $employee_id);
-
-                if ($request->has('subject')) {
-                    $subject = $request->input('subject');
-                    $tickets = $query->where('subject', 'like', "%{$subject}%")->get();
-                } else {
-                    $tickets = $query->get();
-                }
+                $ticket_relater = TicketRelater::find($employee_id);
                 break;
 
             case 'team_id':
@@ -266,11 +257,12 @@ class TicketController extends Controller
             $tickets = $tickets->forPage($page, $per_page);
         }
 
-        foreach ($tickets as $ticket) {
-            $ticket->created_by_employee;
-            $ticket->assigned_to_employee;
-            unset($ticket->created_by_employee->password);
-            unset($ticket->assigned_to_employee->password);
+        for ($i = $tickets->count() - 1; $i >= 0; $i--) {
+            $tickets[$i]->created_by_employee();
+            $tickets[$i]->assigned_to_employee();
+
+            unset($tickets[$i]->created_by_employee->password);
+            unset($tickets[$i]->assigned_to_employee->password);
         }
 
         return $tickets;
