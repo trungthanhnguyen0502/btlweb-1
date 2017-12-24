@@ -113,6 +113,8 @@ class TicketController extends Controller
 
             $ticket->created_by_employee;
             $ticket->assigned_to_employee;
+            unset($ticket->created_by_employee->password);
+            unset($ticket->assigned_to_employee->password);
 
             if ($ticket->attachment) {
                 $ticket_attachment = TicketAttachment::where('id', $ticket->attachment)->get()[0];
@@ -252,6 +254,8 @@ class TicketController extends Controller
         foreach ($tickets as $ticket) {
             $ticket->created_by_employee;
             $ticket->assigned_to_employee;
+            unset($ticket->created_by_employee->password);
+            unset($ticket->assigned_to_employee->password);
         }
 
         return $tickets;
@@ -350,21 +354,37 @@ class TicketController extends Controller
      * @return int
      */
 
-    public function add_relaters(Request $request)
+    public function edit_relaters(Request $request)
     {
         if ($request->has('ticket_id') && $request->has('relaters')) {
+
             $ticket_id = $request->input('ticket_id');
+
             $ticket = Ticket::where('id', $ticket_id)->get();
+
             if ($ticket->count() == 0) {
                 return 0;
             }
+
             $ticket = $ticket[0];
+
             $employee_id = $request->session()->get('employee_id');
-            if ($ticket->created_by != $employee_id && $ticket->assigned_to != $employee_id) {
+            $employee = Employee::find($employee_id);
+
+            if (
+                ($ticket->created_by != $employee_id && $ticket->assigned_to != $employee_id)
+                || $employee->role < 2
+            ) {
                 return 0;
             }
+
+            // Delete old relaters
+            DB::table('ticket_relaters')->where('ticket_id', $ticket_id)->delete();
+
+            // Add new relaters
             $relaters = \GuzzleHttp\json_decode($request->input('relaters'));
             $records = [];
+                // Create records
             foreach ($relaters as $key => $value) {
                 $records[$key] = [
                     'ticket_id' => $ticket_id,
@@ -372,6 +392,7 @@ class TicketController extends Controller
                 ];
             }
             DB::table('ticket_relaters')->insert($records);
+
             return 1;
         }
 

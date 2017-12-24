@@ -78,8 +78,8 @@ Route::group(
         Route::post('unread-ticket', 'APIs\\TicketController@unread')
             ->name('ticket.unread');
 
-            // Add relaters
-        Route::post('add-relaters', 'APIs\\TicketController@add_relaters')
+            // Edit relaters
+        Route::post('add-relaters', 'APIs\\TicketController@edit_relaters')
             ->name('ticket.add_relaters');
 
             // Post comment to ticket thread
