@@ -18,7 +18,7 @@ class EditTicketController extends Controller
      * Change deadline of a ticket
      *
      * @param Request $request
-     * @return int
+     * @return array
      */
 
     public function change_deadline(Request $request)
@@ -30,7 +30,10 @@ class EditTicketController extends Controller
             $ticket = Ticket::where('id', $ticket_id)->get();
 
             if ($ticket->count() == 0) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không tìm thấy ticket.'
+                ];
             }
 
             $ticket = $ticket->first();
@@ -39,18 +42,27 @@ class EditTicketController extends Controller
             $employee = Employee::where('id', $employee_id)->get()->first();
 
             if ($ticket->created_by != $employee_id || $employee->role < 2) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không có quyền truy cập.'
+                ];
             }
 
             if ($ticket->status != 1 && $ticket->status != 2 && $ticket->status != 4) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Thao tác với ticket này không thực hiện được.'
+                ];
             }
 
             $time = strtotime($request->input('deadline'));
             $deadline = date('Y-m-d H:i:s', $time);
 
             if ($ticket->created_at >= $deadline || $ticket->deadline == $deadline) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Deadline mới không hợp lệ.'
+                ];
             }
 
             // Create comment in thread
@@ -68,17 +80,22 @@ class EditTicketController extends Controller
 
             DB::table('tickets')->where('id', $ticket_id)
                 ->update(['deadline' => $deadline]);
-            return 1;
+            return [
+                'status' => 1,
+            ];
         }
 
-        return 0;
+        return [
+            'status' => 0,
+            'phrase' => 'Thao tác không hợp lệ.'
+        ];
     }
 
     /**
      * Change priority of a ticket
      *
      * @param Request $request
-     * @return int
+     * @return array
      */
 
     public function change_priority(Request $request)
@@ -90,19 +107,28 @@ class EditTicketController extends Controller
             $ticket = Ticket::where('id', $ticket_id);
 
             if ($ticket->count() == 0) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không tìm thấy ticket.'
+                ];
             }
 
             $ticket = $ticket->get()->first();
 
             if ($ticket->status != 1 && $ticket->status != 2 && $ticket->status != 4) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Thao tác với ticket này không thực hiện được.'
+                ];
             }
 
             $priority = $request->input('priority');
 
             if ($priority < 1 || $priority > 4 || $priority == $ticket->priority) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Độ ưu tiên không hợp lệ.'
+                ];
             }
 
             $employee_id = $request->session()->get('employee_id');
@@ -111,7 +137,10 @@ class EditTicketController extends Controller
             if (($employee->role < 2)
                 || ($ticket->created_by != $employee_id && $ticket->assigned_to != $employee_id)
             ) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không đủ quyền thực hiện.'
+                ];
             }
 
             $ticket->priority = $priority;
@@ -132,17 +161,22 @@ class EditTicketController extends Controller
 
             $comment->save();
 
-            return 1;
+            return [
+                'status' => 1,
+            ];
         }
 
-        return 0;
+        return [
+            'status' => 0,
+            'phrase' => 'Thao tác không hợp lệ.'
+        ];
     }
 
     /**
      * Change IT team for a ticket
      *
      * @param Request $request
-     * @return int
+     * @return array
      */
 
     public function change_team(Request $request)
@@ -154,32 +188,49 @@ class EditTicketController extends Controller
             $ticket = Ticket::where('id', $ticket_id);
 
             if ($ticket->count() == 0) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không tìm thấy ticket.'
+                ];
             }
 
             $ticket = $ticket->get()->first();
 
             if ($ticket->status != 1 && $ticket->status != 2 && $ticket->status != 4) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'THao tác với ticket này không thực hiện được.'
+                ];
             }
 
             $team_id = $request->input('team_id');
 
             if ($team_id == $ticket->team_id) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không thể di chuyển về team hiện tại.'
+                ];
             }
 
             $team = Team::where('id', $team_id);
 
             if ($team->count() == 0) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không tìm thấy team mới.'
+                ];
             }
+
+            $team = $team->get()->first();
 
             $employee_id = $request->session()->get('employee_id');
             $employee = Employee::find($employee_id);
 
             if ($employee->role < 2) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không có quyền thực hiện.'
+                ];
             }
 
             $ticket->team_id = $team_id;
@@ -212,17 +263,23 @@ class EditTicketController extends Controller
             $notification->deadline = $ticket->deadline;
             Mail::to($leader->email)->send($notification);
 
-            return 1;
+            return [
+                'status' => 1,
+                'phrase' => ''
+            ];
         }
 
-        return 0;
+        return [
+            'status' => 0,
+            'phrase' => 'Thao tác không hợp lệ.'
+        ];
     }
 
     /**
      * Assign a ticket to a member
      *
      * @param Request $request
-     * @return int
+     * @return array
      */
 
     public function assigned_to(Request $request)
@@ -235,38 +292,56 @@ class EditTicketController extends Controller
             $ticket = Ticket::where('id', $ticket_id);
 
             if ($ticket->count() == 0) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không tìm thấy ticket.'
+                ];
             }
 
             $ticket = $ticket->get()->first();
 
             if ($ticket->status == 3 || $ticket->status == 5 || $ticket->status == 6) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Thao tác với ticket này không thực hiện được.'
+                ];
             }
 
             $employee_id = $request->session()->get('employee_id');
             $employee = Employee::find($employee_id);
             // If employee is not a leader
             if ($employee->role < 2) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không có quyền thực hiện.'
+                ];
             }
             // Sub-leader checking
             if ($employee->role == 2 && $employee->team_id != $ticket->team_id) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không được thay đổi ở team khác.'
+                ];
             }
             $who_is_assigned_id = $request->input('employee_id');
             $who_is_assigned = Employee::where('id', $who_is_assigned_id);
 
             // If people who is assigned do not exist
             if ($who_is_assigned->count() == 0) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Giao việc cho người không hợp lệ.'
+                ];
             }
 
             $who_is_assigned = $who_is_assigned->get()->first();
 
             // If people who is assigned is not in this team
             if ($who_is_assigned->team_id != $ticket->team_id) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không giao việc cho người team khác.'
+                ];
             }
 
             $ticket->assigned_to = $who_is_assigned_id;
@@ -284,14 +359,76 @@ class EditTicketController extends Controller
 
             $comment->save();
 
-            return 1;
+            return [
+                'status' => 1,
+                'phrase' => ''
+            ];
         }
 
-        return 0;
+        return [
+            'status' => 0,
+            'phrase' => 'Thao tác không hợp lệ.'
+        ];
     }
 
-    public function change_status(Request $request) {
-
-    }
+//    public function change_status(Request $request) {
+//
+//        if ($request->has('ticket_id') && $request->has('status') && $request->has('note')) {
+//            $status = $request->input('status');
+//            $ticket_id = $request->input('ticket_id');
+//
+//            if ($ticket_id <= 0) {
+//                return 0;
+//            }
+//
+//            $ticket = Ticket::where('id', $ticket_id);
+//
+//            if ($ticket->count() == 0) {
+//                return 0;
+//            }
+//
+//            $ticket = $ticket->get()->first();
+//
+//            if ($ticket->status == 5 || $ticket->status == 6) {
+//                return 0;
+//            }
+//
+//            if ($ticket->status == $status) {
+//                return 0;
+//            }
+//
+//            $employee_id = $request->input('employee_id');
+//            $employee = Employee::where('id', $employee_id)->get()->first();
+//
+//            if ($ticket->created_by == $employee_id || $employee->role == 3) {
+//
+//                if ($status == 6) {
+//                    $this->update_status($ticket_id, $status);
+//                    return 1;
+//                }
+//
+//                if ($status == 5) {
+//                    if ($ticket->status == 3 || $ticket->status == 4) {
+//                        $this->update_status($ticket_id, $status);
+//                        return 1;
+//                    } else {
+//                        return 0;
+//                    }
+//                }
+//
+//            }
+//
+//
+//
+//        }
+//    }
+//
+//    protected function update_status($ticket_id, $status) {
+//        return DB::table('tickets')->where('id', $ticket_id)->update(['status' => $status]);
+//    }
+//
+//    protected function has_permission($employee, $ticket, $old_status, $new_status) {
+//        if ($)
+//    }
 
 }
