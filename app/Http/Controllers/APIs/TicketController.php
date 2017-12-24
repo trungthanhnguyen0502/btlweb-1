@@ -20,24 +20,33 @@ class TicketController extends Controller
      * Create ticket by current employee
      *
      * @param Request $request
-     * @return int
+     * @return array
      */
 
     public function create_ticket(Request $request)
     {
 
-        if (empty($request->input('subject'))) {
-            return 0;
+        if (!$request->has('subject')) {
+            return [
+                'status' => 0,
+                'phrase' => 'Hành động không hợp lệ'
+            ];
         }
 
         $subject = $request->input('subject');
         if (empty($subject)) {
-            return 0;
+            return [
+                'status' => 0,
+                'phrase' => 'Tên yêu cầu trống'
+            ];
         }
 
         $priority = intval($request->input('priority'));
         if ($priority < 0) {
-            return 0;
+            return [
+                'status' => 0,
+                'phrase' => 'Độ ưu tiên không hợp lệ'
+            ];
         }
 
         $employee_id = $request->session()->get('employee_id');
@@ -58,7 +67,10 @@ class TicketController extends Controller
             ->get();
 
         if ($leader->count() != 1) {
-            return 0;
+            return [
+                'status' => 0,
+                'phrase' => 'Không tìm thấy tài khoản người phụ trách.'
+            ];
         }
 
         $leader = $leader[0];
@@ -98,7 +110,9 @@ class TicketController extends Controller
             Mail::to($leaders[$i]->email)->send($notification);
         }
 
-        return 1;
+        return [
+            'status' => 1,
+        ];
     }
 
     public function get_ticket($ticket_id = 0)
@@ -113,6 +127,7 @@ class TicketController extends Controller
 
             $ticket->created_by_employee;
             $ticket->assigned_to_employee;
+
             unset($ticket->created_by_employee->password);
             unset($ticket->assigned_to_employee->password);
 
@@ -286,7 +301,7 @@ class TicketController extends Controller
      * Mark a ticket as read
      *
      * @param Request $request
-     * @return int
+     * @return array
      */
 
     public function read(Request $request)
@@ -295,6 +310,15 @@ class TicketController extends Controller
 
             $ticket_id = $request->input('ticket_id');
             $employee_id = $request->session()->get('employee_id');
+
+            $ticket = Ticket::where('id', $ticket_id);
+
+            if ($ticket->count() == 0) {
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không tìm thấy ticket.'
+                ];
+            }
 
             $read = TicketRead::where('ticket_id', $ticket_id)->where('employee_id', $employee_id)->count();
 
@@ -313,22 +337,35 @@ class TicketController extends Controller
                     $status = intval($request->input('read')) % 2;
                 }
 
-                $read->update([
-                    'read' => $status
-                ]);
+                DB::table('ticket_reads')
+                    ->where('ticket_id', $ticket_id)
+                    ->where('employee_id', $employee_id)
+                    ->update([
+                        'read' => $status
+                    ]);
+
+                return [
+                    'status' => 1
+                ];
             }
 
-            return 1;
+            return [
+                'status' => 1,
+
+            ];
         }
 
-        return 0;
+        return [
+            'status' => 0,
+            'phrase' => 'Không tìm thấy ticket.'
+        ];
     }
 
     /**
      * Add relaters to ticket
      *
      * @param Request $request
-     * @return int
+     * @return array
      */
 
     public function edit_relaters(Request $request)
@@ -340,7 +377,10 @@ class TicketController extends Controller
             $ticket = Ticket::where('id', $ticket_id)->get();
 
             if ($ticket->count() == 0) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không tìm thấy ticket.'
+                ];
             }
 
             $ticket = $ticket[0];
@@ -352,7 +392,10 @@ class TicketController extends Controller
                 ($ticket->created_by != $employee_id && $ticket->assigned_to != $employee_id)
                 || $employee->role < 2
             ) {
-                return 0;
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không có quyền truy cập.'
+                ];
             }
 
             // Delete old relaters
@@ -373,10 +416,120 @@ class TicketController extends Controller
                 DB::table('ticket_relaters')->insert($records);
             }
 
-            return 1;
+            return [
+                'status' => 1,
+            ];
         }
 
-        return 0;
+        return [
+            'status' => 0,
+            'phrase' => 'Không tìm thấy ticket.'
+        ];
     }
 
+    /**
+     * Close a ticket
+     *
+     * @param Request $request
+     * @param $ticket_id
+     * @return array
+     */
+
+    public function close(Request $request, $ticket_id) {
+
+        if ($ticket_id <= 0) {
+            return [
+                'status' => 0,
+                'phrase' => 'Không tìm thấy ticket.'
+            ];
+        }
+
+        $ticket = Ticket::where('id', $ticket_id);
+
+        if ($ticket->count() == 0) {
+            return [
+                'status' => 0,
+                'phrase' => 'Không tìm thấy ticket.'
+            ];
+        }
+
+        $ticket = $ticket->get()->first();
+
+        if ($ticket->status == 5 || $ticket->status == 6) {
+            return [
+                'status' => 0,
+                'phrase' => 'Thao tác với ticket này không hợp lệ.'
+            ];
+        }
+
+        $employee_id = $request->session()->get('employee_id');
+        $employee = Employee::where('id', $employee_id)->get()->first();
+
+        if ($ticket->created_by != $employee_id && $employee->role < 3) {
+            return [
+                'status' => 0,
+                'phrase' => 'Không có quyền truy cập.'
+            ];
+        }
+
+        $ticket->status = 5;
+        $ticket->save();
+
+        return [
+            'status' => 1,
+        ];
+    }
+
+    /**
+     * Cancel a ticket
+     *
+     * @param Request $request
+     * @param $ticket_id
+     * @return array
+     */
+
+    public function cancel(Request $request, $ticket_id) {
+
+        if ($ticket_id <= 0) {
+            return [
+                'status' => 0,
+                'phrase' => 'Không tìm thấy ticket.'
+            ];
+        }
+
+        $ticket = Ticket::where('id', $ticket_id)->get();
+
+        if ($ticket->count() == 0) {
+            return [
+                'status' => 0,
+                'phrase' => 'Không tìm thấy ticket.'
+            ];
+        }
+
+        $ticket = $ticket->first();
+
+        if ($ticket->status == 6) {
+            return [
+                'status' => 0,
+                'phrase' => 'Thao tác với ticket này không hợp lệ.'
+            ];
+        }
+
+        $employee_id = $request->session()->get('employee_id');
+        $employee = Employee::find($employee_id);
+
+        if ($ticket->created_by != $employee_id && $employee->role < 3) {
+            return [
+                'status' => 0,
+                'phrase' => 'Không có quyền truy cập.'
+            ];
+        }
+
+        $ticket->status = 6;
+        $ticket->save();
+
+        return [
+            'status' => 1
+        ];
+    }
 }

@@ -23,7 +23,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
 
-    Route::get('captcha', 'Auth\\CaptchaController@index')->name('captcha');
+    Route::get('captcha', 'Auth\\CaptchaController@index')
+        ->name('captcha');
 
     Route::get('login', 'Auth\\LoginController@index')
         ->name('login')
@@ -55,76 +56,83 @@ Route::group(
 
         // Ticket APIs
 
-            // Create ticket
+        // Create ticket
         Route::post('create-ticket', 'APIs\\TicketController@create_ticket')
             ->name('ticket.create');
 
-            // Get ticket by id
+        // Get ticket by id
         Route::get('get-ticket/{ticket_id}', 'APIs\\TicketController@get_ticket')
             ->where(['ticket_id' => '[0-9]*'])
             ->name('ticket.get');
 
-            // Get ticket by param options
+        // Get ticket by param options
         Route::get('get-tickets', 'APIs\\TicketController@get_tickets')
             ->name('ticket.query');
 
-            // Search tickets by subject
+        // Search tickets by subject
         Route::post('search-ticket', 'APIs\\TicketController@search_ticket')
             ->name('ticket.search');
 
-            // Change read status for a ticket
+        // Change read status for a ticket
         Route::post('read-ticket', 'APIs\TicketController@read')
             ->name('ticket.read');
 
-            // Edit relaters
-        Route::post('add-relaters', 'APIs\\TicketController@edit_relaters')
+        // Edit relaters
+        Route::post('edit-relaters', 'APIs\\TicketController@edit_relaters')
             ->name('ticket.add_relaters');
 
-            // Post comment to ticket thread
+        // Post comment to ticket thread
         Route::post('comment', 'APIs\\TicketThreadController@post_comment')
             ->name('ticket.post_comment');
+        Route::get('get-comments/{ticket_id}', 'APIs\\TicketThreadController@get_comments');
         // Attachment URL
         Route::get('attachment/{id}/{filename}', 'APIs\\TicketAttachmentController@get_attachment')
             ->name('ticket.attachment');
 
         // Employee APIs
 
-            // Get current logged-in employee
+        // Get current logged-in employee
         Route::get('employee-info', 'APIs\\EmployeeController@get_employee_info')
             ->name('employee.info');
 
-            // Search Employee
+        // Search Employee
         Route::post('search-employee', 'APIs\\EmployeeController@search_employee')
             ->name('employee.search');
 
         // Team APIs
 
-            // Get list of teams
-        Route::get('teams', 'APIs\\TeamController@get_teams');
+        // Get list of teams
+        Route::get('teams', 'APIs\\TeamController@get_teams')
+            ->name('teams');
 
 
         // Edit Ticket Routes
         Route::group(
+
             ['prefix' => 'edit-ticket'],
 
             function () {
 
-                Route::put('deadline', 'APIs\\EditTicketController@change_deadline');
+                Route::put('deadline', 'APIs\\EditTicketController@change_deadline')
+                    ->name('ticket.edit.deadline');
 
-                Route::put('priority', 'APIs\\EditTicketController@change_priority');
+                Route::put('priority', 'APIs\\EditTicketController@change_priority')
+                    ->name('ticket.edit.priority');
 
-                Route::put('team', 'APIs\\EditTicketController@change_team');
+                Route::put('team', 'APIs\\EditTicketController@change_team')
+                    ->name('ticket.edit.team');
 
-                Route::put('assigned_to', 'APIs\\EditTicketController@assigned_to');
+                Route::put('assigned_to', 'APIs\\EditTicketController@assigned_to')
+                    ->name('ticket.edit.assigned_to');
             }
         );
+        // Close and cancel ticket
+        Route::get('close-ticket/{ticket_id}', 'APIs\\TicketController@close')
+            ->name('ticket.close');
+        Route::get('cancel-ticket/{ticket_id}', 'APIs\\TicketController@cancel')
+            ->name('ticket.cancel');
     }
 );
-
-Route::group(['prefix' => 'default'], function () {
-
-//    Route::get('profile-picture.{png}', )
-});
 
 /**
  * Home Redirecting

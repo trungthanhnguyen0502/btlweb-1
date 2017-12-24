@@ -18,30 +18,21 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link href="http://getbootstrap.com/2.3.2/assets/css/bootstrap-responsive.css" rel="stylesheet">
   <link rel="stylesheet" href="./assets/css/myStyle.css">
-  <script>
-    
-    // $(document).ready(function(){
-    //     $('.navbar-fostrap').click(function(){
-    //       $('.nav-fostrap').toggleClass('visible');
-    //       $('body').toggleClass('cover-bg');
-    //     });
-    //   });
-      
-  </script>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <body ng-app="myApp">
   <div id="source">
-    <div id="header">
-      <my-header></my-header>
-    </div>
+  
+    <my-header></my-header>
+
     <div id="body" style="height:auto; overflow: auto">
-      <div id="menu-bar" class="col-md-2 col-lg-2 col-xs-3 col-sm-6 panel panel-default" style="float:left">
+      <nav id="menu-bar" class="col-md-2 col-lg-2 col-xs-3 col-sm-6 panel panel-default" style="float:left">
         <new-request></new-request>
         <side-bar name="'my_request'"></side-bar>
         <side-bar name="'related_request'"></side-bar>
         <side-bar name="'mission'"></side-bar>
         <side-bar name="'team_request'"></side-bar>
-      </div>
+      </nav>
       <div id="content" class="col-md-9 col-lg-10 panel panel-default" style="float:left">
           <div>
             <div ui-view></div>
