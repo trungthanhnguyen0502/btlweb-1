@@ -123,7 +123,14 @@ class TicketController extends Controller
     public function get_tickets(Request $request)
     {
         $employee_id = $request->session()->get('employee_id');
-        $tickets = Ticket::all();
+
+        if ($request->has('subject')) {
+            $subject = $request->input('subject');
+            $tickets = Ticket::where('subject', 'like', "%{$subject}%")->get();
+        } else {
+            $tickets = Ticket::all();
+        }
+
         $selector = $request->has('selector') ? $request->input('selector') : 'assigned_to';
 
         switch ($selector) {
@@ -131,11 +138,17 @@ class TicketController extends Controller
                 $tickets = $tickets->where('created_by', $employee_id);
                 break;
             case 'related_to':
-                $tickets = DB::table('tickets')
+                $query = DB::table('tickets')
                     ->join('ticket_relaters', 'tickets.id', '=', 'ticket_relaters.ticket_id')
                     ->select('tickets.*')
-                    ->where('ticket_relaters.employee_id', $employee_id)
-                    ->get();
+                    ->where('ticket_relaters.employee_id', $employee_id);
+
+                if ($request->has('subject')) {
+                    $subject = $request->input('subject');
+                    $tickets = $query->where('subject', 'like', "%{$subject}%")->get();
+                } else {
+                    $tickets = $query->get();
+                }
                 break;
 
             case 'team_id':
@@ -177,11 +190,6 @@ class TicketController extends Controller
         if ($request->has('related_to')) {
             $related_to = $request->input('related_to');
             $tickets = $tickets->where('ticket_relaters.employee_id', $related_to);
-        }
-
-        if ($request->has('subject')) {
-            $subject = $request->input('subject');
-            $tickets = $tickets->where('subject', 'LIKE', "%{$subject}%");
         }
 
         if ($request->has('status')) {
@@ -346,4 +354,13 @@ class TicketController extends Controller
 
         return 0;
     }
+
+
+
+    public function edit_ticket(Request $request)
+    {
+//        $employee->id
+
+    }
+
 }
