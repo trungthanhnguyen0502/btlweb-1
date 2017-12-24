@@ -5,53 +5,62 @@
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">      
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add New Request</h4>
+    
+                <div class=" modal-header w3-container w3-red">
+                        <h3> Add New Request </h3>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form  class="w3-container" >
                         <div class="form-group">
                             <label> Tên công việc:</label>
                             <input type="text" class="form-control" ng-model="ticket.subject">
                         </div>
-                        <div>
-                            <label> Mức độ ưu tiên</label>
-                            <select ng-model="ticket.priority"  class="form-control">
-                                  <option value= 1 > {{ 1 | toPriority}}</option>
-                                  <option value= 2 > {{ 2 | toPriority}}</option>
-                                  <option value= 3 > {{ 3 | toPriority}}</option>
-                                  <option value= 4 > {{ 4 | toPriority}}</option>
-                            </select>
+                       
+
+                      
+                        <div class="form-group">
+                            <div style="display:inline-block">
+                                <label> Mức độ ưu tiên</label>
+                                <select ng-model="ticket.priority"  class="form-control">
+                                        <option value= 1 > {{ 1 | toPriority}}</option>
+                                        <option value= 2 > {{ 2 | toPriority}}</option>
+                                        <option value= 3 > {{ 3 | toPriority}}</option>
+                                        <option value= 4 > {{ 4 | toPriority}}</option>
+                                </select>
+                            </div>
+
+                            <span style="display:inline-block; float:right">
+                                <label> Bộ phận IT </label>
+                                <select ng-model="ticket.team_id" class="form-control">
+                                    <option value= 1 > HaNoi-IT</option>
+                                    <option value= 2 > DaNang-IT</option>
+                                </select>
+                            </span>
                         </div>
 
-                        <div class="form-group">
-                            <label> Ngày hết hạn </label>
-                            <input type="datetime-local" class="form-control" ng-model="ticket.deadline" placeholder="yyyy-MM-ddTHH:mm:ss" required>
-                        </div>
+                        <span class="form-group" >
+                                <label> Ngày hết hạn </label>
+                                <input type="datetime-local" class="form-control" ng-model="ticket.deadline" placeholder="yyyy-MM-ddTHH:mm:ss" required>
+                        </span>
 
-                        <div class="form-group">
-                            <label> Bộ phận IT </label>
-                            <select ng-model="ticket.team_id" class="form-control">
-                                <option value= 1 > HaNoi-IT</option>
-                                <option value= 2 > DaNang-IT</option>
-                             </select>
-                        </div>
+
                         
                         <label>Người liên quan</label>
+                        
                         <div class="form-control" >
                             <div style="display:inline-block"> 
                                 <ul>
-                                    <li ng-repeat="related in ticket.related_user"></li>
+                                    <li style="display:inline-block" ng-repeat="related in ticket.related_user"> {{ related.user_name }} ;</li>
                                 </ul>
                             </div>
 
                             
-                            <div class="dropdown"  style="display:inline-block" style="outline:none; background:transparent;border:none" >
-                                    <input style="outline:none; background:transparent;border:none"   data-toggle="dropdown" ng-keyup="searchName()">
-                                    <ul class="dropdown-menu" ng-show="search_data.user_recommend.length > 0">
-                                        <li ng-repeat="u in search_data.user_recommend" ng-click="condition.assign_to = u.id; text_input.assign_to = u.user_name"><a> {{u.user_name }} </a></li>
-                                    </ul>
-                                  </div>
+                            <div class="dropdown"  style="display:inline-block" >
+                                    <input style="outline:none; background:transparent;border:none"   data-toggle="dropdown" ng-model="inputName" ng-keyup="searchName(inputName)">
+                                    <div class="dropdown-menu" ng-show="user_recommend.length > 0">
+                                          <li ng-repeat="u in user_recommend" ng-click="ticket.related_user.push(u); inputName = '' "><a> {{u.user_name }} </a></li>
+                                    </div>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -62,8 +71,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>        
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="save()"> Save </button>
+                    <button class="w3-button w3-border w3-border-blue" data-dismiss="modal"> Cancle </button>        
+                    <button class="w3-button w3-border w3-border-blue" data-dismiss="modal" ng-click="save()"> Save </button>
                 </div>
             </div>   
         </div>
