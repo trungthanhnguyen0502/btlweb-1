@@ -105,22 +105,15 @@ class TicketController extends Controller
     {
         if ($ticket_id != 0) {
 
-            $ticket = DB::table('tickets')
-                ->join('employees', function ($join) {
-                    $join->on('tickets.created_by', '=', 'employees.id');
-                    $join->orOn('tickets.assigned_to', '=', 'employees.id');
-                })
-                ->select('tickets.*', 'employees.display_name')
-                ->where('tickets.id', $ticket_id)
-                ->get();
-
-            dd($ticket);
+            $ticket = Ticket::find($ticket_id);
 
             if ($ticket->count() == 0) {
                 return response('{}')->header('Content-Type', 'application/json');
             }
 
-            $ticket = $ticket[0];
+            $ticket->created_by_employee;
+            $ticket->assigned_to_employee;
+
             if ($ticket->attachment) {
                 $ticket_attachment = TicketAttachment::where('id', $ticket->attachment)->get()[0];
 
@@ -253,7 +246,12 @@ class TicketController extends Controller
         if ($request->has('per_page') && $request->has('page')) {
             $per_page = intval($request->input('per_page'));
             $page = intval($request->input('page'));
-            return $tickets->forPage($page, $per_page);
+            $tickets = $tickets->forPage($page, $per_page);
+        }
+
+        foreach ($tickets as $ticket) {
+            $ticket->created_by_employee;
+            $ticket->assigned_to_employee;
         }
 
         return $tickets;

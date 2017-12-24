@@ -6,15 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model
 {
-    public function relaters() {
-        return $this->hasMany('TicketRelater');
+    public function created_by_employee() {
+        return $this->belongsTo('App\Employee', 'created_by');
     }
 
-    public function created_by() {
-        return $this->belongsTo('Employee', 'id');
-    }
-
-    public function assigned_to() {
-        return $this->belongsTo('Employee', 'id');
+    public function assigned_to_employee() {
+        return $this->belongsTo('App\Employee', 'assigned_to');
     }
 }
