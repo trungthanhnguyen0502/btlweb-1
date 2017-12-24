@@ -51,6 +51,21 @@ class TicketController extends Controller
         $ticket->team_id = $request->input('team_id');
         $ticket->content = $request->input('content');
 
+        // Assigned to leader of team
+        $leader = Employee::where('team_id', $ticket->team_id)
+            ->where('role', 2)
+            ->where('is_leader', 1)
+            ->get();
+
+        if ($leader->count() != 1) {
+            return 0;
+        }
+
+        $leader = $leader[0];
+
+        $ticket->assigned_to = $leader->id;
+
+        // If ticket has attachment
         if ($request->input('image')) {
             $image = (object)$request->input('image');
             $ticket_attachment = new TicketAttachment();
@@ -64,17 +79,18 @@ class TicketController extends Controller
             $ticket_attachment->save();
             $ticket->attachment = $ticket_attachment->id;
         }
-
+        // Save ticket
         $ticket->save();
 
         $who_created = Employee::where('id', $employee_id)->get()[0];
         $team = Team::where('id', $who_created->team_id)->get()[0];
         $leaders = Employee::where('team_id', $who_created->team_id)->whereIn('role', [2, 3])->get();
 
+        // Create mail
         $notification = new NewTicket();
         $notification->who_created = $who_created->display_name;
         $notification->team_name = $team->title;
-        $notification->subject = $subject;
+        $notification->title = $subject;
         $notification->deadline = $ticket->deadline;
 
         $num_of_leaders = $leaders->count();
@@ -89,7 +105,16 @@ class TicketController extends Controller
     {
         if ($ticket_id != 0) {
 
-            $ticket = Ticket::where('id', $ticket_id)->get();
+            $ticket = DB::table('tickets')
+                ->join('employees', function ($join) {
+                    $join->on('tickets.created_by', '=', 'employees.id');
+                    $join->orOn('tickets.assigned_to', '=', 'employees.id');
+                })
+                ->select('tickets.*', 'employees.display_name')
+                ->where('tickets.id', $ticket_id)
+                ->get();
+
+            dd($ticket);
 
             if ($ticket->count() == 0) {
                 return response('{}')->header('Content-Type', 'application/json');
@@ -123,7 +148,14 @@ class TicketController extends Controller
     public function get_tickets(Request $request)
     {
         $employee_id = $request->session()->get('employee_id');
-        $tickets = Ticket::all();
+
+        if ($request->has('subject')) {
+            $subject = $request->input('subject');
+            $tickets = Ticket::where('subject', 'like', "%{$subject}%")->get();
+        } else {
+            $tickets = Ticket::all();
+        }
+
         $selector = $request->has('selector') ? $request->input('selector') : 'assigned_to';
 
         switch ($selector) {
@@ -131,11 +163,17 @@ class TicketController extends Controller
                 $tickets = $tickets->where('created_by', $employee_id);
                 break;
             case 'related_to':
-                $tickets = DB::table('tickets')
+                $query = DB::table('tickets')
                     ->join('ticket_relaters', 'tickets.id', '=', 'ticket_relaters.ticket_id')
                     ->select('tickets.*')
-                    ->where('ticket_relaters.employee_id', $employee_id)
-                    ->get();
+                    ->where('ticket_relaters.employee_id', $employee_id);
+
+                if ($request->has('subject')) {
+                    $subject = $request->input('subject');
+                    $tickets = $query->where('subject', 'like', "%{$subject}%")->get();
+                } else {
+                    $tickets = $query->get();
+                }
                 break;
 
             case 'team_id':
@@ -177,11 +215,6 @@ class TicketController extends Controller
         if ($request->has('related_to')) {
             $related_to = $request->input('related_to');
             $tickets = $tickets->where('ticket_relaters.employee_id', $related_to);
-        }
-
-        if ($request->has('subject')) {
-            $subject = $request->input('subject');
-            $tickets = $tickets->where('subject', 'LIKE', "%{$subject}%");
         }
 
         if ($request->has('status')) {
@@ -346,4 +379,19 @@ class TicketController extends Controller
 
         return 0;
     }
+
+
+
+    public function edit_ticket(Request $request)
+    {
+        if ($request->has('ticket_id')) {
+            $employee_id = $request->session()->get('employee_id');
+            $employee = Employee::where('id', $employee_id)->get()[0];
+
+
+        }
+
+        return 0;
+    }
+
 }

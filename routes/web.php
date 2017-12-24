@@ -106,6 +106,11 @@ Route::group(
     }
 );
 
+Route::group(['prefix' => 'default'], function () {
+
+//    Route::get('profile-picture.{png}', )
+});
+
 Route::get('employees', function () {
    return \App\Employee::paginate();
 });

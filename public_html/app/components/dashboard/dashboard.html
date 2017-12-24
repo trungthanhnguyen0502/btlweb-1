@@ -21,18 +21,18 @@
         <tr>
             <td> </td>
             <td style="text-align: center">
-                <input placeholder="Tìm kiếm ..." ng-model="condition.subject">
+                <input  class="form-control" placeholder="Tìm kiếm ..." ng-model="condition.subject">
             </td>            
             <td>
                 <div class="form-group">
-                  <select ng-model="condition.priority">
+                  <select ng-model="condition.priority"  class="form-control">
                          <option ng-repeat="priority in getPriority()" ng-value="priority"> {{priority | toPriority}}</option>
                     </select>
                 </div>
             </td>
             <td style="text-align: center"> 
-                <div class="dropdown">
-                    <input placeholder="Tìm kiếm ..." ng-model="text_input.created_by"  data-toggle="dropdown" ng-keyup="searchName(text_input.created_by)">
+                <div class="dropdown ">
+                    <input class="form-control" placeholder="Tìm kiếm ..." ng-model="text_input.created_by"  data-toggle="dropdown" ng-keyup="searchName(text_input.created_by)">
                     <ul class="dropdown-menu" ng-show="search_data.user_recommend.length > 0">
                         <li ng-repeat="u in search_data.user_recommend" ng-click="condition.created_by = u.id; text_input.created_by = u.user_name"><a> {{u.user_name }} </a></li>
                     </ul>
@@ -40,7 +40,7 @@
             </td>
             <td >
               <div class="dropdown">
-                  <input placeholder="Tìm kiếm ..." ng-model="text_input.assign_to"  data-toggle="dropdown" ng-keyup="searchName(text_input.assign_to)">
+                  <input placeholder="Tìm kiếm ..."  class="form-control form-control-sm" ng-model="text_input.assign_to"  data-toggle="dropdown" ng-keyup="searchName(text_input.assign_to)">
                   <ul class="dropdown-menu" ng-show="search_data.user_recommend.length > 0">
                       <li ng-repeat="u in search_data.user_recommend" ng-click="condition.assign_to = u.id; text_input.assign_to = u.user_name"><a> {{u.user_name }} </a></li>
                   </ul>
@@ -48,10 +48,10 @@
             
             </td>
             <td>
-              <input type="datetime-local" ng-model= "condition.deadline" placeholder="yyyy-MM-ddTHH:mm:ss" style="width:130px" required>
+              <input  class="form-control" type="datetime-local" ng-model= "condition.deadline" placeholder="yyyy-MM-ddTHH:mm:ss" style="width:130px" required>
             </td>
             <td> 
-              <select ng-model="condition.status" ng-show="showStatusSelect()">
+              <select  class="form-control" ng-model="condition.status" ng-show="showStatusSelect()">
                   <option ng-repeat="status in getStatus()" ng-value='status'>{{status | toTicketStatus}}</option>
                </select>
             </td>

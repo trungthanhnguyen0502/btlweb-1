@@ -44,13 +44,14 @@ myApp.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/dash_board/my_request/all')
 })
 
-myApp.run(['$rootScope' ,'$http', 'userService',  function( $rootScope , $http, userService){
+myApp.run(['$rootScope' ,'$http', 'userService', 'fakeDataService',  function( $rootScope , $http, userService, fakeDataService){
     $rootScope.info = {}
     $http.get('/api/employee-info').then( function(response){
         $rootScope.info.user = new User(response.data)
         } , function(){
             alert("thông tin đăng nhập không đúng")
         })  
+    // fakeDataService.fakeTickets(100)
 }])
 
 myApp.directive('uploadFiles', function () {  
@@ -192,7 +193,6 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
         url = "/api/get-ticket/"+id.toString()
         $http.get( url).then( function(response){
             ticket.convert_ticket(response.data)
-            console.log(ticket)
         },  function(){
            alert("ticket Id không đúng")
         })
@@ -282,12 +282,10 @@ myApp.service('userService' ,['$http', 'fakeDataService' , function( $http , fak
 }])
 
 
-myApp.service('fakeDataService', function(){  
-    this.fakeTickets = function(first_id , number ){
-        result = []
-        for( i= first_id ; i< first_id + number; i++){
+myApp.service('fakeDataService', ['ticketService' , function( ticketService){  
+    this.fakeTickets = function(number ){
+        for( i= 50 ; i<50+  number; i++){
             t = new Ticket()
-            t.id = i
             t.subject = "công việc thứ "+ i.toString()
             t.content = "nội dung công việc thứ " + i.toString()
             t.deadline = new Date()
@@ -297,10 +295,8 @@ myApp.service('fakeDataService', function(){
             t.status = Math.floor(Math.random() *5) + 1; 
             t.priority = Math.floor(Math.random() *4) + 1
             t.is_read = i%2 == 0 ? 1:0
-            result.push(t)
-
+            ticketService.saveTicket(t)
         }
-        return result;
     }
     this.fakeComments = function(first_id , ticket_id , number, content){
         result = []
@@ -330,7 +326,7 @@ myApp.service('fakeDataService', function(){
         }
         return result
     }
-})
+}])
 
 myApp.service('commentService', ['$http' , function($http){
     this.getComments = function( ticket_id){
