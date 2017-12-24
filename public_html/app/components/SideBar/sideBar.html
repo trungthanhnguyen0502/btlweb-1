@@ -16,17 +16,17 @@
 </div>
  -->
 <div class="container" style="margin-top:10px">
-    <a class="btn btn-default btn-xs" data-toggle="collapse" href="#options-menu{{$ctrl.name}}"><h5> {{$ctrl.name | VietNamTrans}}  </h5> </a>
+    <a class="w3-button w3-border w3-border-blue" style="height:40px; text-decoration: none;"data-toggle="collapse" href="#options-menu{{$ctrl.name}}"><h6> {{$ctrl.name | VietNamTrans}}  </h6> </a>
     <div class="row collapse" id="options-menu{{$ctrl.name}}">
             <nav class="nav-sidebar">
                 <ul class="nav">
                     <li class="nav-divider"></li>
-                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'all'})"    > All </a></li>
-                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'inprogress'})"> inprogress </a></li>
-                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'resolved'})"> Resolved </a></li>   
-                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'out_of_date'})"> OutOfDate </a></li>   
-                    <li ng-if="$ctrl.name=='mission' || $ctrl.name=='team_request'"><a ui-sref="dashBoard({name:$ctrl.name, condition:'feedback'})"> Feedback </a></li>   
-                    <li ng-if="$ctrl.name== 'team_request'"><a ui-sref="dashBoard({name:$ctrl.name, condition:'closed'})"> Closed </a></li>   
+                    <li> <button class="w3-button w3-pale-green"><a ui-sref="dashBoard({name:$ctrl.name, condition:'all'})"    > All </a> </button></li>
+                    <li><button class="w3-button w3-pale-green"><a ui-sref="dashBoard({name:$ctrl.name, condition:'inprogress'})"> inprogress </a></button></li>
+                    <li><button class="w3-button w3-pale-green"><a ui-sref="dashBoard({name:$ctrl.name, condition:'resolved'})"> Resolved </a></button></li>   
+                    <li><button class="w3-button w3-pale-green"><a ui-sref="dashBoard({name:$ctrl.name, condition:'out_of_date'})"> OutOfDate </a></button></li>   
+                    <li ng-if="$ctrl.name=='mission' || $ctrl.name=='team_request'"> <button class="w3-button w3-pale-green"></button><a ui-sref="dashBoard({name:$ctrl.name, condition:'feedback'})"> Feedback </a></button></li>   
+                    <li ng-if="$ctrl.name== 'team_request'"> <button class="w3-button w3-pale-green"><a ui-sref="dashBoard({name:$ctrl.name, condition:'closed'})"> Closed </a></button></li>   
                 </ul>
             </nav>
     </div>

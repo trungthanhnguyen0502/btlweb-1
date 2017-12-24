@@ -38,7 +38,7 @@ class TicketAttachmentController extends Controller
                 ->header('Content-Disposition', "inline; filename={$filename}");
         }
 
-        return null;
+        return redirect(route('home'));
     }
 
 }
