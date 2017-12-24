@@ -1,7 +1,7 @@
 var myApp = angular.module("myApp" , ['ui.router', 'ngRoute', 'naif.base64', 'ngSanitize'])
 
 myApp.value('maps', {
-    'priority'     :{ 1: 'thấp' , 2:'bình thường' , 3: 'cao' , 4: 'feedback' , 5:'khẩn cấp'},
+    'priority'     :{ 1: 'thấp' , 2:'bình thường' , 3: 'cao' ,4:'khẩn cấp'},
     'ticket_status':{1: 'new' , 2:'inprogress' ,3:'resolved', 4:'feedback', 5:'closed' , 6:'cancelled' ,7:'out_of_date'},
     'rating'       :{0:'không hài lòng' , 1:'hài lòng'},
     'type'         :{0:'không', 1:'đánh giá' , 2:'thay đổi độ ưu tiên' , 3:'thay đổi deadline'},
@@ -211,6 +211,13 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
         })  
     }
 
+    this.changeRead = function( input){
+        $http.post("/api/create-ticket" ,data).then( function( response){
+            console.log( response)
+        }, function(){
+            alert("faild")
+        })
+    }
     this.saveTicket = function(ticket){
         data = {}
         for (var pro in ticket){
@@ -375,9 +382,13 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
     }
 
     $scope.changeRead = function( ticket){
-        data = { id: ticket.id , is_read: ! ticket.is_read}
-        ticketService.editTicket(data)
-        ticket.is_read = !ticket.is_read
+        if( ticket.is_read == 0 )
+            ticket.is_read = 1
+        else
+            ticket.is_read = 0
+
+        data = {ticket_id:ticket.id , read: ticket.is_read}
+        ticketService.changeRead(data)
     }
    
     $scope.initCondition = function(){
@@ -414,7 +425,7 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
         return [1,2,3,4,5,6]
     }
     $scope.getPriority = function(){
-        return [1,2,3,4,5]
+        return [1,2,3,4]
     }
     $scope.showStatusSelect = function(){
         return $scope.status == 'all'
@@ -461,14 +472,17 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
         }
         data = {}
         
-        data.id = $scope.ticket.id
+        data.ticket_id = $scope.ticket.id
         if($scope.oldInfo.status != $scope.newInfo.status){
             data.status = parseInt( $scope.newInfo.status)
-            data.note =  ("thay đổi trạng thái: " + $filter('toTicketStatus')($scope.oldInfo.status) + "=> " +   $filter('toTicketStatus')($scope.newInfo.status) + 
-            "----- lí do : " + $scope.commentInput)
+            data.note =  "thay đổi trạng thái: " + $filter('toTicketStatus')($scope.oldInfo.status) + "=> " +   $filter('toTicketStatus')($scope.newInfo.status) + 
+            "----- lí do : " + $scope.commentInput
 
             $http.put('api/edit-ticket/status' , params=data).then( function(response){
+                if( response.data.status == 1 )    
                     alert("thay đổi trạng thái thành công")
+                else
+                    alert(response.data.phrase)
                 } , 
                 function(){
                     alert("thông tin thay đổi không đúng")
@@ -476,8 +490,8 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
         }
         if($scope.oldInfo.priority != $scope.newInfo.priority){
             data.priority = $scope.newInfo.priority
-            data.note  =  $sce.trustAsHtml("thay đổi mức độ ưu tiên: " + $filter('toPriority')($scope.oldInfo.priority) + "=> " +   $filter('toPriority')($scope.newInfo.priority) +
-            "-----  lí do : " +$scope.commentInput)
+            data.note  =  "thay đổi mức độ ưu tiên: " + $filter('toPriority')($scope.oldInfo.priority) + "=> " +   $filter('toPriority')($scope.newInfo.priority) +
+            "-----  lí do : " +$scope.commentInput
             $http.put('api/edit-ticket/priority' , params=data).then( function(response){
                 alert("thay đổi độ ưu tiên thành công")
                 console.log(response)
@@ -491,10 +505,13 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
             data.note =  ("thay đổi deadline: " + ($scope.oldInfo.deadline).toString() + "=> " +  ($scope.newInfo.deadline).toString() +
             "----- lí do : " + $scope.commentInput)
             $http.put('api/edit-ticket/deadline' , params=data).then( function(response){
-                alert("thay đổi deadline thành công")
+                if( response.data.status == 1)
+                    alert("thay đổi deadline thành công")
+                else
+                    alert( response.data.phrase)
             } , 
             function( message ){
-                alert(message)
+                alert("không hợp lệ")
             })
         }
         if($scope.oldInfo.related_user != $scope.newInfo.related_user){
@@ -502,10 +519,13 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
             data.note  = ("thay đổi người liên quan: " + $filter('')($scope.oldInfo.status) + "=> " +   $filter('')($scope.newInfo.status) +
             "----- lí do : " +$scope.commentInput)
             $http.put('api/edit-ticket/related-user' , params=data).then( function(response){
-                alert("thay đổi người liên quan thành công")
+                if( response.data.status == 1)
+                    alert("thay đổi người liên quan thành công")
+                else
+                    alert(response.data.phrase)
             } , 
             function(){
-                alert("thông tin thay đổi không đúng")
+                alert("không thành công")
             })
         }
         if($scope.oldInfo.team_id != $scope.newInfo.team_id){
@@ -536,7 +556,7 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
         return [1,2,3,4,5,6]
     }
     $scope.getPriority = function(){
-        return [1,2,3,4,5]
+        return [1,2,3,4]
     }
     $scope.changeNewPriority = function( priority){
         $scope.newInfo.priority = priority
@@ -562,7 +582,7 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
         $scope.ticket= new Ticket(response.data)
         $scope.initNewInfo()
     },  function(){
-        alert("ticket Id không đúng")
+        alert("không tồn tại ticket")
     })
 
     

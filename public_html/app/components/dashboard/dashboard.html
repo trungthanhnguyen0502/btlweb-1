@@ -57,7 +57,7 @@
             </td>
           </tr>
       <tr ng-repeat="ticket in tickets">
-        <td style="text-align: left" ng-click="changeRead(ticket)" > {{ticket.index }} <span class="mark-read" > <i class="fa fa-circle"  style="font-size:0.7em" ng-show="ticket.is_read"></i></span>  </td>
+        <td style="text-align: left" ng-click="changeRead(ticket)" > {{ticket.index }} <span class="mark-read" > <i class="fa fa-circle"  style="font-size:0.7em" ng-show="ticket.is_read==1"></i></span>  </td>
         <td ui-sref="ticketDetail({id:ticket.id})" ng-mouseover=""> {{ticket.subject}}
           <div>
           
