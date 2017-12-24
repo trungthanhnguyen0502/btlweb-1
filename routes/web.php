@@ -36,7 +36,7 @@ Route::prefix('auth')->group(function () {
     Route::get('logout', 'Auth\\LoginController@logout')
         ->name('logout');
 
-    Route::get('request-password', 'Auth\\ForgotPasswordController@request_password')
+    Route::any('request-password', 'Auth\\ForgotPasswordController@request_password')
         ->name('password.request');
 
     Route::any('reset-password', 'Auth\\ForgotPasswordController@reset_password')
@@ -98,8 +98,17 @@ Route::group(
             // Search Employee
         Route::post('search-employee', 'APIs\\EmployeeController@search_employee')
             ->name('employee.search');
+
+        // Team APIs
+
+            // Get list of teams
+        Route::get('teams', 'APIs\\TeamController@get_teams');
     }
 );
+
+Route::get('employees', function () {
+   return \App\Employee::paginate();
+});
 
 /**
  * Home Redirecting

@@ -37,6 +37,10 @@ class Authenticate
 
     protected function isValidSession($login_key, $employee_id, $request_time)
     {
+        if ($login_key == '' || $employee_id <= 0) {
+            return false;
+        }
+
         $session = Session::where('login_key', $login_key)
             ->where('employee_id', $employee_id)
             ->where('expired_at', '>', $request_time)

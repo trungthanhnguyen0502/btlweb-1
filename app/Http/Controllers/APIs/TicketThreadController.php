@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\APIs;
 
+use App\Employee;
 use App\Http\Controllers\Controller;
+use App\Ticket;
 use Illuminate\Http\Request;
 
 class TicketThreadController extends Controller
@@ -43,4 +45,18 @@ class TicketThreadController extends Controller
         $comment->save();
         return 1;
     }
+
+//    public function get_comments(Request $request, $ticket_id)
+//    {
+//        if ($ticket_id <= 0) {
+//            return [];
+//        }
+//
+//        $employee_id = $request->session()->get('employee_id');
+//        $employee = Employee::where('id', $employee_id);
+//
+//        $ticket = Ticket::where('id', $ticket_id)->get()[0];
+//
+//        if ($ticket->created_by != $employee_id && $ticket->assigned_to != $employee_id && !$employee_id)
+//    }
 }
