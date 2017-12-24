@@ -124,6 +124,8 @@ Route::group(
 
                 Route::put('assigned_to', 'APIs\\EditTicketController@assigned_to')
                     ->name('ticket.edit.assigned_to');
+
+                Route::put('status', 'APIs\\EditTicketController@change_status');
             }
         );
         // Close and cancel ticket
