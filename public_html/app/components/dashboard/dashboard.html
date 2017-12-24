@@ -1,7 +1,7 @@
 <h3> {{name | VietNamTrans }}</h3>
 <div style="float:right">
-  <button class="btn btn-info btn-md" ng-click="initCondition()"> Reset bộ lọc </button>
-  <button class="btn btn-info btn-md"  ng-click="getTickets()"> Tìm kiếm     </button>
+  <button class="w3-button w3-blue" ng-click="initCondition()"> Reset bộ lọc </button>
+  <button class="w3-button w3-blue"  ng-click="getTickets()"> Tìm kiếm     </button>
 </div>
   <table class="table table-striped table-hover">
     <thead>
@@ -67,7 +67,7 @@
         <td style="text-align: left"> {{ticket.priority | toPriority}}</td>
         <td style="text-align: left"> {{ticket.creat_by}}</td>
         <td style="text-align: left"> {{ticket.assigned_to}}</td>
-        <td style="text-align: left"> {{ ticket.deadline | date: "dd-MM-yyyy"}} </td>
+        <td style="text-align: left"> {{ ticket.deadline | date:'dd-MM-yyyy'}} </td>
         <td style="text-align: left"> {{ticket.status | toTicketStatus }}</td>
       </tr>
 
@@ -77,13 +77,13 @@
   <div class="pagination pagination-centered" style="float:right" >
     <ul  class="pagination-controle pagination">
      <li>
-       <button type="button"  class="btn btn-info" ng-disabled="paginate_params.current_page == 1" ng-click="paginate_params.current_page = paginate_params.current_page-1 ; getTickets()">PREV</button>
+       <button type="button"  class="w3-button w3-blue" ng-disabled="paginate_params.current_page == 1" ng-click="paginate_params.current_page = paginate_params.current_page-1 ; getTickets()">PREV</button>
      </li>
      <li>
        <span>Page {{paginate_params.current_page }} of {{ paginate_params.total }}</span>
      </li>
      <li>
-        <button type="button"  class="btn btn-info" ng-disabled="paginate_params.current_page >= paginate_params.total -1" ng-click="paginate_params.current_page = paginate_params.current_page+1; getTickets()">NEXT </button>
+        <button type="button"  class="w3-button w3-blue" ng-disabled="paginate_params.current_page >= paginate_params.total -1" ng-click="paginate_params.current_page = paginate_params.current_page+1; getTickets()">NEXT </button>
      </li>
     </ul>
     </div>

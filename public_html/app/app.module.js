@@ -189,14 +189,7 @@ myApp.service('conditionFilterService', function(){
 
 myApp.service('ticketService', ['conditionFilterService', '$http', function(conditionFilterService ,$http){
     
-    this.getTicket = function(id , ticket){
-        url = "/api/get-ticket/"+id.toString()
-        $http.get( url).then( function(response){
-            ticket.convert_ticket(response.data)
-        },  function(){
-           alert("ticket Id không đúng")
-        })
-    }
+   
 
     this.getTickets = function( condition , tickets){
         condition.status = parseInt(condition.status)
@@ -206,12 +199,14 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
         tickets.length = 0
         console.log(condition)
         $http.get("/api/get-tickets" , {params: condition}).then( function(response){
-
+            i = 1
             for( index in response.data){
                 t =  new Ticket( response.data[index])
-                t.index = index
+                t.index = i
+                i += 1
                 tickets.push(t)
             }
+          
         } ,  function(){
             alert("tìm kiếm thất bại")
         })  
@@ -313,19 +308,6 @@ myApp.service('fakeDataService', ['ticketService' , function( ticketService){
         }
         return result
     }
-
-    this.fakeUser = function(){
-        result = []
-        for( var i = 0 ; i < 10 ; i++){
-            user = new User()
-            user.id = i
-            user.user_name  = "nguyễn Thành Trung " + i.toString()
-            user.email      = "trungthanhnguyen0502"
-            user.birthday   = new Date()
-            result.push( user)
-        }
-        return result
-    }
 }])
 
 myApp.service('commentService', ['$http' , function($http){
@@ -373,6 +355,7 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
     
     $scope.paginate_params          = new PaginatePrams()
     $scope.tickets                  = []
+    
     $scope.search_data  = {
         subject: null,
         user_recommend: []
@@ -392,6 +375,7 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
         $scope.condition.per_page = $scope.paginate_params.page_size
 
         ticketService.getTickets($scope.condition, $scope.tickets)
+        $scope.initCondition()
           
     }
 
@@ -402,6 +386,7 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
     }
    
     $scope.initCondition = function(){
+       
         $scope.condition = new Condition()
         if( $scope.name == "my_request"){
             $scope.condition.selector = "created_by"
@@ -442,43 +427,39 @@ myApp.controller('dashBoardController'  , ['$scope','$stateParams','ticketServic
 
 
     $scope.searchName = function( name ){
-     
         if( typeof( name ) =='string' && name.length > 0 && name.length % 2 == 0){
             $scope.search_data.user_recommend.length = 0
             userService.searchName(name, $scope.search_data.user_recommend)
-        }
-        
+        }    
     }
 
     $scope.getUser  = function( input){
     }
     $scope.initCondition()
 
-    $scope.getTickets( $scope.condition  )
+    $scope.getTickets()
 
+    
+    
 }])
 
 
 
-myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketService','$filter', 'commentService', 'fakeDataService', '$sce','$rootScope','userService', function( $scope , $stateParams, ticketService, $filter, commentService, fakeDataService, $sce, $rootScope, userService){
+myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketService','$filter', 'commentService', 'fakeDataService', '$sce','$rootScope','userService', '$http', function( $scope , $stateParams, ticketService, $filter, commentService, fakeDataService, $sce, $rootScope, userService,  $http){
 
     $scope.id = $stateParams.id
-    $scope.ticket = new Ticket()
-
-    ticketService.getTicket($scope.id, $scope.ticket)
-
-    // $scope.comments = commentService.getComments($scope.ticket.id)
-
-    // $scope.comments = fakeDataService.fakeComments(1 , $scope.ticket_id ,5)
     $scope.commentInput = null
+    $scope.commentInput2 = null 
     $scope.info = $rootScope.info
     $scope.oldInfo = {}
     $scope.newInfo = {}
+
+  
    
 
 
     $scope.saveChange =  function(){
-        if(! scope.commentInput ){
+        if(! $scope.commentInput ){
             alert("chưa nhập lý do thay đổi")
             $scope.newInfo = jQuery.extend(true, {}, $scope.oldInfo);
             return;
@@ -488,8 +469,8 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
             data.id = $scope.ticket.id
             if($scope.oldInfo.status != $scope.newInfo.status){
                 data.status = parseInt( $scope.newInfo.status)
-                data.note =  $sce.trustAsHtml("thay đổi trạng thái: " + $filter('toTicketStatus')($scope.oldInfo.status) + "=> " +   $filter('toTicketStatus')($scope.newInfo.status) + 
-                " <br/> lí do : " + $scope.commentInput)
+                data.note =  ("thay đổi trạng thái: " + $filter('toTicketStatus')($scope.oldInfo.status) + "=> " +   $filter('toTicketStatus')($scope.newInfo.status) + 
+                "----- lí do : " + $scope.commentInput)
 
                 $http.put('api/edit-ticket/status' , params=data).then( function(response){
                         alert("thay đổi trạng thái thành công")
@@ -501,9 +482,10 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
             if($scope.oldInfo.priority != $scope.newInfo.priority){
                 data.priority = $scope.newInfo.priority
                 data.note  =  $sce.trustAsHtml("thay đổi mức độ ưu tiên: " + $filter('toPriority')($scope.oldInfo.priority) + "=> " +   $filter('toPriority')($scope.newInfo.priority) +
-                " <br/> lí do : " +$scope.commentInput)
-                $http.put('api/edit-ticket/status' , params=data).then( function(response){
+                "-----  lí do : " +$scope.commentInput)
+                $http.put('api/edit-ticket/priority' , params=data).then( function(response){
                     alert("thay đổi độ ưu tiên thành công")
+                    console.log(response)
                 } , 
                 function(){
                     alert("thông tin thay đổi không đúng")
@@ -511,19 +493,19 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
             }
             if($scope.oldInfo.deadline != $scope.newInfo.deadline){
                 data.deadline = $scope.newInfo.deadline
-                data.note =  $sce.trustAsHtml("thay đổi deadline: " + ($scope.oldInfo.deadline).toString() + "=> " +  ($scope.newInfo.deadline).toString() +
-                "<br/> lí do : " + $scope.commentInput)
-                $http.put('api/edit-ticket/status' , params=data).then( function(response){
+                data.note =  ("thay đổi deadline: " + ($scope.oldInfo.deadline).toString() + "=> " +  ($scope.newInfo.deadline).toString() +
+                "----- lí do : " + $scope.commentInput)
+                $http.put('api/edit-ticket/deadline' , params=data).then( function(response){
                     alert("thay đổi deadline thành công")
                 } , 
-                function(){
-                    alert("thông tin thay đổi không đúng")
+                function( message ){
+                    alert(message)
                 })
             }
             if($scope.oldInfo.related_user != $scope.newInfo.related_user){
                 data.related_user = $scope.newInfo.status
-                data.note  =  $sce.trustAsHtml("thay đổi người liên quan: " + $filter('')($scope.oldInfo.status) + "=> " +   $filter('')($scope.newInfo.status) +
-                "\n lí do : " +$scope.commentInput)
+                data.note  = ("thay đổi người liên quan: " + $filter('')($scope.oldInfo.status) + "=> " +   $filter('')($scope.newInfo.status) +
+                "----- lí do : " +$scope.commentInput)
                 $http.put('api/edit-ticket/related-user' , params=data).then( function(response){
                     alert("thay đổi người liên quan thành công")
                 } , 
@@ -533,8 +515,8 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
             }
             if($scope.oldInfo.team_id != $scope.newInfo.team_id){
                 data.team_id = $scope.newInfo.team_id
-                data.note  =  $sce.trustAsHtml("thay đổi đôi IT: " + $filter('toTeam')($scope.oldInfo.team_id) + "=> " +   $filter('toTeam')($scope.newInfo.team_id) +
-                "<br/> lí do : " + $scope.commentInput)
+                data.note  = ("thay đổi đôi IT: " + $filter('toTeam')($scope.oldInfo.team_id) + "=> " +   $filter('toTeam')($scope.newInfo.team_id) +
+                "----- lí do : " + $scope.commentInput)
                 $http.put('api/edit-ticket/team' , params=data).then( function(response){
                     alert("thay đổi đôi IT thành công")
                 } , 
@@ -542,20 +524,11 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
                     alert("thông tin thay đổi không đúng")
                 })
             }
-
-            ticketService.editTicket( data)
-            $scope.initNewInfo()
-
-            //fakeData 
-            $scope.commentContent =($scope.commentContent);
-    
-            $scope.comments.push( fakeDataService.fakeComments(11 , $scope.ticket.id , 1, $scope.commentContent)[0])
-            //
-            $scope.commentContent = ""
             $scope.initNewInfo()
     }
+
     $scope.createComment = function(){
-        if( !$scope.commentInput){
+        if( !$scope.commentInput2){
             alert("nội dung trống")
             return;
         }
@@ -572,9 +545,6 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
     $scope.getPriority = function(){
         return [1,2,3,4,5]
     }
-    $scope.show = function(data){
-        alert(data)
-    }
     $scope.changeNewPriority = function( priority){
         $scope.newInfo.priority = priority
     }
@@ -589,13 +559,20 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
             status: $scope.ticket.status,
             priority: $scope.ticket.priority,
             deadline: $scope.ticket.deadline,
-            // related_user:ticketService.getrelated_user(),
             assigned_to: $scope.ticket.assigned_to,
             team_id: $scope.ticket.team_id
         }
         $scope.newInfo = jQuery.extend(true, {}, $scope.oldInfo);
     }
-    $scope.initNewInfo()
+
+    $http.get( "/api/get-ticket/"+$scope.id.toString() ).then( function(response){
+        $scope.ticket= new Ticket(response.data)
+        $scope.initNewInfo()
+    },  function(){
+        alert("ticket Id không đúng")
+    })
+
+    
 }])
     
 
@@ -603,7 +580,7 @@ myApp.controller('ticketDetailController' , ['$scope' , '$stateParams','ticketSe
 myApp.controller('newRequestController' , ['$scope' , 'ticketService','$rootScope' , 'commentService',function($scope , ticketService , $rootScope, commentService){
     $scope.user = $rootScope.user
     $scope.ticket = new Ticket()
-    //fake data
+    $scope.ticket.related_user = []
     $scope.ticket.deadline = new Date()
 
     $scope.save = function(){
