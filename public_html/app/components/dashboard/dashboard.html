@@ -22,9 +22,9 @@
             <td> </td>
             <td style="text-align: center">
               <div class="dropdown">
-                <input placeholder="Tìm kiếm ..." ng-model="condition.subject"  data-toggle="dropdown" ng-keyup="searchSubject(condition.subject)">
-                <ul class="dropdown-menu">
-                    <li ng-repeat="subject in search_data.subject" ng-click="condition.subject = subject"><a> {{subject}} </a></li>
+                <input placeholder="Tìm kiếm ..." ng-model="text_input.subject"  data-toggle="dropdown" ng-keyup="searchSubject(text_input.subject)">
+                <ul class="dropdown-menu" ng-show="search_data.subject.length > 0">
+                    <li ng-repeat="subject in search_data.subject" ng-click="condition.subject = subject; text_input.subject=subject"><a> {{subject}} </a></li>
                 </ul>
               </div>
             </td>            
@@ -35,9 +35,26 @@
                     </select>
                 </div>
             </td>
-            <td style="text-align: center"> <input placeholder="Tìm kiếm ..." ng-model= "condition.create_by"></td>
-            <td ><input placeholder="Tìm kiếm ..." ng-model= "condition.employee"></td>
-            <td><input type="datetime-local" ng-model= "condition.deadline" style="width:135px"></td>
+            <td style="text-align: center"> 
+                <div class="dropdown">
+                    <input placeholder="Tìm kiếm ..." ng-model="text_input.create_by"  data-toggle="dropdown" ng-keyup="searchName(text_input.create_by)">
+                    <ul class="dropdown-menu" ng-show="search_data.user_recommend.length > 0">
+                        <li ng-repeat="u in search_data.user_recommend" ng-click="condition.create_by = u.id; text_input.create_by = u.user_name"><a> {{u.user_name }} </a></li>
+                    </ul>
+                  </div>
+            </td>
+            <td >
+              <div class="dropdown">
+                  <input placeholder="Tìm kiếm ..." ng-model="text_input.assign_to"  data-toggle="dropdown" ng-keyup="searchName(text_input.assign_to)">
+                  <ul class="dropdown-menu" ng-show="search_data.user_recommend.length > 0">
+                      <li ng-repeat="u in search_data.user_recommend" ng-click="condition.assign_to = u.id; text_input.assign_to = u.user_name"><a> {{u.user_name }} </a></li>
+                  </ul>
+                </div>
+            
+            </td>
+            <td>
+              <input type="datetime-local" ng-model= "condition.deadline" placeholder="yyyy-MM-ddTHH:mm:ss" style="width:130px" required>
+            </td>
             <td> 
               <select ng-model="condition.status" ng-show="showStatusSelect()">
                   <option ng-repeat="status in getStatus()" ng-value='status'>{{status | toTicketStatus}}</option>
