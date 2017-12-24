@@ -105,22 +105,17 @@ class TicketController extends Controller
     {
         if ($ticket_id != 0) {
 
-            $ticket = DB::table('tickets')
-                ->join('employees', function ($join) {
-                    $join->on('tickets.created_by', '=', 'employees.id');
-                    $join->orOn('tickets.assigned_to', '=', 'employees.id');
-                })
-                ->select('tickets.*', 'employees.display_name')
-                ->where('tickets.id', $ticket_id)
-                ->get();
-
-            dd($ticket);
+            $ticket = Ticket::find($ticket_id);
 
             if ($ticket->count() == 0) {
                 return response('{}')->header('Content-Type', 'application/json');
             }
 
-            $ticket = $ticket[0];
+            $ticket->created_by_employee;
+            $ticket->assigned_to_employee;
+            unset($ticket->created_by_employee->password);
+            unset($ticket->assigned_to_employee->password);
+
             if ($ticket->attachment) {
                 $ticket_attachment = TicketAttachment::where('id', $ticket->attachment)->get()[0];
 
@@ -253,7 +248,14 @@ class TicketController extends Controller
         if ($request->has('per_page') && $request->has('page')) {
             $per_page = intval($request->input('per_page'));
             $page = intval($request->input('page'));
-            return $tickets->forPage($page, $per_page);
+            $tickets = $tickets->forPage($page, $per_page);
+        }
+
+        foreach ($tickets as $ticket) {
+            $ticket->created_by_employee;
+            $ticket->assigned_to_employee;
+            unset($ticket->created_by_employee->password);
+            unset($ticket->assigned_to_employee->password);
         }
 
         return $tickets;
@@ -323,72 +325,55 @@ class TicketController extends Controller
     }
 
     /**
-     * Unread a ticket
-     *
-     * @param Request $request
-     * @return int
-     */
-
-    public function unread(Request $request)
-    {
-        if ($request->has('ticket_id')) {
-            $ticket_id = $request->input('ticket_id');
-            $employee_id = $request->session()->get('employee_id');
-
-            TicketRead::where('ticket_id', $ticket_id)
-                ->where('employee_id', $employee_id)
-                ->delete();
-
-            return 1;
-        }
-
-        return 0;
-    }
-
-    /**
      * Add relaters to ticket
      *
      * @param Request $request
      * @return int
      */
 
-    public function add_relaters(Request $request)
+    public function edit_relaters(Request $request)
     {
         if ($request->has('ticket_id') && $request->has('relaters')) {
+
             $ticket_id = $request->input('ticket_id');
+
             $ticket = Ticket::where('id', $ticket_id)->get();
+
             if ($ticket->count() == 0) {
                 return 0;
             }
+
             $ticket = $ticket[0];
+
             $employee_id = $request->session()->get('employee_id');
-            if ($ticket->created_by != $employee_id && $ticket->assigned_to != $employee_id) {
+            $employee = Employee::find($employee_id);
+
+            if (
+                ($ticket->created_by != $employee_id && $ticket->assigned_to != $employee_id)
+                || $employee->role < 2
+            ) {
                 return 0;
             }
+
+            // Delete old relaters
+            DB::table('ticket_relaters')->where('ticket_id', $ticket_id)->delete();
+
+            // Add new relaters
             $relaters = \GuzzleHttp\json_decode($request->input('relaters'));
             $records = [];
+                // Create records
             foreach ($relaters as $key => $value) {
                 $records[$key] = [
                     'ticket_id' => $ticket_id,
                     'employee_id' => $value,
                 ];
             }
-            DB::table('ticket_relaters')->insert($records);
+
+            if (count($records)) {
+                DB::table('ticket_relaters')->insert($records);
+            }
+
             return 1;
-        }
-
-        return 0;
-    }
-
-
-
-    public function edit_ticket(Request $request)
-    {
-        if ($request->has('ticket_id')) {
-            $employee_id = $request->session()->get('employee_id');
-            $employee = Employee::where('id', $employee_id)->get()[0];
-
-
         }
 
         return 0;

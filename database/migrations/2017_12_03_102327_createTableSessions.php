@@ -22,6 +22,8 @@ class CreateTableSessions extends Migration
             $table->string('platform');
             $table->integer('expired_at');
 
+            $table->timestamps();
+
             $table->foreign('employee_id')
                 ->references('id')->on('employees');
         });

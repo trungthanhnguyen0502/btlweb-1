@@ -6,11 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class TicketRelater extends Model
 {
-    public function ticket() {
-        return $this->belongsTo('Ticket');
-    }
 
-    public function people() {
-        return $this->belongsTo('Employee');
-    }
 }
