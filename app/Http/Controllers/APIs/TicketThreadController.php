@@ -24,7 +24,7 @@ class TicketThreadController extends Controller
             $content = $request->input('content');
 
             // If ticket does not exist
-            $ticket = Ticket::find($ticket_id);
+            $ticket = Ticket::where('id', $ticket_id);
 
             if ($ticket->count() == 0) {
                 return [
@@ -33,7 +33,7 @@ class TicketThreadController extends Controller
                 ];
             }
 
-            $ticket = $ticket->get();
+            $ticket = $ticket->get()->first();
 
             $employee_id = $request->input('employee_id');
             $employee = Employee::where('id', $employee_id)->get()->first();

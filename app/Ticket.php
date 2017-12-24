@@ -13,8 +13,4 @@ class Ticket extends Model
     public function assigned_to_employee() {
         return $this->belongsTo('App\Employee', 'assigned_to');
     }
-
-    public function relaters() {
-        return $this->hasMany('App\TicketRelater', 'ticket_id');
-    }
 }

@@ -174,7 +174,10 @@ class TicketController extends Controller
                 $tickets = $tickets->where('created_by', $employee_id);
                 break;
             case 'related_to':
-                $ticket_relater = TicketRelater::find($employee_id);
+
+                $employee = Employee::find($employee_id);
+                $employee->tickets;
+                $tickets = $employee->tickets;
                 break;
 
             case 'team_id':
@@ -396,7 +399,7 @@ class TicketController extends Controller
             // Add new relaters
             $relaters = \GuzzleHttp\json_decode($request->input('relaters'));
             $records = [];
-                // Create records
+            // Create records
             foreach ($relaters as $key => $value) {
                 $records[$key] = [
                     'ticket_id' => $ticket_id,
@@ -427,7 +430,8 @@ class TicketController extends Controller
      * @return array
      */
 
-    public function close(Request $request, $ticket_id) {
+    public function close(Request $request, $ticket_id)
+    {
 
         if ($ticket_id <= 0) {
             return [
@@ -480,7 +484,8 @@ class TicketController extends Controller
      * @return array
      */
 
-    public function cancel(Request $request, $ticket_id) {
+    public function cancel(Request $request, $ticket_id)
+    {
 
         if ($ticket_id <= 0) {
             return [
