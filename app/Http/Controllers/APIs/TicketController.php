@@ -325,29 +325,6 @@ class TicketController extends Controller
     }
 
     /**
-     * Unread a ticket
-     *
-     * @param Request $request
-     * @return int
-     */
-
-    public function unread(Request $request)
-    {
-        if ($request->has('ticket_id')) {
-            $ticket_id = $request->input('ticket_id');
-            $employee_id = $request->session()->get('employee_id');
-
-            TicketRead::where('ticket_id', $ticket_id)
-                ->where('employee_id', $employee_id)
-                ->delete();
-
-            return 1;
-        }
-
-        return 0;
-    }
-
-    /**
      * Add relaters to ticket
      *
      * @param Request $request
@@ -391,23 +368,12 @@ class TicketController extends Controller
                     'employee_id' => $value,
                 ];
             }
-            DB::table('ticket_relaters')->insert($records);
+
+            if (count($records)) {
+                DB::table('ticket_relaters')->insert($records);
+            }
 
             return 1;
-        }
-
-        return 0;
-    }
-
-
-
-    public function edit_ticket(Request $request)
-    {
-        if ($request->has('ticket_id')) {
-            $employee_id = $request->session()->get('employee_id');
-            $employee = Employee::where('id', $employee_id)->get()[0];
-
-
         }
 
         return 0;

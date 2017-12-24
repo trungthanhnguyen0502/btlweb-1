@@ -75,8 +75,6 @@ Route::group(
             // Change read status for a ticket
         Route::post('read-ticket', 'APIs\TicketController@read')
             ->name('ticket.read');
-        Route::post('unread-ticket', 'APIs\\TicketController@unread')
-            ->name('ticket.unread');
 
             // Edit relaters
         Route::post('add-relaters', 'APIs\\TicketController@edit_relaters')
@@ -103,16 +101,27 @@ Route::group(
 
             // Get list of teams
         Route::get('teams', 'APIs\\TeamController@get_teams');
+
+
+        // Edit Ticket Routes
+        Route::group(
+            ['prefix' => 'edit-ticket'],
+
+            function () {
+
+                Route::put('deadline', 'APIs\\EditTicketController@change_deadline');
+
+                Route::put('priority', 'APIs\\EditTicketController@change_priority');
+
+                Route::put('team', 'APIs\\EditTicketController@change_team');
+            }
+        );
     }
 );
 
 Route::group(['prefix' => 'default'], function () {
 
 //    Route::get('profile-picture.{png}', )
-});
-
-Route::get('employees', function () {
-   return \App\Employee::paginate();
 });
 
 /**
