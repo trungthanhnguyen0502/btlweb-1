@@ -36,7 +36,7 @@ Route::prefix('auth')->group(function () {
     Route::get('logout', 'Auth\\LoginController@logout')
         ->name('logout');
 
-    Route::get('request-password', 'Auth\\ForgotPasswordController@request_password')
+    Route::any('request-password', 'Auth\\ForgotPasswordController@request_password')
         ->name('password.request');
 
     Route::any('reset-password', 'Auth\\ForgotPasswordController@reset_password')

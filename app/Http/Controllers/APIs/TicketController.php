@@ -64,6 +64,7 @@ class TicketController extends Controller
             $ticket_attachment->save();
             $ticket->attachment = $ticket_attachment->id;
         }
+
         $ticket->save();
 
         $who_created = Employee::where('id', $employee_id)->get()[0];
