@@ -9,7 +9,7 @@
             <div class="col-md-8 group-action-content group-action-request-content">
                 
                 <span  class="dropdown" >
-                     <button class="btn dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users" aria-hidden="true" ></i> Thay đổi bộ phận  IT
+                     <button class="btn btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users" aria-hidden="true" ></i> Thay đổi bộ phận  IT
                      </button>
 
                         <ul class="dropdown-menu">
@@ -47,7 +47,7 @@
                 </span>
 
                 <span  class="dropdown" >
-                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                        <button class="btn btn-sm dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-edit" aria-hidden="true"  style="color: #e28624"></i> Thay đổi độ ưu tiên
                         </button>
                         <ul class="dropdown-menu">
@@ -56,7 +56,7 @@
                 </span> 
 
                 <span class="dropdown set-up-status">
-                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                        <button class="btn btn-sm dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-exchange" aria-hidden="true" style="color: #813384"></i> Thay đổi trạng thái
                         </button>
                         <ul class="dropdown-menu">
@@ -102,7 +102,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 request-label">Người yêu cầu:</div>
-                    <div class="col-md-6"> {{ ticket.create_by }}</div>
+                    <div class="col-md-6"> {{ ticket.created_by }}</div>
                 </div>
                 <div class="row">
                     <div class="col-md-6 request-label">Mức độ ưu tiên:</div>
@@ -137,17 +137,16 @@
                 </div>
             </div>
         </div>
-
-        <div>
-            <div class="w3-container">
+        <div>   
                 <div>    
                     <span> <img  class="img-circle" style="height:50px;width:50px;border: 1px solid #ddd;padding: 5px;"src="assets/img/23561516_1535193256550200_8580982912237504053_n (1).jpg"></span>
-                    <span><h5 class="w3-opacity"><b> {{user.user_name}}</b></h5></span>
+                    <span><h5 class="w3-opacity"><b> {{info.user.user_name}}</b></h5></span>
+                    <img src="{{ticket.attachment_url}}"> 
+                
                 </div>
                 <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>Jan 2015 - <span class="w3-tag w3-teal w3-round">Current</span></h6>
                 <p> {{ ticket.content}}</p>
                 <hr>
-            </div>
         </div>
     </div>
 </div>
