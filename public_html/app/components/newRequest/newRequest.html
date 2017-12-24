@@ -14,9 +14,9 @@
                             <label> Tên công việc:</label>
                             <input type="text" class="form-control" ng-model="ticket.subject">
                         </div>
-                        <div class="form-group">
+                        <div>
                             <label> Mức độ ưu tiên</label>
-                            <select ng-model="ticket.priority">
+                            <select ng-model="ticket.priority"  class="form-control">
                                   <option value= 1 > {{ 1 | toPriority}}</option>
                                   <option value= 2 > {{ 2 | toPriority}}</option>
                                   <option value= 3 > {{ 3 | toPriority}}</option>
@@ -26,12 +26,12 @@
 
                         <div class="form-group">
                             <label> Ngày hết hạn </label>
-                            <input type="datetime-local" ng-model="ticket.deadline" placeholder="yyyy-MM-ddTHH:mm:ss" required>
+                            <input type="datetime-local" class="form-control" ng-model="ticket.deadline" placeholder="yyyy-MM-ddTHH:mm:ss" required>
                         </div>
 
                         <div class="form-group">
                             <label> Bộ phận IT </label>
-                            <select ng-model="ticket.team_id">
+                            <select ng-model="ticket.team_id" class="form-control">
                                 <option value= 1 > HaNoi-IT</option>
                                 <option value= 2 > DaNang-IT</option>
                              </select>

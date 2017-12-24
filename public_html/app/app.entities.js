@@ -3,7 +3,7 @@ function Ticket(obj){
     this.id           = null
     this.subject      = null
     this.content      = null
-    this.create_by    = null
+    this.created_by    = null
     this.status       = null
     this.priority     = null
     this.deadline     = new Date(0,0,0,0,0,0)
@@ -16,8 +16,16 @@ function Ticket(obj){
     this.updated_at   = null
     this.deleted_at   = null
     this.is_read      = null
-    this.image        = null
-    for (var pro in obj)  this[pro] = obj[pro]
+    this.attachment_url = null
+
+    this.convert_ticket = function(obj){
+        if(obj)
+            for (var pro in obj)  this[pro] = obj[pro]
+    }
+
+    if(obj)
+        this.convert_ticket(obj)
+    
 }
 
 function Comment(obj){
@@ -37,7 +45,7 @@ function Comment(obj){
 function Condition(obj){
     this.id             = null
     this.subject        = null
-    this.create_by      = null
+    this.created_by      = null
     this.status         = null
     this.priority       = null
     this.employee_id    = null
@@ -94,7 +102,7 @@ function TicketAttribute(obj){
 
 function PaginatePrams(){
     this.current_page = 1
-    this.page_size = 10
+    this.page_size = 5
     this.total = 10
 }
 
@@ -110,13 +118,15 @@ function User(obj){
     this.last_name  = null
     this.first_name = null
     this.avartar     = null
+
+  
     for (var pro in obj)
         this[pro] = obj[pro]
     if( obj && obj['display_name']){
-        this.user_name = obj['display_name']
+            this.user_name = obj['display_name']
     }
     if( obj && obj['picture']){
         this.avartar = obj['picture']
     }
-
+   
 }

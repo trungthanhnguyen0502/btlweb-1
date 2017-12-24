@@ -1,6 +1,6 @@
 <h3> {{name | VietNamTrans }}</h3>
 <div style="float:right">
-  <button class="btn btn-info btn-md" ng-click="reload"> Reset bộ lọc </button>
+  <button class="btn btn-info btn-md" ng-click="initCondition()"> Reset bộ lọc </button>
   <button class="btn btn-info btn-md"  ng-click="getTickets()"> Tìm kiếm     </button>
 </div>
   <table class="table table-striped table-hover">
@@ -21,12 +21,7 @@
         <tr>
             <td> </td>
             <td style="text-align: center">
-              <div class="dropdown">
-                <input placeholder="Tìm kiếm ..." ng-model="text_input.subject"  data-toggle="dropdown" ng-keyup="searchSubject(text_input.subject)">
-                <ul class="dropdown-menu" ng-show="search_data.subject.length > 0">
-                    <li ng-repeat="subject in search_data.subject" ng-click="condition.subject = subject; text_input.subject=subject"><a> {{subject}} </a></li>
-                </ul>
-              </div>
+                <input placeholder="Tìm kiếm ..." ng-model="condition.subject">
             </td>            
             <td>
                 <div class="form-group">
@@ -37,9 +32,9 @@
             </td>
             <td style="text-align: center"> 
                 <div class="dropdown">
-                    <input placeholder="Tìm kiếm ..." ng-model="text_input.create_by"  data-toggle="dropdown" ng-keyup="searchName(text_input.create_by)">
+                    <input placeholder="Tìm kiếm ..." ng-model="text_input.created_by"  data-toggle="dropdown" ng-keyup="searchName(text_input.created_by)">
                     <ul class="dropdown-menu" ng-show="search_data.user_recommend.length > 0">
-                        <li ng-repeat="u in search_data.user_recommend" ng-click="condition.create_by = u.id; text_input.create_by = u.user_name"><a> {{u.user_name }} </a></li>
+                        <li ng-repeat="u in search_data.user_recommend" ng-click="condition.created_by = u.id; text_input.created_by = u.user_name"><a> {{u.user_name }} </a></li>
                     </ul>
                   </div>
             </td>
@@ -82,10 +77,10 @@
   <div class="pagination pagination-centered" style="float:right" >
     <ul  class="pagination-controle pagination">
      <li>
-       <button type="button"  class="btn btn-info" ng-disabled="paginate_params.current_page == 0" ng-click="paginate_params.current_page = paginate_params.current_page-1">PREV</button>
+       <button type="button"  class="btn btn-info" ng-disabled="paginate_params.current_page == 1" ng-click="paginate_params.current_page = paginate_params.current_page-1 ; getTickets()">PREV</button>
      </li>
      <li>
-       <span>Page {{paginate_params.current_page + 1}} of {{ paginate_params.total }}</span>
+       <span>Page {{paginate_params.current_page }} of {{ paginate_params.total }}</span>
      </li>
      <li>
         <button type="button"  class="btn btn-info" ng-disabled="paginate_params.current_page >= paginate_params.total -1" ng-click="paginate_params.current_page = paginate_params.current_page+1; getTickets()">NEXT </button>
