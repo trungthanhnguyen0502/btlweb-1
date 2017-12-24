@@ -45,8 +45,12 @@ myApp.config(function($stateProvider, $urlRouterProvider) {
 })
 
 myApp.run(['$rootScope' ,'$http', 'userService',  function( $rootScope , $http, userService){
-    user = new User()
-    userService.getInfo(user)
+    $rootScope.info = {}
+    $http.get('/api/employee-info').then( function(response){
+        $rootScope.info.user = new User(response.data)
+        } , function(){
+            alert("thông tin đăng nhập không đúng")
+        })  
 }])
 
 myApp.directive('uploadFiles', function () {  
@@ -63,10 +67,6 @@ myApp.directive('uploadFiles', function () {
     }  
 }) 
 
-myApp.component('userHeader' , {
-    templateUrl: './app/common/userHeader.html',
-    controller: 'userHeaderController'
-})
 
 
 
@@ -90,6 +90,11 @@ myApp.component('newRequest', {
 })
 myApp.component('myFooter',{
     templateUrl: './app/common/footer.html',
+})
+
+myApp.component('myHeader' ,{
+    templateUrl: './app/common/userHeader.html',
+    controller: 'headerController'
 })
 
 
@@ -239,6 +244,7 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
             if( ticket[pro])
                 data[pro] = ticket[pro]
         }
+        console.log(data)
         $http.post("/api/create-ticket" ,data).
             then(function (response) {
                 alert("success!");
@@ -305,13 +311,7 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function(cond
 }])
 
 myApp.service('userService' ,['$http', 'fakeDataService' , function( $http , fakeDataService){
-    this.getInfo = function( user){
-        $http.get('/api/employee-info').then( function(response){
-            user = new User(response.data)
-        } , function(){
-            alert("thông tin đăng nhập không đúng")
-        })  
-    }
+    
     this.searchName = function( input , output){
         $http.post('/api/search-employee' ,{name:input}).then( function(response){
             console.log( response.data)
@@ -403,9 +403,6 @@ myApp.service('commentService', ['$http' , function($http){
 
 
 
-myApp.controller('userHeaderController', ['$scope' , '$rootScope' , function($scope , $rootScope){
-    $scope.user = $rootScope.user
-}])
 
 
 myApp.controller('sideBarController',['$scope', function($scope){
@@ -661,4 +658,10 @@ myApp.controller('newRequestController' , ['$scope' , 'ticketService','$rootScop
     }
 
 
+}])
+
+
+myApp.controller('headerController', ['$scope' , '$rootScope' , function($scope , $rootScope){
+
+    $scope.info = $rootScope.info
 }])
