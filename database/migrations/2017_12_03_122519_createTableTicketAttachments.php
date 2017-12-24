@@ -15,7 +15,9 @@ class CreateTableTicketAttachments extends Migration
     {
         Schema::create('ticket_attachments', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('employee_id');
+            $table->unsignedInteger('employee_id');
+            $table->foreign('employee_id')
+                ->references('id')->on('employees');
             $table->string('mime_type')->default('application/octet-stream');
             $table->string('file_name');
             $table->binary('data');

@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', '15021716@coltech.vnu.vn'),
-        'name' => env('MAIL_FROM_NAME', 'BTLWEB'),
+        'address' => env('MAIL_FROM_ADDRESS', 'thanhtung.uet@gmail.com'),
+        'name' => env('MAIL_FROM_NAME', 'Bài tập lớn Web'),
     ],
 
     /*

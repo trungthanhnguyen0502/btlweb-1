@@ -17,19 +17,28 @@ class CreateTableTickets extends Migration
             $table->increments('id');
             $table->string('subject', 255);
             $table->mediumText('content');
-            $table->integer('created_by')->foreign('id')->reference('id')->on('users');
+            $table->unsignedInteger('created_by');
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('out_of_date')->default(0);
             $table->tinyInteger('priority');
             $table->dateTime('deadline');
-            $table->integer('assigned_to')->default(0);
+            $table->unsignedInteger('assigned_to')->default(0);
             $table->integer('rating')->nullable();
             $table->integer('attachment')->default(0);
-            $table->integer('team_id');
+            $table->tinyInteger('team_id');
             $table->integer('resolved_at')->default(0);
             $table->integer('closed_at')->default(0);
             $table->integer('deleted_at')->nullable();
             $table->timestamps();
+
+            $table->foreign('created_by')
+                ->references('id')->on('employees');
+
+            $table->foreign('assigned_to')
+                ->references('id')->on('employees');
+
+            $table->foreign('team_id')
+                ->references('id')->on('teams');
         });
     }
 

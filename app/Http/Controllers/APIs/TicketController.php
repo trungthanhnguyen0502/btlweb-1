@@ -51,6 +51,21 @@ class TicketController extends Controller
         $ticket->team_id = $request->input('team_id');
         $ticket->content = $request->input('content');
 
+        // Assigned to leader of team
+        $leader = Employee::where('team_id', $ticket->team_id)
+            ->where('role', 2)
+            ->where('is_leader', 1)
+            ->get();
+
+        if ($leader->count() != 1) {
+            return 0;
+        }
+
+        $leader = $leader[0];
+
+        $ticket->assigned_to = $leader->id;
+
+        // If ticket has attachment
         if ($request->input('image')) {
             $image = (object)$request->input('image');
             $ticket_attachment = new TicketAttachment();
@@ -64,17 +79,18 @@ class TicketController extends Controller
             $ticket_attachment->save();
             $ticket->attachment = $ticket_attachment->id;
         }
-
+        // Save ticket
         $ticket->save();
 
         $who_created = Employee::where('id', $employee_id)->get()[0];
         $team = Team::where('id', $who_created->team_id)->get()[0];
         $leaders = Employee::where('team_id', $who_created->team_id)->whereIn('role', [2, 3])->get();
 
+        // Create mail
         $notification = new NewTicket();
         $notification->who_created = $who_created->display_name;
         $notification->team_name = $team->title;
-        $notification->subject = $subject;
+        $notification->title = $subject;
         $notification->deadline = $ticket->deadline;
 
         $num_of_leaders = $leaders->count();
@@ -89,7 +105,16 @@ class TicketController extends Controller
     {
         if ($ticket_id != 0) {
 
-            $ticket = Ticket::where('id', $ticket_id)->get();
+            $ticket = DB::table('tickets')
+                ->join('employees', function ($join) {
+                    $join->on('tickets.created_by', '=', 'employees.id');
+                    $join->orOn('tickets.assigned_to', '=', 'employees.id');
+                })
+                ->select('tickets.*', 'employees.display_name')
+                ->where('tickets.id', $ticket_id)
+                ->get();
+
+            dd($ticket);
 
             if ($ticket->count() == 0) {
                 return response('{}')->header('Content-Type', 'application/json');
@@ -359,8 +384,14 @@ class TicketController extends Controller
 
     public function edit_ticket(Request $request)
     {
-//        $employee->id
+        if ($request->has('ticket_id')) {
+            $employee_id = $request->session()->get('employee_id');
+            $employee = Employee::where('id', $employee_id)->get()[0];
 
+
+        }
+
+        return 0;
     }
 
 }

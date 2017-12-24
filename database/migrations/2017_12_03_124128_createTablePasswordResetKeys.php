@@ -15,7 +15,11 @@ class CreateTablePasswordResetKeys extends Migration
     {
         Schema::create('password_reset_keys', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('employee_id');
+            $table->unsignedInteger('employee_id');
+            $table->foreign('employee_id')
+                ->references('id')->on('employees')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->string('security_key');
             $table->integer('request_time');
             $table->ipAddress('ip_address');

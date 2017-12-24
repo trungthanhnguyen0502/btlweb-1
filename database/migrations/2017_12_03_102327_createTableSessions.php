@@ -15,13 +15,15 @@ class CreateTableSessions extends Migration
     {
         Schema::create('sessions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('employee_id');
+            $table->unsignedInteger('employee_id');
             $table->string('login_key');
             $table->ipAddress('ip_address');
             $table->string('browser');
             $table->string('platform');
             $table->integer('expired_at');
-            $table->timestamps();
+
+            $table->foreign('employee_id')
+                ->references('id')->on('employees');
         });
     }
 

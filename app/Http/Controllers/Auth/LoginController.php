@@ -72,7 +72,7 @@ class LoginController extends Controller
                 if ($request->input('remember')) {
 
                     // Cookie Time To Live (minutes)
-                    $cookie_ttl = 43200;
+                    $cookie_ttl = $request->session()->get('settings')['cookie_ttl'];
 
                     // Save session to database
                     $session = new Session();

@@ -15,8 +15,14 @@ class CreateTableTicketThreads extends Migration
     {
         Schema::create('ticket_threads', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('ticket_id');
-            $table->integer('employee_id');
+            $table->unsignedInteger('ticket_id');
+            $table->foreign('ticket_id')
+                ->references('id')->on('tickets')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->unsignedInteger('employee_id');
+            $table->foreign('employee_id')
+                ->references('id')->on('employees');
             $table->tinyInteger('type');
             $table->mediumText('content');
             $table->string('note')->nullable();

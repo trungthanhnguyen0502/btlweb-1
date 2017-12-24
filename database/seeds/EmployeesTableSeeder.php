@@ -23,9 +23,8 @@ class EmployeesTableSeeder extends Seeder
             'display_name' => 'Phạm Thanh Tùng',
             'title' => 'Developer',
             'team_id' => 1,
-            'is_leader' => 1,
+            'is_leader' => 0,
             'role' => 3,
-            'role_title' => 'Department Manager'
         ]);
 
         DB::table('employees')->insert([
@@ -40,8 +39,7 @@ class EmployeesTableSeeder extends Seeder
             'title' => 'Developer',
             'team_id' => 1,
             'is_leader' => 1,
-            'role' => 3,
-            'role_title' => 'Department Manager'
+            'role' => 2,
         ]);
 
         DB::table('employees')->insert([
@@ -54,10 +52,13 @@ class EmployeesTableSeeder extends Seeder
             'last_name' => 'Nguyễn',
             'display_name' => 'Nguyễn Đình Tuân',
             'title' => 'Developer',
-            'team_id' => 1,
+            'team_id' => 2,
             'is_leader' => 1,
-            'role' => 3,
-            'role_title' => 'Department Manager'
+            'role' => 2,
+        ]);
+
+        DB::table('employees')->update([
+            'picture' => '/default/profile-picture.png'
         ]);
     }
 }

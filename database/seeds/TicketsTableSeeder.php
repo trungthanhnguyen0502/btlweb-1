@@ -24,7 +24,7 @@ class TicketsTableSeeder extends Seeder
                 'out_of_date' => mt_rand(1, 10) % 2 + 1,
                 'priority' => mt_rand(1, 5),
                 'deadline' => date('Y-m-d H:i:s', $request_time + mt_rand(1000, 9999)),
-                'assigned_to' => mt_rand(0, 3),
+                'assigned_to' => mt_rand(1, 3),
                 'attachment' => 0,
                 'team_id' => mt_rand(1, 10) % 2 + 1,
             ]);

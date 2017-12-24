@@ -24,10 +24,13 @@ class CreateTableEmployees extends Migration
             $table->string('last_name');
             $table->string('display_name');
             $table->string('title');
-            $table->integer('team_id');
+            $table->tinyInteger('team_id');
+            $table->foreign('team_id')
+                ->references('id')->on('teams')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->tinyInteger('is_leader')->default(0);
             $table->tinyInteger('role');
-            $table->string('role_title');
             $table->timestamps();
         });
     }
