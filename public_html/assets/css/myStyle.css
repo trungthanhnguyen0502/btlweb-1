@@ -1,3 +1,7 @@
-.menu-bar {
+#menu-bar, #content {
     border-radius: 0px;
+}
+
+#menu-bar {
+    border-right: 0px;
 }
