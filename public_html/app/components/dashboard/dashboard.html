@@ -67,7 +67,7 @@
         <td style="text-align: left"> {{ticket.priority | toPriority}}</td>
         <td style="text-align: left"> {{ticket.creat_by}}</td>
         <td style="text-align: left"> {{ticket.assigned_to}}</td>
-        <td style="text-align: left"> {{ ticket.deadline | date: "dd-MM-yyyy"}} </td>
+        <td style="text-align: left"> {{ ticket.deadline | date:'dd-MM-yyyy'}} </td>
         <td style="text-align: left"> {{ticket.status | toTicketStatus }}</td>
       </tr>
 

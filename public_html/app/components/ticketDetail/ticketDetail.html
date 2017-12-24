@@ -13,37 +13,14 @@
                      </button>
 
                         <ul class="dropdown-menu">
-                            <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 0">  <a>{{0 | toTeam}}</a> </li>
-                            <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 1">  <a>{{1 | toTeam}}</a> </li>
+                            <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 1; console.log(newInfo)">  <a>{{0 | toTeam}}</a> </li>
+                            <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 2;console.log(newInfo)">  <a>{{1 | toTeam}}</a> </li>
                         </ul>
                 </span> 
 
                 <span class="deadline">
                     <button class="btn btn-sm" data-toggle="modal" data-target="#myModal3"><i class="fa fa-calendar" aria-hidden="true"  style="color: #38d1c9"></i> Thay đổi deadline 
                     </button>
-                    <div id="myModal3" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title"> Enter comment </h4>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <label> select new deadline :  </label>
-                                        <br>
-                                        <input type="datetime-local" ng-model="newInfo.deadline" >
-                                        <br>
-                                        <label> Note :  </label>
-                                        <textarea type="text" ng-model="commentContent" class="form-control"></textarea>
-                                    </div>
-                                    <div class="modal-footer">
-                                            <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>
-                                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="saveChange()"> Save </button>
-                                    </div>
-                                </div>    
-                            </div>
-                    </div>
                 </span>
 
                 <span  class="dropdown" >
@@ -64,32 +41,20 @@
                         </ul>
                 </span>
 
-                <button class="btn btn-sm "><i class="fa fa-user" aria-hidden="true"  style="color: #70ffa6"></i> Thay đổi người
-                    liên quan
-                </button>
+                <span class="related_user">
+                        <button class="btn btn-sm" data-toggle="modal" data-target="#myModal4"><i class="fa fa-user" aria-hidden="true"  style="color: #70ffa6"></i> Thay đổi người
+                            liên quan
+                        </button>
+                </span>
 
+             
                 <button class="btn btn-sm "><i class="fa fa-hand-o-right" aria-hidden="true"  style="color: #0ea432"></i> Assign
                 </button>
                
 
-                <div id="myModal2" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title"> Enter comment </h4>
-                                </div>
+              
 
-                                <div class="modal-body">
-                                    <input type="text" ng-model="commentContent" class="form-control">
-                                </div>
-                                <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="saveChange()"> Save </button>
-                                </div>
-                            </div>    
-                        </div>
-                </div>
+
             </div>
         </div>
     </div>
@@ -129,7 +94,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 request-label">Bộ phận IT:</div>
-                    <div class="col-md-6"> {{ ticket.team_id | toTeam }}</div>
+                    <div class="col-md-6"> {{ ticket.team_id}}</div>
                 </div>
                 <div class="row">
                     <div class="col-md-6 request-label">Người liên quan:</div>
@@ -165,10 +130,107 @@
 
 
 <div class="input-discussion" style="border-top: solid 1px #e9ebee;">    
-    <textarea tyle="text" class="form-control" rows="10" style="height:80px"ng-model="commentInput"></textarea>
+    <textarea tyle="text" class="form-control" rows="10" style="height:80px"ng-model="commentInput2"></textarea>
     <button class="btn btn-sm btn-info form-control" ng-click="createComment()">
         <i class="fa fa-comments-o" aria-hidden="true"></i>
         Gửi bình luận
     </button>
 </div>
 
+
+
+
+<div id="myModal2" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"> Enter comment </h4>
+                </div>
+
+                <div class="modal-body">
+                    <input type="text" ng-model="commentInput" class="form-control">
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="saveChange()"> Save </button>
+                </div>
+            </div>    
+        </div>
+</div>
+
+
+<div id="myModal3" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"> Enter comment </h4>
+                </div>
+
+                <div class="modal-body">
+                    <label> select new deadline :  </label>
+                    <br>
+                    <input type="datetime-local" ng-model="newInfo.deadline" >
+                    <br>
+                    <label> Note :  </label>
+                    <textarea type="text" ng-model="commentInput" class="form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="saveChange()"> Save </button>
+                </div>
+            </div>    
+        </div>
+</div>
+
+
+
+<div id="myModal4" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Enter comment </h4>
+                </div>
+
+                <div class="modal-body">
+                    <label> nhập người liên quan:  </label>
+                    <br>
+                    <input type="datetime-local" ng-model="newInfo.deadline" >
+                    <br>
+                    <label> Note:  </label>
+                    <textarea type="text" ng-model="commentInput" class="form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="saveChange()"> Save </button>
+                </div>
+            </div>    
+        </div>
+</div>
+    
+
+
+
+<div id="myModal5" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Enter comment </h4>
+                </div>
+
+                <div class="modal-body">
+                    <label> chọn người giao nhiệm vụ:  </label>
+                    <br>
+                    <input type="datetime-local" ng-model="newInfo.deadline" >
+                    <br>
+                    <label> Note:  </label>
+                    <textarea type="text" ng-model="commentInput" class="form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="saveChange()"> Save </button>
+                </div>
+            </div>    
+        </div>
+</div>

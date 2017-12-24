@@ -21,6 +21,14 @@ function Ticket(obj){
     this.convert_ticket = function(obj){
         if(obj)
             for (var pro in obj)  this[pro] = obj[pro]
+        if(obj.deadline)
+            this.deadline = new Date(obj.deadline)
+        if(obj.created_at)
+            this.deadline = new Date(obj.created_at)
+        if( obj.created_by_employee)
+            this.created_by =  obj.created_by_employee.display_name
+        if( obj.assigned_to_employee)
+            this.assigned_to =  obj.assigned_to_employee.display_name
     }
 
     if(obj)
@@ -102,7 +110,7 @@ function TicketAttribute(obj){
 
 function PaginatePrams(){
     this.current_page = 1
-    this.page_size = 5
+    this.page_size = 10
     this.total = 10
 }
 
