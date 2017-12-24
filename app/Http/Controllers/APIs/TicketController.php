@@ -123,10 +123,9 @@ class TicketController extends Controller
     public function get_tickets(Request $request)
     {
         $employee_id = $request->session()->get('employee_id');
-
         $tickets = Ticket::all();
-
         $selector = $request->has('selector') ? $request->input('selector') : 'assigned_to';
+
         switch ($selector) {
             case 'created_by':
                 $tickets = $tickets->where('created_by', $employee_id);
@@ -216,9 +215,15 @@ class TicketController extends Controller
 
         if ($request->has('count')) {
             return $tickets->count();
-        } else {
-            return $tickets;
         }
+
+        if ($request->has('per_page') && $request->has('page')) {
+            $per_page = intval($request->input('per_page'));
+            $page = intval($request->input('page'));
+            return $tickets->forPage($page, $per_page);
+        }
+
+        return $tickets;
     }
 
     /**

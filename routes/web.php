@@ -98,8 +98,17 @@ Route::group(
             // Search Employee
         Route::post('search-employee', 'APIs\\EmployeeController@search_employee')
             ->name('employee.search');
+
+        // Team APIs
+
+            // Get list of teams
+        Route::get('teams', 'APIs\\TeamController@get_teams');
     }
 );
+
+Route::get('employees', function () {
+   return \App\Employee::paginate();
+});
 
 /**
  * Home Redirecting

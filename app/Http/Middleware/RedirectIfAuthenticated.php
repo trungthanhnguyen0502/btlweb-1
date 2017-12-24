@@ -32,11 +32,7 @@ class RedirectIfAuthenticated
 
     protected function isValidSession($login_key, $employee_id, $request_time)
     {
-        if ($login_key == '') {
-            return false;
-        }
-
-        if ($employee_id <= 0) {
+        if ($login_key == '' || $employee_id <= 0) {
             return false;
         }
 
