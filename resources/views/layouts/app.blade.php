@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -12,6 +11,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/custom.css">
 </head>
 <body>
 
@@ -46,6 +46,11 @@
                         <li>
                             <a href="{{route('login')}}">Đăng nhập</a>
                         </li>
+                        <li>
+                            <a target="_blank"
+                                    href="https://drive.google.com/open?id=1zo19k3ZeOBKrxcbWBmPWu_bLCZiwFX-C"
+                                    > Yêu cầu </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -55,5 +60,11 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="/js/jquery-ui/jquery-ui.min.js"></script>
+    <script>
+        $(function () {
+            $(".panel").draggable();
+        });
+    </script>
 </body>
 </html>
