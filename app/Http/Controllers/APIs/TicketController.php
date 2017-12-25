@@ -253,12 +253,12 @@ class TicketController extends Controller
             return $tickets->count();
         }
 
-        for ($i = $tickets->count() - 1; $i >= 0; $i--) {
-            $tickets[$i]->created_by_employee();
-            $tickets[$i]->assigned_to_employee();
+        foreach ($tickets as $ticket) {
+            $ticket->created_by_employee();
+            $ticket->assigned_to_employee();
 
-            unset($tickets[$i]->created_by_employee->password);
-            unset($tickets[$i]->assigned_to_employee->password);
+            unset($ticket->created_by_employee->password);
+            unset($ticket->assigned_to_employee->password);
         }
 
         if ($request->has('per_page') && $request->has('page')) {
