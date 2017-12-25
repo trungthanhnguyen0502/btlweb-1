@@ -89,6 +89,10 @@ Route::group(
         Route::get('attachment/{id}/{filename}', 'APIs\\TicketAttachmentController@get_attachment')
             ->name('ticket.attachment');
 
+        // Rate this ticket
+        Route::put('rate/{ticket_id}', 'APIs\\TicketController@rate')
+            ->name('ticket.rate');
+
         // Employee APIs
 
         // Get current logged-in employee

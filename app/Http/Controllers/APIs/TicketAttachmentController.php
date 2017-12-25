@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class TicketAttachmentController extends Controller
 {
     /**
-     * Output attachment as file
+     * Transfer attachment as file
      *
      * @param Request $request
      * @param $id string

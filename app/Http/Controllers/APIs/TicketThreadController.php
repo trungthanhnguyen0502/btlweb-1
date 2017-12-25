@@ -85,7 +85,7 @@ class TicketThreadController extends Controller
         }
 
         $ticket = $ticket->get()->first();
-        $ticket->relaters;
+        $ticket->relaters()->get();
 
         $employee_id = $request->session()->get('employee_id');
         $employee = Employee::where('id', $employee_id)->get()->first();

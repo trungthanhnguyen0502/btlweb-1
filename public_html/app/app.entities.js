@@ -17,6 +17,8 @@ function Ticket(obj){
     this.deleted_at   = null
     this.is_read      = null
     this.attachment_url = null
+    this.related_user  = []
+
 
     this.convert_ticket = function(obj){
         if(obj)

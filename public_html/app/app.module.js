@@ -302,7 +302,15 @@ myApp.service('fakeDataService', ['ticketService', function (ticketService) {
 }])
 
 myApp.service('commentService', ['$http', function ($http) {
-    this.getComments = function (ticket_id) {
+    this.getComments = function (ticket_id , output) {
+        $http.get("/api/get-comments/"+ ticket_id).then( function(response){
+            output.length = 0 
+            for( index in response.data){
+                output.push( new Comment( response.data[index]))
+            }  
+        } , function( response){
+
+        } )
     }
     this.createComment = function (data) {
         console.log(data)
@@ -433,6 +441,8 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
     $scope.commentInput = null
     $scope.commentInput2 = null
     $scope.info = $rootScope.info
+    $scope.user_recommend = []
+    $scope.comments = []
     $scope.oldInfo = {}
     $scope.newInfo = {}
 
@@ -522,10 +532,11 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
         }
         data = {ticket_id: $scope.ticket.id, content: $scope.commentInput2}
         commentService.createComment(data)
+        $scope.loadComment()
     }
 
     $scope.loadComment = function(){
-        // commentService.loadComment(ticket_id , $scope.)
+        commentService.loadComment(ticket_id , $scope.comments = [])
     }
 
 
@@ -555,12 +566,38 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
         $scope.newInfo = jQuery.extend(true, {}, $scope.oldInfo);
     }
 
+    $scope.searchName = function (name) {
+        if (typeof(name) == 'string' && name.length > 0 && name.length % 2 == 0) {
+            userService.searchName(name, $scope.user_recommend)
+        }
+    }
+    
+    $scope.addRelatedUser = function( user ){
+        if(user){
+            shortcutName = user.user_name.split(" ")
+            user.user_name = shortcutName[shortcutName.length-1]
+            $scope.ticket.related_user.push(user);
+            $scope.inputName = ""
+            $scope.user_recommend = []
+        }
+    }
+    $scope.removeRelatedUser = function(id){
+        for( var u in $scope.ticket.related_user){
+            if(  $scope.ticket.related_user[u].id == id )
+                $scope.ticket.related_user.pop(u)
+        }
+    }
+
+
     $http.get("/api/get-ticket/" + $scope.id.toString()).then(function (response) {
         $scope.ticket = new Ticket(response.data)
         $scope.initNewInfo()
     }, function () {
         alert("ticket Id không đúng")
     })
+
+
+
 
 
 }])

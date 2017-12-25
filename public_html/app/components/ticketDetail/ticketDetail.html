@@ -1,11 +1,12 @@
 <div class="main-content">
     <div class="header-content">
         <div class="row action-content">
-            <div class="col-md-4">
-                <div class="title-header-content">
-                    <i class="fa fa-globe" aria-hidden="true"></i> Test
-                </div>
-            </div>
+            <span class="col-md-4">
+                <span class="title-header-content">
+                    <i class="fa fa-globe  fa-2x" aria-hidden="true"></i> 
+                </span>
+                <h3>Thông tin chi tiết</h3>
+            </span>
             <div class="col-md-8 group-action-content group-action-request-content">
                 
                 <span  class="dropdown" >
@@ -94,7 +95,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 request-label">Bộ phận IT:</div>
-                    <div class="col-md-6"> {{ ticket.team_id}}</div>
+                    <div class="col-md-6"> {{ ticket.team_id | toTeam}}</div>
                 </div>
                 <div class="row">
                     <div class="col-md-6 request-label">Người liên quan:</div>
@@ -192,8 +193,20 @@
                 </div>
                 <div class="modal-body">
                     <label> nhập người liên quan:  </label>
-                    <br>
-                    <input type="datetime-local" ng-model="newInfo.deadline" >
+                  
+                        <div class="form-control" >
+                            <div style="display:inline-block"> 
+                                <ul>
+                                    <span class="label label-success" style="display:inline-block;" ng-repeat="related in ticket.related_user" ng-click="removeRelatedUser( related.id )"> {{ related.user_name }} ;</span>
+                                </ul>
+                            </div>              
+                            <div class="dropdown"  style="display:inline-block" >
+                                    <input style="outline:none; background:transparent;border:none"   data-toggle="dropdown" ng-model="inputName" ng-keyup="searchName(inputName)">
+                                    <div class="dropdown-menu" ng-show="user_recommend.length > 0">
+                                          <li ng-repeat="u in user_recommend" ng-click="addRelatedUser(u)"><a> {{u.user_name }} </a></li>
+                                    </div>
+                            </div>
+                        </div>
                     <br>
                     <label> Note:  </label>
                     <textarea type="text" ng-model="commentInput" class="form-control"></textarea>
