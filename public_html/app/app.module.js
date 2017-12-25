@@ -239,7 +239,6 @@ myApp.service('userService', ['$http', 'fakeDataService', function ($http, fakeD
         output.length = 0
 
         $http.post('/api/search-employee', {name: input}).then(function (response) {
-            console.log(response.data)
             for (index in response.data) {
                 user = {}
                 user.id = response.data[index].id

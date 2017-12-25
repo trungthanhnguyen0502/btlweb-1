@@ -1,57 +1,57 @@
 <div class="main-content">
     <div class="header-content">
-        <div class="row action-content">
-            <span class="col-md-4">
+        <div class="row action-content" style="padding-left:10px ; margin:10px">
+            <span>
                 <span class="title-header-content">
                     <i class="fa fa-globe  fa-2x" aria-hidden="true"></i> 
                 </span>
-                <h3>Thông tin chi tiết</h3>
+                <h3 style="display:inline">Thông tin chi tiết</h3>
             </span>
-            <div class="col-md-8 group-action-content group-action-request-content">
-                
-                <span  class="dropdown" >
-                     <button class="btn btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users" aria-hidden="true" ></i> Thay đổi bộ phận  IT
-                     </button>
+            <div class="group-action-content group-action-request-content" style="padding-bottom:100px ; float:right">
+                <div style="">
+                    <span  class="dropdown" >
+                        <button class="btn btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users" aria-hidden="true" ></i> Thay đổi bộ phận  IT
+                        </button>
 
-                        <ul class="dropdown-menu">
-                            <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 1; console.log(newInfo)">  <a>{{0 | toTeam}}</a> </li>
-                            <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 2;console.log(newInfo)">  <a>{{1 | toTeam}}</a> </li>
-                        </ul>
-                </span> 
+                            <ul class="dropdown-menu">
+                                <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 1; console.log(newInfo)">  <a>{{0 | toTeam}}</a> </li>
+                                <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 2;console.log(newInfo)">  <a>{{1 | toTeam}}</a> </li>
+                            </ul>
+                    </span> 
 
-                <span class="deadline">
-                    <button class="btn btn-sm" data-toggle="modal" data-target="#myModal3"><i class="fa fa-calendar" aria-hidden="true"  style="color: #38d1c9"></i> Thay đổi deadline 
+                    <span class="deadline">
+                        <button class="btn btn-sm" data-toggle="modal" data-target="#myModal3"><i class="fa fa-calendar" aria-hidden="true"  style="color: #38d1c9"></i> Thay đổi deadline 
+                        </button>
+                    </span>
+
+                    <span  class="dropdown" >
+                            <button class="btn btn-sm dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-edit" aria-hidden="true"  style="color: #e28624"></i> Thay đổi độ ưu tiên
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="priority in getPriority()"  data-toggle="modal" data-target="#myModal2" ng-click="changeNewPriority(priority)">  <a>{{priority | toPriority}}</a> </li>
+                            </ul>
+                    </span> 
+                    <span class="dropdown set-up-status">
+                            <button class="btn btn-sm dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-exchange" aria-hidden="true" style="color: #813384"></i> Thay đổi trạng thái
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="status in getStatus()" data-toggle="modal" data-target="#myModal2" ng-click="changeNewStatus(status)">  <a>{{status | toTicketStatus}}</a> </li>
+                            </ul>
+                    </span>
+
+                    <button class="btn btn-sm "  style="margin-right:20px"><i class="fa fa-hand-o-right" aria-hidden="true"  style="color: #0ea432"></i> Assign
                     </button>
-                </span>
-
-                <span  class="dropdown" >
-                        <button class="btn btn-sm dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-edit" aria-hidden="true"  style="color: #e28624"></i> Thay đổi độ ưu tiên
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li ng-repeat="priority in getPriority()"  data-toggle="modal" data-target="#myModal2" ng-click="changeNewPriority(priority)">  <a>{{priority | toPriority}}</a> </li>
-                        </ul>
-                </span> 
-
-                <span class="dropdown set-up-status">
-                        <button class="btn btn-sm dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-exchange" aria-hidden="true" style="color: #813384"></i> Thay đổi trạng thái
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li ng-repeat="status in getStatus()" data-toggle="modal" data-target="#myModal2" ng-click="changeNewStatus(status)">  <a>{{status | toTicketStatus}}</a> </li>
-                        </ul>
-                </span>
-
-                <span class="related_user">
-                        <button class="btn btn-sm" data-toggle="modal" data-target="#myModal4"><i class="fa fa-user" aria-hidden="true"  style="color: #70ffa6"></i> Thay đổi người
-                            liên quan
-                        </button>
-                </span>
-
-             
-                <button class="btn btn-sm "><i class="fa fa-hand-o-right" aria-hidden="true"  style="color: #0ea432"></i> Assign
-                </button>
-               
+                </div>
+                <br>
+                <div style="float:right">
+                    <span class="relaters" style="">
+                            <button class="btn btn-sm" data-toggle="modal" data-target="#myModal4"><i class="fa fa-user" aria-hidden="true"  style="color: #70ffa6"></i> Thay đổi người
+                                liên quan
+                            </button>
+                    </span>
+                </div>
 
               
 
@@ -63,30 +63,30 @@
         <div class="row request-info">
             <div class="col-md-4">
                 <div class="row">
-                    <div class="col-md-6 request-label">Ngày tạo:</div>
-                    <div class="col-md-6"> {{ ticket.created_at  | date: "dd-MM-yyyy"}}</div>
+                    <label class="col-md-6 request-label">Ngày tạo:</label>
+                    <div class="col-md-6" style="padding-left:0px"> {{ ticket.created_at  | date: "dd-MM-yyyy"}}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6 request-label">Người yêu cầu:</div>
-                    <div class="col-md-6"> {{ ticket.created_by }}</div>
+                    <label class="col-md-6 request-label">Người yêu cầu:</label>
+                    <div class="col-md-6" style="padding-left:0px"> {{ ticket.created_by }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6 request-label">Mức độ ưu tiên:</div>
-                    <div class="col-md-6"> {{ ticket.priority | toPriority}}</div>
+                    <label class="col-md-6 request-label">Mức độ ưu tiên:</label>
+                    <div class="col-md-6" style="padding-left:0px"> {{ ticket.priority | toPriority}}</div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="row">
-                    <div class="col-md-6 request-label">Ngày hết hạn:</div>
-                    <div class="col-md-6"> {{ ticket.deadline  | date: "dd-MM-yyyy"}} </div>
+                    <label class="col-md-6 request-label">Ngày hết hạn:</label>
+                    <div class="col-md-6" style="padding-left:0px"> {{ ticket.deadline  | date: "dd-MM-yyyy"}} </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6 request-label">Người thực hiện:</div>
-                    <div class="col-md-6"> {{ ticket.assigned_to}} </div>
+                    <label class="col-md-6 request-label">Người thực hiện:</label>
+                    <div class="col-md-6" style="padding-left:0px"> {{ ticket.assigned_to}} </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6 request-label">Trạng thái:</div>
-                    <div class="col-md-6"> {{ ticket.status | toTicketStatus}} </div>
+                    <label class="col-md-6 request-label">Trạng thái:</label>
+                    <div class="col-md-6" style="padding-left:0px"> {{ ticket.status | toTicketStatus}} </div>
                 </div>
             </div>
             <div class="col-md-4">
@@ -94,24 +94,28 @@
                     &nbsp;
                 </div>
                 <div class="row">
-                    <div class="col-md-6 request-label">Bộ phận IT:</div>
-                    <div class="col-md-6"> {{ ticket.team_id | toTeam}}</div>
+                    <label class="col-md-6 request-label">Bộ phận IT:</label>
+                    <div class="col-md-6" style="padding-left:0px"> {{ ticket.team_id | toTeam}}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6 request-label">Người liên quan:</div>
-                    <div class="col-md-6"> {{ ticket.relatedUser}}</div>
+                    <label class="col-md-6 request-label">Người liên quan:</label>
+                    <div class="col-md-6"style="padding-left:0px" > {{ ticket.relatedUser}}</div>
                 </div>
             </div>
         </div>
-        <div>   
+        <hr>
+        <div style="margin-top:100px">   
                 <div>    
-                    <span> <img  class="img-circle" style="height:50px;width:50px;border: 1px solid #ddd;padding: 5px;"src="assets/img/23561516_1535193256550200_8580982912237504053_n (1).jpg"></span>
-                    <span><h5 class="w3-opacity"><b> {{info.user.user_name}}</b></h5></span>
-                    <img src="{{ticket.attachment_url}}" style="max-height:300px ; max-width:500px"> 
-                
+                    <div style="display:inline"> <img  class="img-circle" style="height:50px;width:50px;border: 1px solid #ddd;padding: 5px;"src="assets/img/23561516_1535193256550200_8580982912237504053_n (1).jpg">
+                    <h5 class="w3-opacity"  style="display:inline"></h5><b> {{info.user.user_name}}</b></h5>
                 </div>
+                    
+                    
+                </div>
+                <img src="{{ticket.attachment_url}}" style="max-height:300px ; max-width:500px">                 
+                <p style="display:inline; padding-left: 30px ; vertical-align: top;"> {{ ticket.content}}</p>
                 <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i>Jan 2015 - <span class="w3-tag w3-teal w3-round">Current</span></h6>
-                <p> {{ ticket.content}}</p>
+                
                 <hr>
         </div>
     </div>
@@ -119,7 +123,7 @@
 
 <div id="comment-content">
     <div ng-repeat="comment in comments">
-            <li class="nav-divider"></li>
+            <hr>
             <div >
                 <img  class="img-circle" style="height:50px;width:50px;border: 1px solid #ddd;padding: 5px;" src="./assets/img/16002876_634984026687055_1284276430572346746_n.jpg"> </img>
                 <span class="user-comment">  {{ comment.user_name}}</span>
@@ -144,8 +148,8 @@
 <div id="myModal2" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"> Enter comment </h4>
+                <div class=" modal-header w3-container w3-red">
+                    <h3> chú thích: </h3>
                 </div>
 
                 <div class="modal-body">
@@ -163,8 +167,8 @@
 <div id="myModal3" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"> Enter comment </h4>
+                <div class=" modal-header w3-container w3-red">
+                    <h3> chú thích: </h3>
                 </div>
 
                 <div class="modal-body">
@@ -188,8 +192,8 @@
 <div id="myModal4" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"> Enter comment </h4>
+                <div class=" modal-header w3-container w3-red">
+                    <h3> Thay đổi người liên quan: </h3>
                 </div>
                 <div class="modal-body">
                     <label> nhập người liên quan:  </label>
@@ -197,7 +201,7 @@
                         <div class="form-control" >
                             <div style="display:inline-block"> 
                                 <ul>
-                                    <span class="label label-success" style="display:inline-block;" ng-repeat="related in ticket.related_user" ng-click="removeRelatedUser( related.id )"> {{ related.user_name }} ;</span>
+                                    <span class="label label-success" style="display:inline-block;" ng-repeat="related in ticket.relaters" ng-click="removeRelatedUser( related.id )"> {{ related.user_name }} ;</span>
                                 </ul>
                             </div>              
                             <div class="dropdown"  style="display:inline-block" >
@@ -225,8 +229,8 @@
 <div id="myModal5" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"> Enter comment </h4>
+                <div class=" modal-header w3-container w3-red">
+                    <h3> chú thích: </h3>
                 </div>
 
                 <div class="modal-body">
