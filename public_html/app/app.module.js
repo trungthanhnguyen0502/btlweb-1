@@ -14,7 +14,7 @@ myApp.value('maps', {
     'rating': {0: 'Không hài lòng', 1: 'Hài lòng'},
     'type': {0: 'không', 1: 'đánh giá', 2: 'thay đổi độ ưu tiên', 3: 'thay đổi deadline'},
     'ticket_read_status': {0: 'chưa đọc', 1: 'đã đọc'},
-    'team': {0: 'Hà Nội-IT', 1: 'Đà Nẵng-IT '}
+    'team': {1: 'Hà Nội-IT', 2: 'Đà Nẵng-IT '}
 })
 
 
@@ -167,7 +167,7 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function (con
         condition = conditionFilterService.filterCondition(condition)
 
         tickets.length = 0
-    
+        
         $http.get("/api/get-tickets", {params: condition}).then(function (response) {
             i = 1
             for (index in response.data) {
@@ -176,6 +176,7 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function (con
                 i += 1
                 tickets.push(t)
             }
+            console.log(response)
 
         }, function () {
             alert("tìm kiếm thất bại")
@@ -183,7 +184,7 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function (con
     }
 
     this.changeRead = function( input){
-        $http.post("/api/create-ticket" ,data).then( function( response){
+        $http.post("/api/read-ticket" ,data).then( function( response){
             console.log( response)
         }, function(){
             alert("faild")
@@ -526,8 +527,10 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
             "----- lí do : " + $scope.commentInput
 
             $http.put('api/edit-ticket/status' , params=data).then( function(response){
-                if( response.data.status == 1 )    
+                if( response.data.status == 1 ) {
+                    $scope.getTicket() 
                     alert("thay đổi trạng thái thành công")
+                }
                 else
                     alert(response.data.phrase)
                 } , 
@@ -540,7 +543,11 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
             data.note  =  "thay đổi mức độ ưu tiên: " + $filter('toPriority')($scope.oldInfo.priority) + "=> " +   $filter('toPriority')($scope.newInfo.priority) +
             "-----  lí do : " +$scope.commentInput
             $http.put('api/edit-ticket/priority' , params=data).then( function(response){
-                alert("thay đổi độ ưu tiên thành công")
+                if( response.data.status == 1){
+                    $scope.getTicket()
+                    alert("thay đổi độ ưu tiên thành công")
+                }
+                
             } , 
             function(){
                 alert("thông tin thay đổi không đúng")
@@ -551,8 +558,10 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
             data.note =  ("thay đổi deadline: " + ($scope.oldInfo.deadline).toString() + "=> " +  ($scope.newInfo.deadline).toString() +
             "----- lí do : " + $scope.commentInput)
             $http.put('api/edit-ticket/deadline' , params=data).then( function(response){
-                if( response.data.status == 1)
+                if( response.data.status == 1){
+                    $scope.getTicket()
                     alert("thay đổi deadline thành công")
+                }
                 else
                     alert( response.data.phrase)
             } , 
@@ -561,31 +570,25 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
             })
 
         }
-        if ($scope.oldInfo.relaters != $scope.newInfo.relaters) {
-            data.relaters = $scope.newInfo.status
-            data.note  = ("thay đổi người liên quan: " + $filter('')($scope.oldInfo.status) + "=> " +   $filter('')($scope.newInfo.status) +
-            "----- lí do : " +$scope.commentInput)
-            $http.put('api/edit-ticket/related-user' , params=data).then( function(response){
-                if( response.data.status == 1)
-                    alert("thay đổi người liên quan thành công")
-                else
-                    alert(response.data.phrase)
-            } , 
-            function(){
-                alert("không thành công")
-            })
-        }
+       
         if ($scope.oldInfo.team_id != $scope.newInfo.team_id) {
             data.team_id = $scope.newInfo.team_id
             data.note = ("thay đổi đôi IT: " + $filter('toTeam')($scope.oldInfo.team_id) + "=> " + $filter('toTeam')($scope.newInfo.team_id) +
                 "----- lí do : " + $scope.commentInput)
             $http.put('api/edit-ticket/team', params = data).then(function (response) {
+                if( response.data.status == 1)
+                {
                     alert("thay đổi đôi IT thành công")
+                    $scope.getTicket()
+                }
+                else
+                    alert(response.data.phrase) 
                 },
                 function () {
                     alert("thông tin thay đổi không đúng")
                 })
         }
+        
         $scope.initNewInfo()
     }
 
@@ -632,9 +635,32 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
     }
 
     $scope.searchName = function (name) {
+        $scope.user_recommend = []
         if (typeof(name) == 'string' && name.length > 0 && name.length % 2 == 0) {
             userService.searchName(name, $scope.user_recommend)
         }
+    }
+
+    $scope.changeRelater = function(){
+        data = {}
+        data.ticket_id = $scope.ticket.id
+        data.relaters = []
+        for( var u in $scope.ticket.relaters){
+            data.relaters.push( $scope.ticket.relaters[u].id )
+        }
+        data.relaters = angular.toJson( data.relaters)
+        data.note  = ("thay đổi người liên quan: "+ "----- lí do : " +$scope.commentInput)
+        $http.post('/api/edit-relaters' , params=data).then( function(response){
+            if( response.data.status == 1){
+                $scope.getTicket()
+                alert("thay đổi người liên quan thành công")
+            }
+            else
+                alert(response.data.phrase)
+        } , 
+        function(){
+            alert("không thành công")
+        })
     }
 
     $scope.addRelatedUser = function( user ){
@@ -653,14 +679,17 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
         }
     }
 
-
-    $http.get("/api/get-ticket/" + $scope.id.toString()).then(function (response) {
-        $scope.ticket = new Ticket(response.data)
-        $scope.initNewInfo()
-        $scope.loadComment()
-    }, function () {
-        alert("không tồn tại ")
-    })
+    $scope.getTicket = function(){
+        $http.get("/api/get-ticket/" + $scope.id.toString()).then(function (response) {
+            $scope.ticket = new Ticket(response.data)
+            $scope.initNewInfo()
+            $scope.loadComment()
+        }, function () {
+            alert("không tồn tại ")
+        })
+    }
+    $scope.getTicket()
+  
 }])
 
 
