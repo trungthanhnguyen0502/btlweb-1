@@ -29,11 +29,11 @@ class Ticket extends Model
     /**
      * Return relaters of this ticket
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
 
     public function relaters() {
-        return $this->hasMany('App\TicketRelater', 'ticket_id');
+        return $this->belongsToMany('App\Employee', 'ticket_relaters');
     }
 
     /**
