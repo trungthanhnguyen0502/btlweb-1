@@ -399,6 +399,7 @@ class EditTicketController extends Controller
             $ticket = $ticket->get()->first();
 
             if ($ticket->status == 5 || $ticket->status == 6) {
+
                 return [
                     'status' => 0,
                     'phrase' => 'Không được thay đổi trạng thái của ticket này.'
@@ -470,6 +471,60 @@ class EditTicketController extends Controller
             $available_status = array_unique($available_status);
 
             if (in_array($status, $available_status)) {
+
+                if ($status == 5) {
+                    // if close ticket, require rating
+                    if (!$request->has('rating')) {
+                        return [
+                            'status' => 0,
+                            'phrase' => 'Phải có đánh giá cho ticket.'
+                        ];
+                    }
+
+                    $rating = $request->input('rating');
+
+                    if ($rating != 0 && $rating != 1) {
+                        return [
+                            'status' => 0,
+                            'phrase' => 'Đánh giá không hợp lệ.'
+                        ];
+                    }
+
+                    if ($rating == 0) {
+                        // If not satisfied
+
+                        if (!$request->has('note')) {
+                            return [
+                                'status' => 0,
+                                'phrase' => 'Không hài lòng phải có lý do -_-'
+                            ];
+                        }
+
+                        if ($employee_id != $ticket->created_by && $employee->role < 3) {
+                            return [
+                                'status' => 0,
+                                'phrase' => 'Chỉ người tạo hoặc toàn công ty mới được đánh giá.'
+                            ];
+                        }
+
+                        $note = $request->input('note');
+
+                        $comment = new TicketThread();
+                        $comment->type = 2;
+                        $comment->note = $note;
+                        $comment->content = view('comment.rate_ticket')
+                            ->with('rating', $rating)
+                            ->with('employee_name', $employee->display_name);
+                        $comment->employee_id = $employee_id;
+                        $comment->ticket_id = $ticket_id;
+
+                        $comment->save();
+
+                        // Save ticket rating
+                        $ticket->rating = $rating;
+                    }
+                }
+
                 $ticket->status = $status;
                 $ticket->save();
 
@@ -480,7 +535,8 @@ class EditTicketController extends Controller
 
             return [
                 'status' => 0,
-                'phrase' => 'Thay đổi trạng thái không hợp lệ.'
+                'phrase' => 'Thay đổi trạng thái không hợp lệ.',
+                'available_status' => $available_status
             ];
         }
 
