@@ -57,7 +57,7 @@
             </td>
           </tr>
       <tr ng-repeat="ticket in tickets">
-        <td style="text-align: left" ng-click="changeRead(ticket)" > {{ticket.index }} <span class="mark-read" > <i class="fa fa-circle"  style="font-size:0.7em" ng-show="ticket.is_read"></i></span>  </td>
+        <td style="text-align: left" ng-click="changeRead(ticket)" > {{ticket.index }} <span class="mark-read" > <i class="fa fa-circle"  style="font-size:0.7em" ng-show="ticket.is_read==1"></i></span>  </td>
         <td ui-sref="ticketDetail({id:ticket.id})" ng-mouseover=""> {{ticket.subject}}
           <div>
           
@@ -65,7 +65,7 @@
 
         </td>
         <td style="text-align: left"> {{ticket.priority | toPriority}}</td>
-        <td style="text-align: left"> {{ticket.creat_by}}</td>
+        <td style="text-align: left"> {{ticket.created_by}}</td>
         <td style="text-align: left"> {{ticket.assigned_to}}</td>
         <td style="text-align: left"> {{ ticket.deadline | date:'dd-MM-yyyy'}} </td>
         <td style="text-align: left"> {{ticket.status | toTicketStatus }}</td>

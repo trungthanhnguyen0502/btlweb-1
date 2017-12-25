@@ -50,7 +50,7 @@
                         <div class="form-control" >
                             <div style="display:inline-block"> 
                                 <ul>
-                                    <li style="display:inline-block" ng-repeat="related in ticket.related_user"> {{ related.user_name }} ;</li>
+                                    <span class="label label-success" style="display:inline-block;" ng-repeat="related in ticket.related_user" ng-click="removeRelatedUser( related.id )"> {{ related.user_name }} ;</span>
                                 </ul>
                             </div>
 
@@ -58,7 +58,7 @@
                             <div class="dropdown"  style="display:inline-block" >
                                     <input style="outline:none; background:transparent;border:none"   data-toggle="dropdown" ng-model="inputName" ng-keyup="searchName(inputName)">
                                     <div class="dropdown-menu" ng-show="user_recommend.length > 0">
-                                          <li ng-repeat="u in user_recommend" ng-click="ticket.related_user.push(u); inputName = '' "><a> {{u.user_name }} </a></li>
+                                          <li ng-repeat="u in user_recommend" ng-click="addRelatedUser(u)"><a> {{u.user_name }} </a></li>
                                     </div>
                             </div>
                         </div>
