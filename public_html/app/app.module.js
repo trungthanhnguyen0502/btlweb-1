@@ -246,7 +246,6 @@ myApp.service('userService', ['$http', 'fakeDataService', function ($http, fakeD
                 user.user_name = response.data[index].display_name
                 output.push(user)
             }
-
         }, function () {
             alert("thông tin không chính xác")
         })
@@ -510,6 +509,9 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
     $scope.comments = []
     $scope.oldInfo = {}
     $scope.newInfo = {}
+    
+    
+    $scope.assign_to_input = { id: null, user_name: null}
 
     $scope.saveChange = function () {
         if (!$scope.commentInput) {
@@ -648,6 +650,7 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
         for( var u in $scope.ticket.relaters){
             data.relaters.push( $scope.ticket.relaters[u].id )
         }
+        console.log(data)
         data.relaters = angular.toJson( data.relaters)
         data.note  = ("thay đổi người liên quan: "+ "----- lí do : " +$scope.commentInput)
         $http.post('/api/edit-relaters' , params=data).then( function(response){
@@ -678,6 +681,42 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
                 $scope.ticket.relaters.pop(u)
         }
     }
+
+    $scope.addAssignTo = function( user ){
+        $scope.inputName = null
+        $scope.assign_to_input = user
+        console.log( $scope.assign_to_input)
+    }
+
+    
+
+
+    $scope.changeAssign = function(){
+        data = {}
+        data.ticket_id = $scope.ticket.id
+        data.employee_id = $scope.assign_to_input.id
+       
+        console.log(data)
+
+        $http.put('api/edit-ticket/assigned_to' , params=data).then( function(response){
+            if( response.data.status == 1){
+                $scope.getTicket()
+                alert("thay đổi người thực hiện thành công")
+            }
+            else
+                alert(response.data.phrase)
+        } , 
+        function(){
+            alert("không thành công")
+        })
+    }
+
+
+    $scope.deleteAssignTo = function(){
+        $scope.assign_to_input = {}
+    }
+
+
 
     $scope.getTicket = function(){
         $http.get("/api/get-ticket/" + $scope.id.toString()).then(function (response) {
