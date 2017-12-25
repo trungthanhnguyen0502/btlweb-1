@@ -14,8 +14,9 @@
                         </button>
 
                             <ul class="dropdown-menu">
-                                <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 1; console.log(newInfo)">  <a>{{1 | toTeam}}</a> </li>
-                                <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 2;console.log(newInfo)">  <a>{{2 | toTeam}}</a> </li>
+
+                                <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 1; console.log(newInfo)">  <a>{{0 | toTeam}}</a> </li>
+                                <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 2;console.log(newInfo)">  <a>{{1 | toTeam}}</a> </li>
                             </ul>
                     </span> 
 
@@ -47,15 +48,10 @@
                 <br>
                 <div style="float:right">
                     <span class="relaters" style="">
-                            <button class="btn btn-sm" data-toggle="modal" data-target="#myModal4"><i class="fa fa-user" aria-hidden="true"  style="color: #70ffa6" ></i> Thay đổi người
-                                liên quan
+                            <button class="btn btn-sm" data-toggle="modal" data-target="#myModal4"><i class="fa fa-user" aria-hidden="true"  style="color: #70ffa6" ></i> Thay đổi người  liên quan
                             </button>
                     </span>
                 </div>
-
-              
-
-
             </div>
         </div>
     </div>
@@ -109,7 +105,6 @@
                     <div style="display:inline"> <img  class="img-circle" style="height:50px;width:50px;border: 1px solid #ddd;padding: 5px;"src="assets/img/23561516_1535193256550200_8580982912237504053_n (1).jpg">
                     <h5 class="w3-opacity"  style="display:inline"></h5><b> {{info.user.user_name}}</b></h5>
                 </div>
-                    
                     
                 </div>
                 <img src="{{ticket.attachment_url}}" style="max-height:300px ; max-width:500px">                 
