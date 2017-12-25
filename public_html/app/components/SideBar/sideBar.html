@@ -4,13 +4,16 @@
             <nav class="nav-sidebar">
                 <ul class="nav">
                     <li class="nav-divider"></li>
-                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'all'})"    > All </a></li>
-                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'inprogress'})"> inprogress </a></li>
-                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'resolved'})"> Resolved </a></li>   
-                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'out_of_date'})"> OutOfDate </a></li>   
-                    <li ng-if="$ctrl.name=='mission' || $ctrl.name=='team_request'"><a ui-sref="dashBoard({name:$ctrl.name, condition:'feedback'})"> Feedback </a></li>   
-                    <li ng-if="$ctrl.name== 'team_request'"><a ui-sref="dashBoard({name:$ctrl.name, condition:'closed'})"> Closed </a></li>   
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'all'})">            All         <span class="label label-success" style="float:right ; background-color:#ff0000">  {{ number.allNumber }} </span> </a></li>
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'inprogress'})">     Inprogress   <span class="label label-success" style="float:right; background-color:#00a9ff"> {{ number.inprogressNumber }} </span></a></li>
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'resolved'})">       Resolved     <span class="label label-success" style="float:right; background-color:#00f868"> {{ number.resolvedNumber}} </span> </a></li>   
+                    <li><a ui-sref="dashBoard({name:$ctrl.name, condition:'out_of_date'})">    OutOfDate   <span class="label label-success" style="float:right; background-color:#ff5000">  {{ number.outOfDateNumber}}</span> </a></li>   
+                    <li ng-if="$ctrl.name=='mission' || $ctrl.name=='team_request'"><a ui-sref="dashBoard({name:$ctrl.name, condition:'feedback'})"> feedback   <span class="label label-success" style="float:right ; background-color:">  {{ number.feedbackNumber}}</span></a></li>   
+                    <li ng-if="$ctrl.name== 'team_request'"><a ui-sref="dashBoard({name:$ctrl.name, condition:'closed'})"> Closed  <span class="label label-success" style="float:right ; background-color:#008bd6">  {{ number.closedNumber }} </span></a></li>   
                 </ul>
             </nav>
+     
     </div>
 </div>
+
+

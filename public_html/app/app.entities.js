@@ -17,7 +17,7 @@ function Ticket(obj){
     this.deleted_at   = null
     this.is_read      = null
     this.attachment_url = null
-    this.related_user  = []
+    this.relaters  = []
 
 
     this.convert_ticket = function(obj){
@@ -47,6 +47,9 @@ function Comment(obj){
     this.content    = null
     this.image      = null
     this.created_at = null
+    if( obj)
+        for (var pro in obj)
+            this[pro] = obj[pro]
 }
 
 
@@ -56,12 +59,12 @@ function Condition(obj){
     this.id             = null
     this.subject        = null
     this.created_by      = null
+    this.assigned_to    = null
     this.status         = null
     this.priority       = null
     this.employee_id    = null
     this.deadline       = new Date(0,0,0)
     this.mainCondition  = null
-    this.related_user_id = null
     this.id_user_team = null
 }
 

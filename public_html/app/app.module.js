@@ -59,26 +59,12 @@ myApp.run(['$rootScope', '$http', 'userService', 'fakeDataService', function ($r
     })
 }])
 
-myApp.directive('uploadFiles', function () {
-    return {
-        scope: true,        //create a new scope  
-        link: function (scope, el, attrs) {
-            el.bind('change', function (event) {
-                var files = event.target.files
-                for (var i = 0; i < files.length; i++) {
-                    scope.$emit("seletedFile", {file: files[i]})
-                }
-            })
-        }
-    }
-})
-
 
 myApp.component('sideBar', {
     templateUrl: './app/components/SideBar/sideBar.html',
     controller: 'sideBarController',
     bindings: {
-        name: '=',
+        name: '=name',
     },
 })
 myApp.component('newRequest', {
@@ -181,7 +167,7 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function (con
         condition = conditionFilterService.filterCondition(condition)
 
         tickets.length = 0
-        console.log(condition)
+    
         $http.get("/api/get-tickets", {params: condition}).then(function (response) {
             i = 1
             for (index in response.data) {
@@ -302,10 +288,11 @@ myApp.service('fakeDataService', ['ticketService', function (ticketService) {
 }])
 
 myApp.service('commentService', ['$http', function ($http) {
-    this.getComments = function (ticket_id , output) {
+    
+    this.loadComment = function (ticket_id , output) {
         $http.get("/api/get-comments/"+ ticket_id).then( function(response){
             output.length = 0 
-            for( index in response.data){
+            for( index in response.data){                
                 output.push( new Comment( response.data[index]))
             }  
         } , function( response){
@@ -324,14 +311,92 @@ myApp.service('commentService', ['$http', function ($http) {
 }])
 
 
-myApp.controller('sideBarController', ['$scope', function ($scope) {
-    $scope.name = ""
+myApp.controller('sideBarController', ['$scope' , 'ticketService', '$http', 'conditionFilterService', function ($scope , ticketService, $http, conditionFilterService) {
+
     $scope.show = false
+    $scope.name = $scope.$ctrl.name
+
+    $scope.number = {
+        allNumber:0,
+        inprogressNumber : 0,
+        resolvedNumber : 0,
+        outOfDateNumber :0,
+        feedbackNumber : 0,
+        closedNumber: 0
+    }
+   
+
+    $scope.initCondition = function(){
+        $scope.condition = new Condition()
+        $scope.condition.count = 1
+        if ($scope.name == "my_request") {
+            $scope.condition.selector = "created_by"
+        }
+        if ($scope.name == "related_request") {
+            $scope.condition.selector = "related_to"
+        }
+        if ($scope.name == "mission") {
+            $scope.condition.selector = "assigned_to"
+        }
+        if ($scope.name == "team_request") {
+            $scope.condition.selector = "team_id"
+        }
+
+    }
+
+    $scope.initCondition()
+
+
+    $scope.getTicketsCount = function( condition , outputName){
+        condition = conditionFilterService.filterCondition(condition)
+        $http.get('/api/get-tickets' , {params: condition}).then( function( response){
+            $scope.number[outputName] = response.data
+        } , function(){
+        })
+    }
+    
+    
+    $scope.getTicketsCount( $scope.condition ,'allNumber')
+
+    $scope.condition.status = 2
+    $scope.getTicketsCount( $scope.condition ,'inprogressNumber')
+
+    $scope.condition.status = 3
+    $scope.getTicketsCount( $scope.condition ,'resolvedNumber')
+
+    $scope.condition.status = 4
+    $scope.getTicketsCount( $scope.condition ,'feedbackNumber')
+
+    $scope.condition.status = 5
+    $scope.getTicketsCount( $scope.condition ,'closedNumber')
+
+    $scope.condition.status = 7
+    $scope.getTicketsCount( $scope.condition ,'outOfDateNumber')
+   
+
+
+
+    // $http.get("/api/get-tickets", {params: condition}).then(function (response) {
+    //     i = 1
+    //     for (index in response.data) {
+    //         t = new Ticket(response.data[index])
+    //         t.index = i
+    //         i += 1
+    //         tickets.push(t)
+    //     }
+
+    // }, function () {
+    //     alert("tìm kiếm thất bại")
+    // })
+
+    // $scope.getTicketNumber = function( ){
+
+    // }
+
+
     $scope.changeShow = function () {
         $scope.show = !$scope.show
     }
-
-
 }])
 
 myApp.controller('dashBoardController', ['$scope', '$stateParams', 'ticketService', '$rootScope', 'maps', 'fakeDataService', 'userService', function ($scope, $stateParams, ticketService, $rootScope, maps, fakeDataService, userService) {
@@ -359,7 +424,7 @@ myApp.controller('dashBoardController', ['$scope', '$stateParams', 'ticketServic
     $scope.getTickets = function () {
         $scope.condition.page = $scope.paginate_params.current_page
         $scope.condition.per_page = $scope.paginate_params.page_size
-
+        console.log( $scope.condition)
         ticketService.getTickets($scope.condition, $scope.tickets)
         $scope.initCondition()
 
@@ -497,8 +562,8 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
             })
 
         }
-        if ($scope.oldInfo.related_user != $scope.newInfo.related_user) {
-            data.related_user = $scope.newInfo.status
+        if ($scope.oldInfo.relaters != $scope.newInfo.relaters) {
+            data.relaters = $scope.newInfo.status
             data.note  = ("thay đổi người liên quan: " + $filter('')($scope.oldInfo.status) + "=> " +   $filter('')($scope.newInfo.status) +
             "----- lí do : " +$scope.commentInput)
             $http.put('api/edit-ticket/related-user' , params=data).then( function(response){
@@ -533,10 +598,11 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
         data = {ticket_id: $scope.ticket.id, content: $scope.commentInput2}
         commentService.createComment(data)
         $scope.loadComment()
+        $scope.commentInput2 = null
     }
 
     $scope.loadComment = function(){
-        commentService.loadComment(ticket_id , $scope.comments = [])
+        commentService.loadComment( $scope.ticket.id , $scope.comments )
     }
 
 
@@ -571,20 +637,20 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
             userService.searchName(name, $scope.user_recommend)
         }
     }
-    
+
     $scope.addRelatedUser = function( user ){
         if(user){
             shortcutName = user.user_name.split(" ")
             user.user_name = shortcutName[shortcutName.length-1]
-            $scope.ticket.related_user.push(user);
+            $scope.ticket.relaters.push(user);
             $scope.inputName = ""
             $scope.user_recommend = []
         }
     }
     $scope.removeRelatedUser = function(id){
-        for( var u in $scope.ticket.related_user){
-            if(  $scope.ticket.related_user[u].id == id )
-                $scope.ticket.related_user.pop(u)
+        for( var u in $scope.ticket.relaters){
+            if(  $scope.ticket.relaters[u].id == id )
+                $scope.ticket.relaters.pop(u)
         }
     }
 
@@ -592,31 +658,29 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
     $http.get("/api/get-ticket/" + $scope.id.toString()).then(function (response) {
         $scope.ticket = new Ticket(response.data)
         $scope.initNewInfo()
+        $scope.loadComment()
     }, function () {
-        alert("ticket Id không đúng")
+        alert("không tồn tại ")
     })
-
-
-
-
-
 }])
 
 
 myApp.controller('newRequestController', ['$scope', 'ticketService', '$rootScope', 'commentService', 'userService', function ($scope, ticketService, $rootScope, commentService, userService) {
     $scope.user = $rootScope.user
     $scope.ticket = new Ticket()
-    $scope.ticket.related_user = []
+    $scope.ticket.relaters = []
     $scope.ticket.deadline = new Date()
     $scope.user_recommend = []
     $scope.inputName = ""
     $scope.save = function () {
         temp = []
-        for( var u in $scope.ticket.related_user){
-            temp.push(  $scope.ticket.related_user[u].id)
+        for( var u in $scope.ticket.relaters){
+            temp.push(  $scope.ticket.relaters[u].id)
         }
-        $scope.ticket.related_user = temp
-        console.log($scope.ticket.related_user)
+        $scope.ticket.relaters = angular.toJson(  $scope.ticket.relaters)
+
+        $scope.ticket.relaters = temp
+        console.log($scope.ticket.relaters)
         if (!$scope.ticket.priority || !$scope.ticket.content || !$scope.ticket.team_id)
             alert("dữ liệu bị thiếu")
         else {
@@ -633,18 +697,19 @@ myApp.controller('newRequestController', ['$scope', 'ticketService', '$rootScope
         }
     }
     $scope.addRelatedUser = function( user ){
+
         if(user){
             shortcutName = user.user_name.split(" ")
             user.user_name = shortcutName[shortcutName.length-1]
-            $scope.ticket.related_user.push(user);
+            $scope.ticket.relaters.push(user);
             $scope.inputName = ""
             $scope.user_recommend = []
         }
     }
     $scope.removeRelatedUser = function(id){
-        for( var u in $scope.ticket.related_user){
-            if(  $scope.ticket.related_user[u].id == id )
-                $scope.ticket.related_user.pop(u)
+        for( var u in $scope.ticket.relaters){
+            if(  $scope.ticket.relaters[u].id == id )
+                $scope.ticket.relaters.pop(u)
         }
     }
 
