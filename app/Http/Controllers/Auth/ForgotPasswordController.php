@@ -80,7 +80,7 @@ class ForgotPasswordController extends Controller
             $mail->code = $security_key;
             $mail->reset_link = url(route('password.reset'));
 
-            Mail::to($employee->email)->send($mail);
+            Mail::to($employee->email)->queue($mail);
 
             return view('auth.passwords.request')
                 ->with('success', true)

@@ -89,7 +89,7 @@
                                     </div>
                                     <div class="col-md-6 col-md-offset-4">
                                         <span class="form-text">
-                                            Bấm vào hình ảnh để tải lại ảnh mới.
+                                            Bấm vào hình ảnh để tải lại <a href="#captcha" onclick="rand_captcha()">ảnh mới</a>.
                                         </span>
                                     </div>
                                 </div>
@@ -123,14 +123,9 @@
         </div>
     </div>
     <script>
-
         function rand_captcha() {
             let url = "{{ url('/auth/captcha?key=')  }}" + Math.random();
             document.getElementById("captcha-img").src = url;
-        }
-
-        window.onload = function () {
-            rand_captcha();
         }
     </script>
 @endsection

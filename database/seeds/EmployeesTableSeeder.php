@@ -57,6 +57,21 @@ class EmployeesTableSeeder extends Seeder
             'role' => 2,
         ]);
 
+        DB::table('employees')->insert([
+            'id' => 4,
+            'email' => '15021716@coltech.vnu.vn',
+            'password' => md5('12345678'),
+            'gender' => 0,
+            'birthday' => strtotime('Feb 05, 1997'),
+            'first_name' => 'Đình Tuân',
+            'last_name' => 'Nguyễn',
+            'display_name' => 'Nguyễn Đình Tuân',
+            'title' => 'Developer',
+            'team_id' => 2,
+            'is_leader' => 1,
+            'role' => 2,
+        ]);
+
         DB::table('employees')->update([
             'picture' => '/default/profile-picture.png'
         ]);

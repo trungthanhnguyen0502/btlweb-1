@@ -37,7 +37,7 @@ class TicketThreadController extends Controller
 
             $employee_id = $request->session()->get('employee_id');
             $employee = Employee::find($employee_id);
-
+            // If employee does not have permission to perform this action
             if ($ticket->created_by != $employee_id && $ticket->assigned_to != $employee_id) {
                 if ($employee->role < 3) {
                     if ($employee->role < 2 && $employee->team_id != $ticket_id) {
@@ -49,14 +49,17 @@ class TicketThreadController extends Controller
                 }
             }
 
+
+            // Create comment
             $comment = new TicketThread();
             $comment->content = $content;
             $comment->ticket_id = $ticket_id;
             $comment->employee_id = $employee_id;
             $comment->type = 0;
             $comment->note = '';
-
             $comment->save();
+
+            // Return status
             return [
                 'status' => 1,
             ];
