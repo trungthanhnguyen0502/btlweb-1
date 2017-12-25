@@ -58,8 +58,8 @@
         </div>
     </div>
     <div class="body-content">
-        <div class="row request-info">
-            <div class="col-md-4" style="padding: 50px">
+        <div class="row request-info" style="margin-left:30px">
+            <div class="col-md-4" style="padding: 0px">
                 <div class="row">
                     <label class="col-md-6 request-label">Ngày tạo:</label>
                     <div class="col-md-6" style="padding-left:0px"> {{ ticket.created_at  | date: "dd-MM-yyyy"}}</div>
@@ -104,8 +104,9 @@
         <hr>
         <div style="margin-top:100px">   
                 <div>    
-                    <div style="display:inline"> <img  class="img-circle" style="height:50px;width:50px;border: 1px solid #ddd;padding: 5px;"src="assets/img/23561516_1535193256550200_8580982912237504053_n (1).jpg">
+                    <div style="display:inline"> <img  class="img-circle" style="height:50px;width:50px;border: 1px solid #ddd;padding: 5px;"src="{{info.user.picture}}">
                     <h5 class="w3-opacity"  style="display:inline"></h5><b> {{info.user.user_name}}</b></h5>
+                    <br>
                 </div>
                     
                 </div>
@@ -121,17 +122,33 @@
 <div id="comment-content">
     <div ng-repeat="comment in comments">
             <hr>
-            <div >
-                <img  class="img-circle" style="height:50px;width:50px;border: 1px solid #ddd;padding: 5px;" src="./assets/img/16002876_634984026687055_1284276430572346746_n.jpg"> </img>
-                <span class="user-comment">  {{ comment.user_name}}</span>
-                <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i> {{ comment.created_at  | date: "dd-MM-yyyy"}} </h6>
-                <div ng-bind-html="comment.content"></div>
+            <div style="border-bottom: 1px solid #efefef;  padding-bottom: 10px; padding-top: 8px; width: 100%;">
+                <table style="width:100%">
+                    <tr style="width:100%">
+                        <td style="vertical-align: top; padding-right: 15px; width:20%">
+                        <img  class="img-circle" style="height:50px;width:50px;border: 1px solid #ddd;padding: 5px;" src="{{comment.commented_by.picture}}"> </img>
+                        <span class="user-comment">  {{ comment.commented_by.display_name  }}</span>
+                        <h6 class="w3-text-teal"><i class="fa fa-calendar fa-fw w3-margin-right"></i> {{ comment.created_at  | date: "dd-MM-yyyy"}} </h6>
+                        </td>
+
+                              
+                        <td style="vertical-align: top; background-color:#e0dff7; width:75%" ng-if="$index % 2 == 1">
+                                <div ng-bind-html="comment.content"  ></div>        
+                        </td>
+                        <td style="vertical-align: top;background-color:#d0f3dd; width:75%" ng-if="$index % 2 == 0" >
+                            <div ng-bind-html="comment.content"  ></div>
+                        </td>
+                        
+                        <td style="vertical-align: top; width:5%" >
+                        </td>
+                    </tr>
+                </table>
             </div>
     </div>
 </div>
 
 
-<div class="input-discussion" style="border-top: solid 1px #e9ebee;">    
+<div class="input-discussion" style="border-top: solid 1px #e9ebee; padding-top: 40px">    
     <textarea tyle="text" class="form-control" rows="10" style="height:80px"ng-model="commentInput2"></textarea>
     <button class="btn btn-sm btn-info form-control" ng-click="createComment()">
         <i class="fa fa-comments-o" aria-hidden="true"></i>
@@ -146,12 +163,24 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class=" modal-header w3-container w3-red">
-                    <h3> chú thích: </h3>
+                    <h3> Note: </h3>
                 </div>
 
                 <div class="modal-body">
                     <input type="text" ng-model="commentInput" class="form-control">
+                    <div  ng-if ="evaluate" >
+                            <label>  Rate: </label>
+
+                            <div class="radio">
+                                <label><input type="radio" name="optradio"   ng-click="rate = 1"> Hài lòng</label>
+                              </div>
+                              <div class="radio">
+                                <label><input type="radio" name="optradio" ng-click="rate= 0"> Không hài lòng</label>
+                              </div>
+                     </div>
                 </div>
+
+
                 <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="saveChange()"> Save </button>
@@ -165,7 +194,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class=" modal-header w3-container w3-red">
-                    <h3> chú thích: </h3>
+                    <h3> Note: </h3>
                 </div>
 
                 <div class="modal-body">

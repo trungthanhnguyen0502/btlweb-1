@@ -31,6 +31,8 @@ function Ticket(obj){
             this.created_by =  obj.created_by_employee.display_name
         if( obj.assigned_to_employee)
             this.assigned_to =  obj.assigned_to_employee.display_name
+        if( obj.read && obj.read[0])
+            this.is_read =  obj.read[0].read
     }
 
     if(obj)

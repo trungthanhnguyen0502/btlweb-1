@@ -509,7 +509,8 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
     $scope.comments = []
     $scope.oldInfo = {}
     $scope.newInfo = {}
-    
+    $scope.evaluate = false
+    $scope.rate    = 1
     
     $scope.assign_to_input = { id: null, user_name: null}
 
@@ -527,11 +528,19 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
             data.status = parseInt( $scope.newInfo.status)
             data.note =  "thay đổi trạng thái: " + $filter('toTicketStatus')($scope.oldInfo.status) + "=> " +   $filter('toTicketStatus')($scope.newInfo.status) + 
             "----- lí do : " + $scope.commentInput
-
+    
             $http.put('api/edit-ticket/status' , params=data).then( function(response){
                 if( response.data.status == 1 ) {
                     $scope.getTicket() 
-                    alert("thay đổi trạng thái thành công")
+                        alert("thay đổi trạng thái thành công")
+                    console.log( $scope.newInfo.status )
+                    if( $scope.newInfo.status == 3){
+                        $http.post('api/rate/'+ data.ticket_id , params = { rating: rate}).then( function(){
+                            console.log( response)
+                        } , function(){
+
+                        })
+                    }
                 }
                 else
                     alert(response.data.phrase)
@@ -590,7 +599,7 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
                     alert("thông tin thay đổi không đúng")
                 })
         }
-        
+        $scope.commentInput = null
         $scope.initNewInfo()
     }
 
@@ -620,6 +629,10 @@ myApp.controller('ticketDetailController', ['$scope', '$stateParams', 'ticketSer
         $scope.newInfo.priority = priority
     }
     $scope.changeNewStatus = function (status) {
+        if( status == 3 )
+            $scope.evaluate = true
+        else
+          $scope.evaluate = false
         $scope.newInfo.status = status
     }
     $scope.changeNewDeadline = function (deadline) {
@@ -786,5 +799,10 @@ myApp.controller('newRequestController', ['$scope', 'ticketService', '$rootScope
 
 
 myApp.controller('headerController', ['$scope', '$rootScope', function ($scope, $rootScope) {
+    $scope.info = $rootScope.info
+}])
+
+
+myApp.controller('AppController' , ['$scope' ,'$rootScope', function ($scope, $rootScope) {
     $scope.info = $rootScope.info
 }])
