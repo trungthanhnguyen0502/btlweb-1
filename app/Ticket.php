@@ -45,4 +45,8 @@ class Ticket extends Model
     public function comments() {
         return $this->hasMany('App\TicketThread', 'ticket_id');
     }
+
+    public function read() {
+        return $this->hasMany('App\TicketRead');
+    }
 }

@@ -1,13 +1,13 @@
 <div class="main-content">
-    <div class="header-content">
+    <div class="header-content" style="clear: both; margin-bottom: 0px;height: 40px;border-bottom: 1px solid #e4e6e8;">
         <div class="row action-content" style="padding-left:10px ; margin:10px">
             <span>
                 <span class="title-header-content">
-                    <i class="fa fa-globe  fa-2x" aria-hidden="true"></i> 
+                <!-- <i class="fa fa-globe  fa-1.9x" aria-hidden="true"></i>  -->
                 </span>
-                <h3 style="display:inline">Thông tin chi tiết</h3>
+                <h3 style="display:inline" class="col-md-2 request-label"><b>Thông tin</b></h3>
             </span>
-            <div class="group-action-content group-action-request-content" style="padding-bottom:100px ; float:right">
+            <div class="group-action-content group-action-request-content" style="padding-bottom:50px ; float:right">
                 <div style="">
                     <span  class="dropdown" >
                         <button class="btn btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users" aria-hidden="true" ></i> Thay đổi bộ phận  IT
@@ -42,22 +42,25 @@
                             </ul>
                     </span>
 
-                    <button class="btn btn-sm "  style="margin-right:20px"><i class="fa fa-hand-o-right" aria-hidden="true"  style="color: #0ea432"></i> Assign
+                    <span>
+                        <button class="btn btn-sm "  style="margin-right:0px"><i class="fa fa-hand-o-right" aria-hidden="true"  style="color: #0ea432"></i> Assign
                     </button>
-                </div>
-                <br>
-                <div style="float:right">
-                    <span class="relaters" style="">
-                            <button class="btn btn-sm" data-toggle="modal" data-target="#myModal4"><i class="fa fa-user" aria-hidden="true"  style="color: #70ffa6" ></i> Thay đổi người  liên quan
-                            </button>
+                    </span>
+                    <span style="">
+                        <span class="relaters" style="">
+                                <button class="btn btn-sm" data-toggle="modal" data-target="#myModal4"><i class="fa fa-user" aria-hidden="true"  style="color: #70ffa6" ></i> Thay đổi người  liên quan
+                                </button>
+                        </span>
                     </span>
                 </div>
+                <br>
+                
             </div>
         </div>
     </div>
     <div class="body-content">
         <div class="row request-info">
-            <div class="col-md-4">
+            <div class="col-md-4" style="padding: 50px">
                 <div class="row">
                     <label class="col-md-6 request-label">Ngày tạo:</label>
                     <div class="col-md-6" style="padding-left:0px"> {{ ticket.created_at  | date: "dd-MM-yyyy"}}</div>

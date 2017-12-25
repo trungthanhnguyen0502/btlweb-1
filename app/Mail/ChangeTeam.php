@@ -34,6 +34,7 @@ class ChangeTeam extends Mailable
      *
      * @return $this
      */
+
     public function build()
     {
         return $this->subject('Chuyển yêu cầu đến bộ phận IT')

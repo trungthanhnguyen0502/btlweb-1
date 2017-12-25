@@ -15,12 +15,11 @@ class CreateTableTicketReads extends Migration
     {
         Schema::create('ticket_reads', function (Blueprint $table) {
             $table->unsignedInteger('ticket_id');
-
             $table->unsignedInteger('employee_id');
 
             $table->tinyInteger('read')->default(0);
-            $table->primary(['ticket_id', 'employee_id']);
             $table->timestamps();
+            $table->primary(['ticket_id', 'employee_id']);
 
             $table->foreign('ticket_id')
                 ->references('id')->on('tickets')

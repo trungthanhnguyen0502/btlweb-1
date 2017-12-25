@@ -263,7 +263,7 @@ class EditTicketController extends Controller
             $team = $team->get()->first();
             $notification->team_name = $team->title;
             $notification->deadline = $ticket->deadline;
-            Mail::to($leader->email)->send($notification);
+            Mail::to($leader->email)->queue($notification);
 
             return [
                 'status' => 1,
@@ -507,8 +507,8 @@ class EditTicketController extends Controller
                             ];
                         }
 
+                        // Create comment for this action
                         $note = $request->input('note');
-
                         $comment = new TicketThread();
                         $comment->type = 2;
                         $comment->note = $note;
@@ -517,7 +517,6 @@ class EditTicketController extends Controller
                             ->with('employee_name', $employee->display_name);
                         $comment->employee_id = $employee_id;
                         $comment->ticket_id = $ticket_id;
-
                         $comment->save();
 
                         // Save ticket rating

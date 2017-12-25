@@ -108,7 +108,7 @@ class TicketController extends Controller
 
         $num_of_leaders = $leaders->count();
         for ($i = 0; $i < $num_of_leaders; $i++) {
-            Mail::to($leaders[$i]->email)->send($notification);
+            Mail::to($leaders[$i]->email)->queue($notification);
         }
 
         return [
@@ -262,6 +262,13 @@ class TicketController extends Controller
         foreach ($tickets as $ticket) {
             $ticket->created_by_employee();
             $ticket->assigned_to_employee();
+            $ticket->read;
+
+            foreach ($ticket->read as $read) {
+                if ($read->employee_id != $employee_id) {
+                    unset($read);
+                }
+            }
 
             unset($ticket->created_by_employee->password);
             unset($ticket->assigned_to_employee->password);
@@ -535,7 +542,8 @@ class TicketController extends Controller
         ];
     }
 
-    public function rate(Request $request, $ticket_id){
+    public function rate(Request $request, $ticket_id)
+    {
 
         if ($request->has('rating')) {
 
