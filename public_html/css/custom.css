@@ -1,0 +1,16 @@
+html {
+    /*background-image: url("https://technotab.com/wp-content/uploads/2017/08/laravel_smolten_2.png");*/
+    /*background-image: url("http://dep.anh9.com/imgs/131020hinh-nen-dang-cap-cho-website.jpg");*/
+    background-image: url("/css/images/guest-bg.jpg");
+    min-height: 100%;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+body {
+    background: transparent;
+}
+
+.panel-heading {
+    cursor: move;
+}
