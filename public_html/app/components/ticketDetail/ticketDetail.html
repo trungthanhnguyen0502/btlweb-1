@@ -15,8 +15,8 @@
 
                             <ul class="dropdown-menu">
 
-                                <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 1; console.log(newInfo)">  <a>{{0 | toTeam}}</a> </li>
-                                <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 2;console.log(newInfo)">  <a>{{1 | toTeam}}</a> </li>
+                                <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 1; console.log(newInfo)">  <a>{{1 | toTeam}}</a> </li>
+                                <li data-toggle="modal" data-target="#myModal2" ng-click="newInfo.team_id = 2;console.log(newInfo)">  <a>{{2 | toTeam}}</a> </li>
                             </ul>
                     </span> 
 
@@ -42,8 +42,7 @@
                             </ul>
                     </span>
 
-                    <span>
-                        <button class="btn btn-sm "  style="margin-right:0px"><i class="fa fa-hand-o-right" aria-hidden="true"  style="color: #0ea432"></i> Assign
+                    <button class="btn btn-sm "  style="margin-right:20px" data-toggle="modal" data-target="#myModal5"><i class="fa fa-hand-o-right" aria-hidden="true"  style="color: #0ea432"></i> Assign
                     </button>
                     </span>
                     <span style="">
@@ -98,7 +97,7 @@
                 </div>
                 <div class="row">
                     <label class="col-md-6 request-label">Người liên quan:</label>
-                    <div class="col-md-6"style="padding-left:0px" > {{ ticket.relatedUser}}</div>
+                    <div class="col-md-6"style="padding-left:0px" ng-repeat="relater in ticket.relaters"> {{ relater.display_name }}</div>
                 </div>
             </div>
         </div>
@@ -228,21 +227,34 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class=" modal-header w3-container w3-red">
-                    <h3> chú thích: </h3>
+                    <h3> Thay đổi người thực hiện: </h3>
                 </div>
-
                 <div class="modal-body">
-                    <label> chọn người giao nhiệm vụ:  </label>
-                    <br>
-                    <input type="datetime-local" ng-model="newInfo.deadline" >
+                    <label> nhập tên người thực hiện:  </label>
+                        <div class="form-control" >
+                            <div style="display:inline-block"> 
+                                <ul>
+                                    <span class="label label-success" style="display:inline-block;"  ng-click="deleteAssignTo()"> {{ assign_to_input.user_name }} ;</span>
+                                </ul>
+                            </div>              
+                            <div class="dropdown"  style="display:inline-block" >
+                                    <input style="outline:none; background:transparent;border:none"   data-toggle="dropdown" ng-model="inputName" ng-keyup="searchName(inputName)">
+                                    <div class="dropdown-menu" ng-show="user_recommend.length > 0">
+                                          <li ng-repeat="u in user_recommend" ng-click="addAssignTo(u)"><a> {{u.user_name }} </a></li>
+                                    </div>
+                            </div>
+                        </div>
                     <br>
                     <label> Note:  </label>
                     <textarea type="text" ng-model="commentInput" class="form-control"></textarea>
                 </div>
                 <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="saveChange()"> Save </button>
+                     <button type="button" class="btn btn-default" data-dismiss="modal"> Cancle </button>
+                     <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="changeAssign()"> Save </button>
                 </div>
             </div>    
         </div>
 </div>
+    
+
+
