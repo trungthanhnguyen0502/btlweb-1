@@ -3,7 +3,7 @@
   <button class="w3-button w3-blue" ng-click="initCondition()"> Reset bộ lọc </button>
   <button class="w3-button w3-blue"  ng-click="getTickets()"> Tìm kiếm     </button>
 </div>
-  <table class="table table-striped table-hover">
+  <table class="table table-hover">
     <thead>
       <tr>
         <th style="text-align: left" class=""> STT </th>
@@ -16,7 +16,7 @@
         <th></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody  style="font-size: 13px;">
 
         <tr>
             <td> </td>
@@ -42,7 +42,7 @@
               <div class="dropdown">
                   <input placeholder="Tìm kiếm ..."  class="form-control form-control-sm" ng-model="text_input.assign_to"  data-toggle="dropdown" ng-keyup="searchName(text_input.assign_to)">
                   <ul class="dropdown-menu" ng-show="search_data.user_recommend.length > 0">
-                      <li ng-repeat="u in search_data.user_recommend" ng-click="condition.assign_to = u.id; text_input.assign_to = u.user_name"><a> {{u.user_name }} </a></li>
+                      <li ng-repeat="u in search_data.user_recommend" ng-click="condition.assigned_to = u.id; text_input.assign_to = u.user_name"><a> {{u.user_name }} </a></li>
                   </ul>
                 </div>
             

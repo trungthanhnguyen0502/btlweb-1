@@ -50,7 +50,7 @@
                         <div class="form-control" >
                             <div style="display:inline-block"> 
                                 <ul>
-                                    <span class="label label-success" style="display:inline-block;" ng-repeat="related in ticket.related_user" ng-click="removeRelatedUser( related.id )"> {{ related.user_name }} ;</span>
+                                    <span class="label label-success" style="display:inline-block;" ng-repeat="related in ticket.relaters" ng-click="removeRelatedUser( related.id )"> {{ related.user_name }} ;</span>
                                 </ul>
                             </div>
 
