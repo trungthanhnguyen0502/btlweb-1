@@ -450,19 +450,19 @@ class EditTicketController extends Controller
             $available_status = [];
 
             $old_status = $ticket->status - 1;
-            
+
             if (self::is_created_by($ticket, $employee)) {
                 $available_status = array_merge($available_status, $available[0][$old_status]);
             }
-            
+
             if (self::is_assigned_to($ticket, $employee)) {
                 $available_status = array_merge($available_status, $available[1][$old_status]);
             }
-            
+
             if (self::is_team_leader($ticket, $employee)) {
                 $available_status = array_merge($available_status, $available[2][$old_status]);
             }
-            
+
             if (self::is_company_leader($employee)) {
                 $available_status = array_merge($available_status, $available[3][$old_status]);
             }
@@ -491,30 +491,78 @@ class EditTicketController extends Controller
     }
 
 
-    protected function update_status($ticket_id, $status)
-    {
-        return DB::table('tickets')->where('id', $ticket_id)->update(['status' => $status]);
-    }
+    /**
+     * If current employee is who created this
+     *
+     * @param $ticket
+     * @param $employee
+     * @return bool
+     */
 
     protected function is_created_by($ticket, $employee)
     {
         return ($ticket->created_by == $employee->id);
     }
 
+    /**
+     * If current employee is assigned this
+     *
+     * @param $ticket
+     * @param $employee
+     * @return bool
+     */
+
     protected function is_assigned_to($ticket, $employee)
     {
         return ($ticket->assigned_to == $employee->id);
     }
+
+    /**
+     * If current employee is team leader
+     *
+     * @param $ticket
+     * @param $employee
+     * @return bool
+     */
 
     protected function is_team_leader($ticket, $employee)
     {
         return ($ticket->team_id == $employee->team_id && $employee->role == 2);
     }
 
+    /**
+     * If current employee is who has all permissions
+     *
+     * @param $employee
+     * @return bool
+     */
+
     protected function is_company_leader($employee)
     {
         return ($employee->role == 3);
     }
+
+    /**
+     * Update status in database
+     *
+     * @param $ticket_id
+     * @param $status
+     * @return mixed
+     */
+
+    protected function update_status($ticket_id, $status)
+    {
+        return DB::table('tickets')->where('id', $ticket_id)->update(['status' => $status]);
+    }
+
+    /**
+     * If input state is available to change to
+     *
+     * @param $old_status
+     * @param $new_status
+     * @param $available
+     * @return bool
+     */
 
     protected function is_available($old_status, $new_status, $available)
     {

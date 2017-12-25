@@ -143,6 +143,12 @@ class TicketController extends Controller
                 $ticket->attachment_url = $ticket_attachment->url;
             }
 
+            $ticket->relaters;
+
+            foreach ($ticket->relaters as $relater) {
+                unset($relater->password);
+            }
+
             return $ticket;
         }
 
@@ -526,6 +532,64 @@ class TicketController extends Controller
 
         return [
             'status' => 1
+        ];
+    }
+
+    public function rate(Request $request, $ticket_id){
+
+        if ($request->has('rating')) {
+
+            // If input is incorrect format
+
+            if ($ticket_id < 0) {
+                return [
+                    'status' => 0,
+                    'phrase' => 'Không tìm thấy ticket này.'
+                ];
+            }
+
+            $rating = $request->input('rating');
+
+            if ($rating != 0 && $rating != 1) {
+                return [
+                    'status' => 0,
+                    'phrase' => 'Đánh giá không hợp lệ.'
+                ];
+            }
+
+            $ticket = Ticket::where('id', $ticket_id);
+
+            // If rating for the ticket does not exist
+
+            if ($ticket->count() == 0) {
+                return [
+                    'status' => 0,
+                    'phrase' => 'Thao tác không hợp lệ.'
+                ];
+            }
+
+            $ticket = $ticket->get()->first();
+            $employee_id = $request->session()->get('employee_id');
+
+            // If the employee is not who created this
+            if ($ticket->created_by != $employee_id) {
+                return [
+                    'status' => 0,
+                    'phrase' => 'Chỉ người tạo mới được đánh giá.'
+                ];
+            }
+
+            $ticket->rating = $rating;
+            $ticket->save();
+
+            return [
+                'status' => 1,
+            ];
+        }
+
+        return [
+            'status' => 0,
+            'phrase' => 'Thao tác không hợp lệ.'
         ];
     }
 }
