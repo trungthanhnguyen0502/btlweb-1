@@ -276,7 +276,7 @@ class EditTicketController extends Controller
                     ->with('deadline', $ticket->deadline)
                     ->with('team_name', $team->title)
                     ->with('who_assigned')
-                    ->with('subject', $ticket->subject))
+                    ->with('subject', $ticket->subject)
                     ->render()
             ];
 
