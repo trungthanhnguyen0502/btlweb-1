@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <body ng-app="myApp" style="font: font-family">
-  <div id="source">
+  <div id="source" ng-controller="AppController" >
   
     <my-header></my-header>
 
@@ -31,7 +31,7 @@
         <side-bar name="'my_request'" style="width:80%"></side-bar>
         <side-bar name="'related_request'" style="width:80%"></side-bar>
         <side-bar name="'mission'" style="width:80%"></side-bar>
-        <side-bar name="'team_request'" style="width:80%"></side-bar>
+        <side-bar ng-if="info.user.role == 3"  name="'team_request'" style="width:80%"></side-bar>
       </nav>
       <div id="content"  style="float:left;width:80%;">
           <div>
