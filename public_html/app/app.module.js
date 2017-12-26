@@ -176,10 +176,7 @@ myApp.service('ticketService', ['conditionFilterService', '$http', function (con
                 i += 1
                 tickets.push(t)
             }
-            console.log(response)
-
-        }, function () {
-            alert("tìm kiếm thất bại")
+       }, function () {
         })
     }
 
