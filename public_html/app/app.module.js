@@ -395,7 +395,7 @@ myApp.controller('sideBarController', ['$scope' , 'ticketService', '$http', 'con
     }
 }])
 
-myApp.controller('dashBoardController', ['$scope', '$stateParams', 'ticketService', '$rootScope', 'maps', 'fakeDataService', 'userService', function ($scope, $stateParams, ticketService, $rootScope, maps, fakeDataService, userService) {
+myApp.controller('dashBoardController', ['$scope', '$stateParams', 'ticketService', '$rootScope', 'maps', 'fakeDataService', 'userService', '$http', function ($scope, $stateParams, ticketService, $rootScope, maps, fakeDataService, userService, $http) {
 
     $scope.name = $stateParams.name
     $scope.status = $stateParams.condition
@@ -420,9 +420,17 @@ myApp.controller('dashBoardController', ['$scope', '$stateParams', 'ticketServic
     $scope.getTickets = function () {
         $scope.condition.page = $scope.paginate_params.current_page
         $scope.condition.per_page = $scope.paginate_params.page_size
-        console.log( $scope.condition)
         ticketService.getTickets($scope.condition, $scope.tickets)
         $scope.initCondition()
+
+        $scope.condition.count = 1
+        $http.get('/api/get-tickets' , {params: $scope.condition}).then( function( response){
+            $scope.paginate_params.total = response.data / $scope.paginate_params.page_size + 1
+        } , function(){
+        })
+
+        $scope.initCondition()
+        
 
     }
 
@@ -492,7 +500,7 @@ myApp.controller('dashBoardController', ['$scope', '$stateParams', 'ticketServic
 
     $scope.getTickets()
 
-
+    
 }])
 
 
