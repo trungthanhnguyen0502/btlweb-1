@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\APIs;
 
+use App\AsyncMailer;
 use App\Employee;
 use App\Http\Controllers\Controller;
 use App\Mail\ChangeTeam;
@@ -179,6 +180,7 @@ class EditTicketController extends Controller
      *
      * @param Request $request
      * @return array
+     * @throws \Throwable
      */
 
     public function change_team(Request $request)
@@ -257,13 +259,28 @@ class EditTicketController extends Controller
             $comment->save();
 
             // Create notification
-            $notification = new ChangeTeam();
-            $notification->who_assigned = $employee_id;
-            $notification->title = $ticket->subject;
-            $team = $team->get()->first();
-            $notification->team_name = $team->title;
-            $notification->deadline = $ticket->deadline;
-            Mail::to($leader->email)->queue($notification);
+//            $notification = new ChangeTeam();
+//            $notification->who_assigned = $employee_id;
+//            $notification->title = $ticket->subject;
+//            $team = $team->get()->first();
+//            $notification->team_name = $team->title;
+//            $notification->deadline = $ticket->deadline;
+//            Mail::to($leader->email)->queue($notification);
+
+            $asyncMailer = new AsyncMailer();
+
+            $vars = [
+                'to' => $leader->email,
+                'subject' => 'Chuyển giao công việc',
+                'content' => view('mail.change_team')
+                    ->with('deadline', $ticket->deadline)
+                    ->with('team_name', $team->title)
+                    ->with('who_assigned')
+                    ->with('subject', $ticket->subject)
+                    ->render()
+            ];
+
+            $asyncMailer->exec('http://localhost:3000/mail', $vars);
 
             return [
                 'status' => 1,
