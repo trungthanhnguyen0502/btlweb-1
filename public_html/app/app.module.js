@@ -424,8 +424,9 @@ myApp.controller('dashBoardController', ['$scope', '$stateParams', 'ticketServic
         $scope.initCondition()
 
         $scope.condition.count = 1
+        $scope.condition.deadline = null
         $http.get('/api/get-tickets' , {params: $scope.condition}).then( function( response){
-            $scope.paginate_params.total = response.data / $scope.paginate_params.page_size + 1
+            $scope.paginate_params.total = Math.ceil( response.data / $scope.paginate_params.page_size )
         } , function(){
         })
 
