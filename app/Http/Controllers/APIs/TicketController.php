@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\APIs;
 
+use App\AsyncMailer;
 use App\Employee;
 use App\Http\Controllers\Controller;
 use App\Mail\NewTicket;
@@ -100,15 +101,31 @@ class TicketController extends Controller
         $leaders = Employee::where('team_id', $who_created->team_id)->whereIn('role', [2, 3])->get();
 
         // Create mail
-        $notification = new NewTicket();
-        $notification->who_created = $who_created->display_name;
-        $notification->team_name = $team->title;
-        $notification->title = $subject;
-        $notification->deadline = $ticket->deadline;
+//        $notification = new NewTicket();
+//        $notification->who_created = $who_created->display_name;
+//        $notification->team_name = $team->title;
+//        $notification->title = $subject;
+//        $notification->deadline = $ticket->deadline;
+
+        $asyncMailer = new AsyncMailer();
 
         $num_of_leaders = $leaders->count();
+
         for ($i = 0; $i < $num_of_leaders; $i++) {
-            Mail::to($leaders[$i]->email)->queue($notification);
+//            Mail::to($leaders[$i]->email)->queue($notification);
+
+            $vars = [
+                'to' => $leaders[$i]->email,
+                'subject' => 'Yêu cầu mới đến bộ phận IT',
+                'content' => view('mail.new_ticket')
+                                ->with('who_created', $who_created->display_name)
+                                ->with('subject', $ticket->subject)
+                                ->with('deadline', $ticket->deadline)
+                                ->with('team_name', 'Call log IT')
+                                ->render()
+            ];
+
+            $asyncMailer->exec('http://localhost:3000/mail', $vars);
         }
 
         return [

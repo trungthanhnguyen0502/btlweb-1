@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\AsyncMailer;
 use App\Employee;
 use App\Http\Controllers\Controller;
 use App\Mail\PasswordReset;
 use App\PasswordResetKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 use Jenssegers\Agent\Agent;
 
 class ForgotPasswordController extends Controller
@@ -21,6 +23,7 @@ class ForgotPasswordController extends Controller
     /**
      * @param Request $request
      * @return $this|string
+     * @throws \Throwable
      */
 
     public function request_password(Request $request)
@@ -35,6 +38,9 @@ class ForgotPasswordController extends Controller
             $captcha = $request->input("captcha");
             $captcha = md5($captcha);
             $session_captcha = $request->session()->get('captcha');
+
+            $request->session()->put('captcha', '');
+
             if ($captcha != $session_captcha || $session_captcha == '') {
 
                 return view('auth.passwords.request')
@@ -74,13 +80,20 @@ class ForgotPasswordController extends Controller
 
             $reset_key->save();
 
-            // Send mail
+            $asyncMailer = new AsyncMailer();
 
-            $mail = new PasswordReset();
-            $mail->code = $security_key;
-            $mail->reset_link = url(route('password.reset'));
+            $vars = [
+                'to' => $employee->email,
+                'subject' => 'Đặt lại mật khẩu',
+                'content' => view('mail.password_reset')
+                                ->with('title', 'Đặt lại mật khẩu')
+                                ->with('system_name', 'Call log IT')
+                                ->with('code', $reset_key->security_key)
+                                ->with('reset_link', route('password.reset'))
+                                ->render()
+            ];
 
-            Mail::to($employee->email)->queue($mail);
+            $asyncMailer->exec('http://localhost:3000/mail', $vars);
 
             return view('auth.passwords.request')
                 ->with('success', true)
